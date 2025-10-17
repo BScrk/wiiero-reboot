@@ -1215,34 +1215,34 @@ int wiiero_load_config(game_t *g)
     snprintf(str_errno, 127, "Error: %s.\n", strerror(errno));
     return 0;
   }
-  fread(&(g->wiiero_opt_game_mode), sizeof(game_mode_t), 1, conf_file);
-  fread(&(g->wiiero_opt_nb_lifes), sizeof(Uint16), 1, conf_file);
-  fread(&(g->wiiero_opt_nb_flags), sizeof(Uint16), 1, conf_file);
-  fread(&(g->wiiero_opt_got_time), sizeof(Uint16), 1, conf_file);
-  fread(&(g->wiiero_opt_gift_nb), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_loading_time), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_bonus_name), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_mini_map), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_map_regen), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_shadow), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_xtra_weap), sizeof(Uint8), 1, conf_file);
-  fread(&(g->wiiero_opt_nb_rocks), sizeof(Uint8), 1, conf_file);
-  fread(&selected_amb, sizeof(Uint8), 1, conf_file);
-  fread(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file);
-  fread(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file);
-  fread(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file);
+  if(!fread(&(g->wiiero_opt_game_mode), sizeof(game_mode_t), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_nb_lifes), sizeof(Uint16), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_nb_flags), sizeof(Uint16), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_got_time), sizeof(Uint16), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_gift_nb), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_loading_time), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_bonus_name), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_mini_map), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_map_regen), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_shadow), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_xtra_weap), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_nb_rocks), sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&selected_amb, sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file)){return 0;}
   /* Wiiero 1.2 new config file part */
-  fread(&mud_particle, sizeof(Uint8), 1, conf_file);
+  if(!fread(&mud_particle, sizeof(Uint8), 1, conf_file)){return 0;}
   if (!feof(conf_file))
   {
     Uint16 langlen = 0;
-    fread(&langlen, sizeof(Uint16), 1, conf_file);
+    if(!fread(&langlen, sizeof(Uint16), 1, conf_file)){return 0;}
     if (langlen)
     {
       char filename[256];
       memset(filename, 0, sizeof(char) * 256);
-      fread(filename, sizeof(char), langlen, conf_file);
-      fread(&(g->wiiero_lang), sizeof(Uint8), 1, conf_file);
+      if(!fread(filename, sizeof(char), langlen, conf_file)){return 0;}
+      if(!fread(&(g->wiiero_lang), sizeof(Uint8), 1, conf_file)){return 0;}
       apply_lang(filename);
     }
   }

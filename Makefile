@@ -118,4 +118,4 @@ wii:
 
 .PHONY:		all default dev compil profile depend backup clean createbin wii
 
-include makefile.d
+-include makefile.d
