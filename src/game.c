@@ -107,8 +107,8 @@ void wiiero_init(game_t *g)
 #ifndef NO_SOUND
                SDL_INIT_AUDIO |
 #endif
-#ifdef PSP_MODE
-               SDL_INIT_JOYSTICK |
+#if defined(PSP_MODE) || defined(LINUX_MODE)
+               SDL_INIT_GAMECONTROLLER |
 #endif
                0) == -1)
   {

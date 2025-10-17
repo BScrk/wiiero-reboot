@@ -85,9 +85,44 @@ enum
   GAME_ACTION_KEY_PAUSE = SDL_SCANCODE_SPACE,
 }; /* - -- --- WIIERO EVENTS ---- --- -- */
 
+/* SDL2 GameController support */
+#define MAX_GAMEPADS 2
+static SDL_GameController* gamepads[MAX_GAMEPADS] = {NULL, NULL};
+static int gamepad_count = 0;
+
 static __inline__ void init_controllers()
 {
-  font_console_print_debug("ignore controllers (not supported yet)...\n", FONT_SMALL);
+  font_console_print_debug("Initializing SDL2 GameController support...\n", FONT_SMALL);
+  
+  // Enable game controller events
+  SDL_GameControllerEventState(SDL_ENABLE);
+  
+  // Scan for connected controllers
+  int num_joysticks = SDL_NumJoysticks();
+  char msg[128];
+  snprintf(msg, sizeof(msg), "Detected %d joystick(s)\n", num_joysticks);
+  font_console_print_debug(msg, FONT_SMALL);
+  
+  gamepad_count = 0;
+  for (int i = 0; i < num_joysticks && gamepad_count < MAX_GAMEPADS; i++) {
+    if (SDL_IsGameController(i)) {
+      gamepads[gamepad_count] = SDL_GameControllerOpen(i);
+      if (gamepads[gamepad_count]) {
+        const char* name = SDL_GameControllerName(gamepads[gamepad_count]);
+        snprintf(msg, sizeof(msg), "Gamepad %d: %s\n", gamepad_count, name ? name : "Unknown");
+        font_console_print_debug(msg, FONT_SMALL);
+        gamepad_count++;
+      }
+    }
+  }
+  
+  if (gamepad_count > 0) {
+    snprintf(msg, sizeof(msg), "✓ %d gamepad(s) ready\n", gamepad_count);
+    font_console_print_debug(msg, FONT_SMALL);
+  } else {
+    font_console_print_debug("No gamepads detected\n", FONT_SMALL);
+  }
+  
   SDL_Delay(1000);
 }
 
@@ -111,6 +146,59 @@ static __inline__ void game_check_event(game_t *g)
     {
     case SDL_QUIT:
       g->wiiero_exit = 1;
+      break;
+      
+    case SDL_CONTROLLERDEVICEADDED:
+      // Hot-plug support: add new controller
+      if (gamepad_count < MAX_GAMEPADS) {
+        int device_index = event.cdevice.which;
+        if (SDL_IsGameController(device_index)) {
+          // Check if this controller is not already open
+          SDL_GameController* new_controller = SDL_GameControllerOpen(device_index);
+          if (new_controller) {
+            SDL_Joystick* new_joy = SDL_GameControllerGetJoystick(new_controller);
+            int new_instance_id = SDL_JoystickInstanceID(new_joy);
+            
+            // Check if already in our list
+            int already_open = 0;
+            for (int i = 0; i < gamepad_count; i++) {
+              if (gamepads[i]) {
+                SDL_Joystick* existing_joy = SDL_GameControllerGetJoystick(gamepads[i]);
+                if (SDL_JoystickInstanceID(existing_joy) == new_instance_id) {
+                  already_open = 1;
+                  break;
+                }
+              }
+            }
+            
+            if (already_open) {
+              // Already have this one, close the duplicate
+              SDL_GameControllerClose(new_controller);
+            } else {
+              // New controller, add it
+              gamepads[gamepad_count] = new_controller;
+              gamepad_count++;
+            }
+          }
+        }
+      }
+      break;
+      
+    case SDL_CONTROLLERDEVICEREMOVED:
+      // Hot-plug support: remove disconnected controller
+      for (int i = 0; i < gamepad_count; i++) {
+        if (gamepads[i] && SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(gamepads[i])) == event.cdevice.which) {
+          SDL_GameControllerClose(gamepads[i]);
+          gamepads[i] = NULL;
+          // Shift remaining gamepads
+          for (int j = i; j < gamepad_count - 1; j++) {
+            gamepads[j] = gamepads[j + 1];
+          }
+          gamepads[gamepad_count - 1] = NULL;
+          gamepad_count--;
+          break;
+        }
+      }
       break;
     }
   }
@@ -161,6 +249,105 @@ static __inline__ void game_check_event(game_t *g)
   if (keystate[GAME_ACTION_KEY_PAUSE])
   {
     g->worms[PLAYER_1]->worms_action |= ACTION_PAUSE;
+  }
+  
+  /* === GAMEPAD INPUT === */
+  // Gamepad 0 -> Player 1
+  if (gamepad_count > 0 && gamepads[0]) {
+    SDL_GameController* pad = gamepads[0];
+    
+    // D-Pad and Left Stick for movement
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_UP;
+    }
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_DOWN;
+    }
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_LEFT;
+    }
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_RIGHT;
+    }
+    
+    // A (Cross) = Jump/Cancel
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
+      g->worms[PLAYER_1]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
+    }
+    
+    // B (Circle) = Fire/OK
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
+      g->worms[PLAYER_1]->worms_action |= (ACTION_FIRE | ACTION_OK);
+    }
+    
+    // L1/R1 = Change weapon
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
+        SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_CHANGE;
+    }
+    
+    // Start = Pause
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_PAUSE;
+    }
+    
+    // Back/Select = Menu
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
+      g->worms[PLAYER_1]->worms_action |= ACTION_MENU;
+    }
+  }
+  
+  // Gamepad 1 -> Player 2
+  if (gamepad_count > 1 && gamepads[1]) {
+    SDL_GameController* pad = gamepads[1];
+    
+    // D-Pad and Left Stick for movement
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_UP;
+    }
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_DOWN;
+    }
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_LEFT;
+    }
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
+        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_RIGHT;
+    }
+    
+    // A (Cross) = Jump/Cancel
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
+      g->worms[PLAYER_2]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
+    }
+    
+    // B (Circle) = Fire/OK
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
+      g->worms[PLAYER_2]->worms_action |= (ACTION_FIRE | ACTION_OK);
+    }
+    
+    // L1/R1 = Change weapon
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
+        SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_CHANGE;
+    }
+    
+    // Start = Pause
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_PAUSE;
+    }
+    
+    // Back/Select = Menu
+    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
+      g->worms[PLAYER_2]->worms_action |= ACTION_MENU;
+    }
   }
 }
 
@@ -291,6 +478,120 @@ static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t *o
 /* Player gamepad event update PC */
 static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *other_p)
 {
+  ASSERT(p);
+  ASSERT(m);
+  
+  /* Up & Down events with gamepad */
+  if (p->worms_action & ACTION_CHANGE)
+  {
+    if (p->worms_action & ACTION_UP)
+      player_change_rope_len(p, -ROPE_LEN_CHANGE_PITCH);
+    if (p->worms_action & ACTION_DOWN)
+      player_change_rope_len(p, ROPE_LEN_CHANGE_PITCH);
+  }
+  else
+  {
+    if ((p->worms_action & ACTION_UP))
+    {
+      player_look_up(p);
+    }
+    else
+    {
+      if ((p->worms_action & ACTION_DOWN))
+        player_look_down(p);
+      else
+        p->reticle_pitch = ANGLE_PITCH;
+    }
+  }
+  
+  /* Ninja hook - L1+A or R1+A */
+  if ((p->worms_action & ACTION_JUMP) && (p->worms_action & ACTION_CHANGE))
+  {
+    if (!(p->worms_status & STATUS_NINJA_ACTION))
+    {
+      if (p->ninja_hook->last_bullet == NULL)
+      {
+        player_launch_hook(p);
+      }
+      else
+      {
+        player_remove_hook(p, other_p);
+        player_launch_hook(p);
+      }
+      p->worms_status |= STATUS_NINJA_ACTION;
+    }
+  }
+  else
+  {
+    /* Jump */
+    if ((p->worms_action & ACTION_JUMP))
+    {
+      player_jump(p);
+
+      /* Remove hook */
+      if (!(p->worms_status & STATUS_NINJA_ACTION))
+        if (p->ninja_hook->last_bullet != NULL)
+        {
+          player_remove_hook(p, other_p);
+        }
+    }
+    p->worms_status &= ~STATUS_NINJA_ACTION;
+  }
+  
+  /* Crop, change or move */
+  if ((p->worms_action & ACTION_RIGHT) && (p->worms_action & ACTION_LEFT))
+  {
+    /* if crop, no weapon change */
+    p->worms_status &= ~STATUS_CHANGING_W;
+    if (!(p->worms_status & STATUS_CROPING))
+      player_crop(p, m);
+  }
+  else
+  {
+    /* no crop */
+    p->worms_status &= ~STATUS_CROPING;
+    /* change or move */
+    if (!(p->worms_action & ACTION_CHANGE))
+    {
+      /* if moving, no weapon change */
+      p->worms_status &= ~STATUS_CHANGING_W;
+      if ((p->worms_action & ACTION_RIGHT))
+        player_move_right(p);
+      if ((p->worms_action & ACTION_LEFT))
+        player_move_left(p);
+    }
+    else
+    {
+      /* change weapon with L1/R1 + directions */
+      if (!(p->worms_action & ACTION_JUMP))
+      {
+        if ((p->worms_action & ACTION_RIGHT))
+        {
+          if (!(p->worms_status & STATUS_CHANGING_W))
+            player_change(p, 1);
+        }
+        else
+        {
+          if ((p->worms_action & ACTION_LEFT))
+          {
+            if (!(p->worms_status & STATUS_CHANGING_W))
+              player_change(p, -1);
+          }
+          else
+          {
+            p->worms_status &= ~STATUS_CHANGING_W;
+          }
+        }
+        p->worms_status |= STATUS_SHOW_W;
+      }
+    }
+  }
+  
+  /* FIRE */
+  if (p->worms_action & ACTION_FIRE)
+  {
+    player_fire(p);
+  }
 }
 
 // ----------------------------------------------------------------------------

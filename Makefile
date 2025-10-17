@@ -42,6 +42,7 @@ ifeq ($(SYSTEM),Darwin)
     SDL2_CFLAGS := $(shell $(LOCALBASE)/bin/sdl2-config --cflags 2>/dev/null || echo -I$(LOCALBASE)/include/SDL2)
     SDL2_LIBS := $(shell $(LOCALBASE)/bin/sdl2-config --libs 2>/dev/null || echo -L$(LOCALBASE)/lib -lSDL2)
     PLATFORM_DEF = -DOSX_MODE -D_THREAD_SAFE
+#    PLATFORM_DEF = -DLINUX_MODE -D_THREAD_SAFE
     PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image -Wl,-framework,Cocoa -framework IOKit -framework CoreFoundation
     PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else ifeq ($(SYSTEM),Linux)
