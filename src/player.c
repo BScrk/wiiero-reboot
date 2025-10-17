@@ -609,6 +609,55 @@ void player_look_down(player_t* p){
     p->reticle_pitch++;
 }
 
+void player_look_at(player_t* p, float angle){
+  ASSERT(p);
+  if(p->worms_status & STATUS_FREEZED)
+    return;
+
+  // Angle in degrees around the worm
+  // 0 : feets (6 o'clock)
+  // 90 : right (3 o'clock)
+  // 270 : left (9 o'clock)
+  // 180 : head (12 o'clock)
+  // So we need to convert it to worm angle : 
+  // 1. check side
+  // 2. convert to worm looking angle (0 to 90)
+ if( angle > 180 ){
+    // Left side (270° = gauche pure)
+    p->worms.side = LEFT_SIDE;
+    // 180° -> 90° (tête = regarder vers le haut)
+    // 270° -> 0° (gauche pure = horizon)
+    // 360°/0° -> -90° (pieds = regarder vers le bas)
+    if (angle >= 270) {
+      // De 270° à 360°: mapping linéaire de 0° à -90°
+      angle = -90.0f * (angle - 270.0f) / 90.0f;
+    } else {
+      // De 180° à 270°: mapping linéaire de 90° à 0°
+      angle = 90.0f - 90.0f * (angle - 180.0f) / 90.0f;
+    }
+  }else{
+    // Right side (90° = droite pure)
+    p->worms.side = RIGHT_SIDE;
+    // 0° -> -90° (pieds = regarder vers le bas)
+    // 90° -> 0° (droite pure = horizon)
+    // 180° -> 90° (tête = regarder vers le haut)
+    if (angle <= 90) {
+      // De 0° à 90°: mapping linéaire de -90° à 0°
+      angle = -90.0f + 90.0f * angle / 90.0f;
+    } else {
+      // De 90° à 180°: mapping linéaire de 0° à 90°
+      angle = 90.0f * (angle - 90.0f) / 90.0f;
+    }
+  }
+
+  //printf("look at angle %f\n",angle);
+  p->worms.angle = (angle <= MAX_PLAYER_ANGLE) 
+                      ? ( (angle >= MIN_PLAYER_ANGLE) 
+                          ? angle 
+                          : MIN_PLAYER_ANGLE)
+                      : MAX_PLAYER_ANGLE;
+}
+
 void player_move_left(player_t* p){
   ASSERT(p);
   if(p->worms_status & STATUS_FREEZED)

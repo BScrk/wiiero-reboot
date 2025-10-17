@@ -261,64 +261,112 @@ static __inline__ void game_check_event(game_t *g)
       SDL_GameController* pad = gamepads[player_id];
       
       // D-Pad and Left Stick for movement
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) /*||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000*/) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         g->worms[player_id]->worms_action |= ACTION_UP;
       }
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) /*||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000*/) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         g->worms[player_id]->worms_action |= ACTION_DOWN;
       }
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) /*||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000*/) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) {
+        g->worms[player_id]->worms_action |= ACTION_LEFT | ACTION_L_ACT;
+      }
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) {
+        g->worms[player_id]->worms_action |= ACTION_RIGHT | ACTION_R_ACT;
+      }
+
+      
+      if (SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
+        g->worms[player_id]->worms_action |= ACTION_UP;
+      }
+      if (SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
+        g->worms[player_id]->worms_action |= ACTION_DOWN;
+      }
+
+      if (SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
         g->worms[player_id]->worms_action |= ACTION_LEFT;
       }
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) /*||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000*/) {
+      if (SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
         g->worms[player_id]->worms_action |= ACTION_RIGHT;
       }
-      
       // A (Cross) = Jump/Cancel
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
         g->worms[player_id]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
-        printf("A button pressed [Player %d]\n", player_id);
+        //printf("A button pressed [Player %d]\n", player_id);
       }
       
       // B (Circle) = Fire/OK
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
         g->worms[player_id]->worms_action |= (ACTION_FIRE | ACTION_OK);
-        printf("B button pressed [Player %d]\n", player_id);
+        //printf("B button pressed [Player %d]\n", player_id);
       }
       
       // X (Square) = Jump/Cancel
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_X)) {
-        g->worms[player_id]->worms_action |= (ACTION_HOOK | ACTION_CANCEL);
-        printf("X button pressed [Player %d]\n", player_id);
+        g->worms[player_id]->worms_action |= (ACTION_CROP | ACTION_CANCEL);
+        //printf("X button pressed [Player %d]\n", player_id);
       }
       
       // Y (Triangle) = Fire/OK
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_Y)) {
         g->worms[player_id]->worms_action |= (ACTION_CHANGE | ACTION_OK);
-        printf("Y button pressed [Player %d]\n", player_id);
+        //printf("Y button pressed [Player %d]\n", player_id);
       }
       
       
       // L1/R1 = Change weapon
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) &&
           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
+        g->worms[player_id]->worms_action |= (ACTION_CHANGE | ACTION_L_ACT);
+      }else if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
+                SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
         g->worms[player_id]->worms_action |= ACTION_CHANGE;
-      }
-      
+      }else 
+
       // Start = Pause
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
         g->worms[player_id]->worms_action |= ACTION_PAUSE;
+        //printf("Start button pressed [Player %d]\n", player_id);
       }
       
       // Back/Select = Menu
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
         g->worms[player_id]->worms_action |= ACTION_MENU;
+        //printf("Back button pressed [Player %d]\n", player_id);
       }
 
+      
+      // Triggers L2 for ninja hook
+      if( SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 8000){
+        g->worms[player_id]->worms_action |= ACTION_HOOK;
+        //printf("L2 Trigger pressed [Player %d]\n", player_id);
+      }
+
+      // Triggers R2 for Fire
+      if( SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > 8000){
+        g->worms[player_id]->worms_action |= ACTION_FIRE;
+        //printf("R2 Trigger pressed [Player %d]\n", player_id);
+      }
+
+      // Left Stick Button = Jump
+      if(SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSTICK)) {
+        g->worms[player_id]->worms_action |= ACTION_JUMP;
+        //printf("L3 button pressed [Player %d]\n", player_id);
+      }
+
+      // Right Stick Button = Jump
+      if(SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSTICK)) {
+        g->worms[player_id]->worms_action |= ACTION_HOOK;
+        //printf("R3 button pressed [Player %d]\n", player_id);
+      }
+
+
+      // translate Right Stick X & Y in angle for aiming
+      float right_stick_x = SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_RIGHTX); // range -32768 (Left) to 32767 (Right)
+      float right_stick_y = SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_RIGHTY);// range -32768 (Up) to 32767 (Down)
+      if (fast_abs(right_stick_x) > 4000 || fast_abs(right_stick_y) > 4000) {
+        float angle = ftrigo_atan2(right_stick_y, right_stick_x);
+        player_look_at(g->worms[player_id], angle);
+      }
     }
   }
 }
@@ -446,42 +494,36 @@ static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t *o
   }
 }
 
-// ----------------------------------------------------------------------------
-/* Player gamepad event update PC */
 static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *other_p)
 {
+  /* ============= GAMEPAD CONTROLS (similar to Wii Nunchuk/Classic) ============= */
   ASSERT(p);
   ASSERT(m);
-  
-  /* Up & Down events with gamepad */
-  if (p->worms_action & ACTION_CHANGE)
-  {
+
+  /* Up & Down events */
+  if ((p->worms_action & ACTION_CHANGE) && !(p->ninja_hook->last_bullet == 0l)) 
+  { // ROPE
     if (p->worms_action & ACTION_UP)
       player_change_rope_len(p, -ROPE_LEN_CHANGE_PITCH);
     if (p->worms_action & ACTION_DOWN)
       player_change_rope_len(p, ROPE_LEN_CHANGE_PITCH);
   }
   else
-  {
+  { // No ROPE
     if ((p->worms_action & ACTION_UP))
-    {
       player_look_up(p);
-    }
+    else if ((p->worms_action & ACTION_DOWN))
+      player_look_down(p);
     else
-    {
-      if ((p->worms_action & ACTION_DOWN))
-        player_look_down(p);
-      else
-        p->reticle_pitch = ANGLE_PITCH;
-    }
+      p->reticle_pitch = ANGLE_PITCH;
   }
-  
-  /* Ninja hook - L1+A or R1+A */
-  if ((p->worms_action & ACTION_JUMP) && (p->worms_action & ACTION_CHANGE))
+
+  /* NINJA HOOK (Triggers L/R) */
+  if (p->worms_action & ACTION_HOOK)
   {
     if (!(p->worms_status & STATUS_NINJA_ACTION))
     {
-      if (p->ninja_hook->last_bullet == NULL)
+      if (p->ninja_hook->last_bullet == 0l)
       {
         player_launch_hook(p);
       }
@@ -492,78 +534,82 @@ static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *o
       }
       p->worms_status |= STATUS_NINJA_ACTION;
     }
-  }
-  else
-  {
-    /* Jump */
-    if ((p->worms_action & ACTION_JUMP))
+  }else{
+    /* JUMP (B button) */
+    if (p->worms_action & ACTION_JUMP)
     {
       player_jump(p);
-
-      /* Remove hook */
       if (!(p->worms_status & STATUS_NINJA_ACTION))
-        if (p->ninja_hook->last_bullet != NULL)
+      {
+        if (p->ninja_hook->last_bullet != 0l)
         {
           player_remove_hook(p, other_p);
         }
+      }
     }
     p->worms_status &= ~STATUS_NINJA_ACTION;
   }
-  
-  /* Crop, change or move */
-  if ((p->worms_action & ACTION_RIGHT) && (p->worms_action & ACTION_LEFT))
-  {
-    /* if crop, no weapon change */
-    p->worms_status &= ~STATUS_CHANGING_W;
-    if (!(p->worms_status & STATUS_CROPING))
-      player_crop(p, m);
-  }
+
+  /* CROP (A button) */
+  if (p->worms_action & ACTION_CROP)
+    player_crop(p, m);
   else
-  {
-    /* no crop */
     p->worms_status &= ~STATUS_CROPING;
-    /* change or move */
-    if (!(p->worms_action & ACTION_CHANGE))
-    {
-      /* if moving, no weapon change */
-      p->worms_status &= ~STATUS_CHANGING_W;
-      if ((p->worms_action & ACTION_RIGHT))
-        player_move_right(p);
-      if ((p->worms_action & ACTION_LEFT))
-        player_move_left(p);
-    }
-    else
-    {
-      /* change weapon with L1/R1 + directions */
-      if (!(p->worms_action & ACTION_JUMP))
-      {
-        if ((p->worms_action & ACTION_RIGHT))
-        {
-          if (!(p->worms_status & STATUS_CHANGING_W))
-            player_change(p, 1);
-        }
-        else
-        {
-          if ((p->worms_action & ACTION_LEFT))
-          {
-            if (!(p->worms_status & STATUS_CHANGING_W))
-              player_change(p, -1);
-          }
-          else
-          {
-            p->worms_status &= ~STATUS_CHANGING_W;
-          }
-        }
-        p->worms_status |= STATUS_SHOW_W;
+
+
+
+  /* Weapon change with X button + direction */
+  if (p->worms_action & ACTION_CHANGE){
+    p->worms_status |= STATUS_SHOW_W;
+    //printf("Change weapon mode\n");
+    if (p->worms_action & ACTION_L_ACT) {
+      //printf("Change weapon left [Player %d]\n", p->id);
+      if (!(p->worms_status & STATUS_CHANGING_W)){
+        player_change(p, 1);
+        //printf("Weapon changed to the left [Player %d]\n", p->id);
+      }else{
+        //printf("Already changing weapon, ignoring input [Player %d]\n", p->id);
       }
+    } else if (p->worms_action & ACTION_R_ACT) {
+      //printf("Change weapon right [Player %d]\n", p->id);
+      if (!(p->worms_status & STATUS_CHANGING_W)){
+        player_change(p, -1);
+        //printf("Weapon changed to the right [Player %d]\n", p->id);
+      }else{
+        //printf("Already changing weapon, ignoring input [Player %d]\n", p->id);
+      }
+    } else {
+      //printf("No change, clearing changing status [Player %d]\n", p->id);
+      p->worms_status &= ~STATUS_CHANGING_W;
     }
+  }else {
+    /* Move left/right */
+    if ((p->worms_action & ACTION_RIGHT))
+      player_move_right(p);
+    if ((p->worms_action & ACTION_LEFT))
+      player_move_left(p);
   }
   
-  /* FIRE */
-  if (p->worms_action & ACTION_FIRE)
-  {
+
+  /* FIRE (Y button) */
+  if ((p->worms_action & ACTION_FIRE))
     player_fire(p);
-  }
+
+ 
+  // printf(" p->worms_action: %d%d%d%d%d%d%d%d%d%d%d%d\n",
+  //        (p->worms_action & ACTION_UP) ? 1 : 0,
+  //        (p->worms_action & ACTION_DOWN) ? 1 : 0,
+  //        (p->worms_action & ACTION_LEFT) ? 1 : 0,
+  //        (p->worms_action & ACTION_RIGHT) ? 1 : 0,
+  //        (p->worms_action & ACTION_JUMP) ? 1 : 0,
+  //        (p->worms_action & ACTION_CHANGE) ? 1 : 0,
+  //        (p->worms_action & ACTION_FIRE) ? 1 : 0,
+  //        (p->worms_action & ACTION_CROP) ? 1 : 0,
+  //        (p->worms_action & ACTION_HOOK) ? 1 : 0,
+  //        (p->worms_action & ACTION_L_ACT) ? 1 : 0,
+  //        (p->worms_action & ACTION_R_ACT) ? 1 : 0,
+  //        (p->worms_action & ACTION_FROM_KEYBOARD) ? 1 : 0
+  //        );
 }
 
 // ----------------------------------------------------------------------------
@@ -587,6 +633,7 @@ static __inline__ void player_event_update(player_t *p, map_t *m, player_t *othe
   }else{
     player_gp_event_update(p,m,other_p);
   }
+
 }
 
 #endif

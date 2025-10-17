@@ -197,6 +197,7 @@ void player_update( player_t* p,SDL_Surface* ground, SDL_Surface* statics);
 void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag);
 void player_look_up(player_t* p);
 void player_look_down(player_t* p);
+void player_look_at(player_t* p, float angle);
 void player_jump(player_t* p);
 
 void player_is_aiming(player_t* p , player_t* target);

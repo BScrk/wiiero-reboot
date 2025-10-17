@@ -113,6 +113,35 @@ static __inline__ double  ftrigo_sin(int a){
   return sin_precalc[slot]; 
 }
 
+//ftrigo_atan
+static float ftrigo_atan(float x) {
+  // Approximate arctangent using a polynomial approximation
+  // Valid for x in [-1, 1]
+  if (x < -1.0f) {
+    return -90.0f + ftrigo_atan(-1.0f / x);
+  } else if (x > 1.0f) {
+    return 90.0f - ftrigo_atan(1.0f / x);
+  }
+  float x2 = x * x;
+  return x * (45.0f - (x2 * (15.0f - (x2 * (5.0f - x2)))));
+}
+
+static __inline__ float ftrigo_atan2(float x, float y) {
+  if (x == 0) {
+    return (y > 0) ? 90 : 270;
+  }
+  float angle = ftrigo_atan(y / x);
+  if (x < 0) {
+    angle += 180;
+  }
+  // Normalize angle to 0-360 range
+  while (angle < 0) angle += 360.0f;
+  while (angle >= 360) angle -= 360.0f;
+  return angle;
+}
+
+
+
 static __inline__  unsigned int  fast_sqr(unsigned int val){
   return val*val; 
 }
