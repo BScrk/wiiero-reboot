@@ -41,8 +41,8 @@ ifeq ($(SYSTEM),Darwin)
     LOCALBASE = $(HOMEBREW_PREFIX)
     SDL2_CFLAGS := $(shell $(LOCALBASE)/bin/sdl2-config --cflags 2>/dev/null || echo -I$(LOCALBASE)/include/SDL2)
     SDL2_LIBS := $(shell $(LOCALBASE)/bin/sdl2-config --libs 2>/dev/null || echo -L$(LOCALBASE)/lib -lSDL2)
-#    PLATFORM_DEF = -DOSX_MODE -D_THREAD_SAFE
-    PLATFORM_DEF = -DLINUX_MODE -D_THREAD_SAFE
+#    PLATFORM_DEF = -DDESKTOP_MODE --DIOKIT_INPUT_MODE -D_THREAD_SAFE
+    PLATFORM_DEF = -DDESKTOP_MODE -DSDL_INPUT_MODE -D_THREAD_SAFE
     PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image -Wl,-framework,Cocoa -framework IOKit -framework CoreFoundation
     PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else ifeq ($(SYSTEM),Linux)
@@ -51,7 +51,7 @@ else ifeq ($(SYSTEM),Linux)
     LOCALBASE = /usr
     SDL2_CFLAGS := $(shell sdl2-config --cflags 2>/dev/null || echo -I/usr/include/SDL2)
     SDL2_LIBS := $(shell sdl2-config --libs 2>/dev/null || echo -lSDL2)
-    PLATFORM_DEF = -DLINUX_MODE -D_THREAD_SAFE
+    PLATFORM_DEF = -DDESKTOP_MODE -DSDL_INPUT_MODE -D_THREAD_SAFE
     PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image
     PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else ifeq ($(SYSTEM),FreeBSD)
@@ -60,7 +60,7 @@ else ifeq ($(SYSTEM),FreeBSD)
     LOCALBASE = /usr/local
     SDL2_CFLAGS := $(shell sdl2-config --cflags 2>/dev/null || echo -I/usr/local/include/SDL2)
     SDL2_LIBS := $(shell sdl2-config --libs 2>/dev/null || echo -lSDL2)
-    PLATFORM_DEF =  -DLINUX_MODE
+    PLATFORM_DEF =  -DSDL_INPUT_MODE
     PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image
     PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else
@@ -69,7 +69,7 @@ else
     LOCALBASE = /usr/local
     SDL2_CFLAGS := $(shell sdl2-config --cflags 2>/dev/null || echo -I/usr/local/include/SDL2)
     SDL2_LIBS := $(shell sdl2-config --libs 2>/dev/null || echo -lSDL2)
-    PLATFORM_DEF =  -DLINUX_MODE
+    PLATFORM_DEF =  -DSDL_INPUT_MODE
     PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image
     PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 endif

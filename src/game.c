@@ -36,11 +36,11 @@ static char str_errno[128];
 #include "fast_trig.h"
 #include "weapons.h"
 #include "dynamic_objs.h"
-#ifdef LINUX_MODE
-#include "input_linux.h"
+#ifdef SDL_INPUT_MODE
+#include "input_sdl.h"
 #endif
-#ifdef OSX_MODE
-#include "input_mac.h"
+#ifdef IOKIT_INPUT_MODE
+#include "input_iokit.h"
 #endif
 #ifdef PSP_MODE
 #include "input_psp.h"
@@ -1504,11 +1504,6 @@ void wiiero_quit(game_t *g)
    printf("\\ - deaths   : %d\n",game_score[PLAYER_2].nb_death);*/
 
   sengine_release();
-
-#if defined(LINUX_MODE) || defined(OSX_MODE)
-  g->wiiero_screen->mode = FULL_SCREEN_MODE;
-  screen_flip_mode(g->wiiero_screen);
-#endif
 
   // release bullets
   clean_bullets_list(g->wiiero_bullets);

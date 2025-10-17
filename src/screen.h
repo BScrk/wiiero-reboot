@@ -34,13 +34,10 @@
 #include "camera.h"
 
 
-#ifdef OSX_MODE
-  #define SCREEN_RES   RES_800_600
-#endif
-
-#ifdef LINUX_MODE
+#ifdef DESKTOP_MODE
   #define SCREEN_RES   RES_640_420
 #endif
+
 
 #ifdef PSP_MODE
   #define SCREEN_RES   RES_480_272
