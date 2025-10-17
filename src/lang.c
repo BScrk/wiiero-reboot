@@ -165,6 +165,7 @@ char *wiiero_label[WIIERO_LANG_NB_LABELS] = {
   , "medikit"
   , "iron worm"
   , "pinball"
+  , "Bug Grenade"
   /* Controls labesl */
   , "Controls"
   , "Fire"
