@@ -70,6 +70,7 @@ sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev makedepend
 
 ```bash
 make clean
+make depend
 make compil
 ```
 
@@ -97,6 +98,7 @@ The build system automatically detects your platform and uses the correct flags:
 
 ```bash
 make clean
+make depend
 make compil
 ```
 
