@@ -1,0 +1,108 @@
+MODULE 	= $(shell basename `pwd`)
+SYSTEM := $(shell uname -s)
+
+# Date command (BSD vs GNU)
+ifeq ($(SYSTEM),FreeBSD)
+DATE	= gdate
+else
+DATE	= date
+endif
+
+ARCHIVE = backup/$(MODULE)-$(shell $(DATE) '+%Y-%m-%d-%Hh%M').tar.gz
+
+# Common tools
+CC	= gcc
+MKDIR	= mkdir -p
+RMDIR	= rmdir
+MV	= mv
+CP	= cp
+RM	= rm -f
+ZIP	= zip
+
+# Common flags
+DEFINES	= -D_GNU_SOURCE=1
+MYCFLAGS = -O3 -Wall -Werror -fomit-frame-pointer
+MYPROFILECFLAGS = -Wall -Werror -pg
+
+# Source files
+SRCS = $(notdir $(basename $(wildcard src/*.c)))
+OBJS = $(SRCS:%=bin/%.o)
+
+TARGET = wiiero
+WIIERO = bin/wiiero
+EXES = $(WIIERO)
+VPATH = src:bin
+
+#-------------------- Auto-detect system and configure
+ifeq ($(SYSTEM),Darwin)
+    # macOS (Apple Silicon or Intel)
+    PLATFORM = macOS
+    HOMEBREW_PREFIX := $(shell brew --prefix 2>/dev/null || echo /opt/homebrew)
+    LOCALBASE = $(HOMEBREW_PREFIX)
+    PLATFORM_DEF = -DOSX_MODE -D_THREAD_SAFE
+    PLATFORM_LIBS = -lm -lSDL -lSDLmain -Wl,-framework,Cocoa -framework IOKit -framework CoreFoundation
+else ifeq ($(SYSTEM),Linux)
+    # Linux
+    PLATFORM = Linux
+    LOCALBASE = /usr
+    PLATFORM_DEF = -DLINUX_MODE -D_THREAD_SAFE
+    PLATFORM_LIBS = -lm -lSDL -lSDLmain -lSDL_image
+else ifeq ($(SYSTEM),FreeBSD)
+    # FreeBSD
+    PLATFORM = FreeBSD
+    LOCALBASE = /usr/local
+    PLATFORM_DEF =  -DLINUX_MODE
+    PLATFORM_LIBS = -lm -lSDL -lSDLmain -lSDL_image
+else
+    # Generic Unix fallback
+    PLATFORM = Unix
+    LOCALBASE = /usr/local
+    PLATFORM_DEF =  -DLINUX_MODE
+    PLATFORM_LIBS = -lm -lSDL -lSDLmain -lSDL_image
+endif
+
+# Construct final flags
+CFLAGS = $(MYCFLAGS) -I$(LOCALBASE)/include $(PLATFORM_DEF)
+LDFLAGS = -L$(LOCALBASE)/lib $(PLATFORM_LIBS)
+
+compil: createbin $(EXES)
+
+dev: CFLAGS += -DDEBUG_ON -g
+dev: profile 
+
+profile: CFLAGS  = $(MYPROFILECFLAGS) -I$(LOCALBASE)/include $(PLATFORM_DEF) -g -pg
+profile: LDFLAGS = -L$(LOCALBASE)/lib $(PLATFORM_LIBS) -pg
+profile: compil
+
+
+all: default 
+
+$(WIIERO): $(OBJS)
+		$(CC) $(CFLAGS) $(DEFINES) -o $@ $^ $(LDFLAGS)
+
+bin/%.o: 	src/%.c
+		$(CC) $(CFLAGS) $(COPTS) -o $@ -c $<
+
+createbin:
+		mkdir -p ./bin
+
+depend:		clean
+		cd src && makedepend -f- -Y -p bin/ *.c *.h \
+		> ../makefile.d 2> /dev/null
+
+backup:         clean
+		rm ./src/*~
+		cd .. && tar cvzf $(ARCHIVE) $(MODULE)
+
+clean:
+		$(RM) $(OBJS)
+		$(RM) $(EXES)
+		$(RM) -r ./bin
+
+# Wii cross-compilation target
+wii:
+		$(MAKE) -f Makefile.wii
+
+.PHONY:		all default dev compil profile depend backup clean createbin wii
+
+include makefile.d
