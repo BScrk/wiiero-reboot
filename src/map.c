@@ -90,8 +90,24 @@ void map_reset(map_t* m ,ressources_t* loaded_res, int nb_rocks){
   fill_statics(m,loaded_res, nb_rocks);
   m->last_minimap_update=-10000;
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void update_minimap( map_t* m,camera_t *cam , int p1_x, int p1_y
-                   , int p2_x, int p2_y, int force){
+void static update_player_position(int p_x, int p_y, float x_step , float y_step, camera_t* cam){
+  p_x = (p_x/x_step == 0) ? 1 : p_x/x_step;
+  p_y = (p_y/y_step == 0) ? 1 : p_y/y_step;
+  p_x = (p_x >= cam->w) ? cam->w-1 : p_x;
+  p_y = (p_y >= cam->h) ? cam->h-1 : p_y;
+  
+  camera_put_pix_color(cam,p_x-1, p_y-1, 0, 0, 255);
+  camera_put_pix_color(cam,p_x-1, p_y+1, 0, 0, 255);
+  camera_put_pix_color(cam,p_x  , p_y  , 0, 0, 255);
+  camera_put_pix_color(cam,p_x+1, p_y-1, 0, 0, 255);
+  camera_put_pix_color(cam,p_x+1, p_y+1, 0, 0, 255);
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void update_minimap( map_t* m,camera_t *cam 
+                   , int p1_x, int p1_y
+                   , int p2_x, int p2_y
+                   , int p3_x, int p3_y
+                   , int p4_x, int p4_y
+                   , int force){
   ASSERT(m);
   ASSERT(cam); 
   int x,y;
@@ -117,27 +133,10 @@ void update_minimap( map_t* m,camera_t *cam , int p1_x, int p1_y
     }
   }
   /* Update players position */
-  p1_x = (p1_x/x_step == 0) ? 1 : p1_x/x_step;
-  p1_y = (p1_y/y_step == 0) ? 1 : p1_y/y_step;
-  p1_x = (p1_x >= cam->w) ? cam->w-1 : p1_x;
-  p1_y = (p1_y >= cam->h) ? cam->h-1 : p1_y;
-  
-  camera_put_pix_color(cam,p1_x-1, p1_y-1, 0, 0, 255);
-  camera_put_pix_color(cam,p1_x-1, p1_y+1, 0, 0, 255);
-  camera_put_pix_color(cam,p1_x  , p1_y  , 0, 0, 255);
-  camera_put_pix_color(cam,p1_x+1, p1_y-1, 0, 0, 255);
-  camera_put_pix_color(cam,p1_x+1, p1_y+1, 0, 0, 255);
-  
-  p2_x = (p2_x/x_step == 0) ? 1 : p2_x/x_step;
-  p2_y = (p2_y/y_step == 0) ? 1 : p2_y/y_step;
-  p2_x = (p2_x >= cam->w) ? cam->w-1 : p2_x;
-  p2_y = (p2_y >= cam->h) ? cam->h-1 : p2_y;
-  
-  camera_put_pix_color(cam,p2_x-1, p2_y-1, 0, 255, 0);
-  camera_put_pix_color(cam,p2_x-1, p2_y+1, 0, 255, 0);  
-  camera_put_pix_color(cam,p2_x  , p2_y  , 0, 255, 0);
-  camera_put_pix_color(cam,p2_x+1, p2_y-1, 0, 255, 0);
-  camera_put_pix_color(cam,p2_x+1, p2_y+1, 0, 255, 0);
+  update_player_position(p1_x, p1_y, x_step , y_step, cam);
+  update_player_position(p2_x, p2_y, x_step , y_step, cam);
+  update_player_position(p3_x, p3_y, x_step , y_step, cam);
+  update_player_position(p4_x, p4_y, x_step , y_step, cam);
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void fill_background(map_t* m,ressources_t* r){
   ASSERT(m);

@@ -98,7 +98,10 @@ Uint8 mud_particle = WIIERO_STD_MUB;
 
 char game_nicknames[NB_PLAYERS][WIIERO_NAME_LEN] = {
     {'P', '1', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
-    {'P', '2', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'}};
+    {'P', '2', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
+    {'P', '3', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'},
+    {'P', '4', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'}
+  };
 
 void wiiero_init(game_t *g)
 {
@@ -177,15 +180,22 @@ void wiiero_load(game_t *g)
   g->wiiero_bullets = weapon_init_bullet_list();
   HARD_DBG("- init cameras\n");
   g->wiiero_cameras[FULL_SCREEN_CAM] = screen_add_custom_camera(g->wiiero_screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP);
-  g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0, 0, SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 4, SCREEN_BPP);
-  g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 2 + 1, 0, SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 4, SCREEN_BPP);
+  
+  g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                   , 0                       , SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 2 + 1, 0                       , SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                   , 3 * SCREEN_HEIGHT / 8 +1, SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 2 + 1, 3 * SCREEN_HEIGHT / 8 +1, SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
+
   g->wiiero_cameras[GLOBAL_MINI_MAP_CAM] = screen_add_custom_camera(g->wiiero_screen, (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_BPP);
 
   HARD_DBG("%dx%d\n", (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32);
 
-  g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 35, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                        , 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 20, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
 
-  g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 35, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 80, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+
   font_console_print_debug("init ressources...\n", FONT_SMALL);
   g->wiiero_ressources = load_ressource();
   font_console_print_debug("init map...\n", FONT_SMALL);
@@ -193,8 +203,12 @@ void wiiero_load(game_t *g)
   font_console_print_debug("init game...\n", FONT_SMALL);
   g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
   g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
+  g->worms[PLAYER_3] = player_init(PLAYER_3, g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
+  g->worms[PLAYER_4] = player_init(PLAYER_4, g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);  
   map_drow_cave(g->wiiero_map, g->worms[PLAYER_1]->worms.pos_x, g->worms[PLAYER_1]->worms.pos_y, 20);
   map_drow_cave(g->wiiero_map, g->worms[PLAYER_2]->worms.pos_x, g->worms[PLAYER_2]->worms.pos_y, 20);
+  map_drow_cave(g->wiiero_map, g->worms[PLAYER_3]->worms.pos_x, g->worms[PLAYER_3]->worms.pos_y, 20);
+  map_drow_cave(g->wiiero_map, g->worms[PLAYER_4]->worms.pos_x, g->worms[PLAYER_4]->worms.pos_y, 20);
   framer_init();
   font_console_print_debug("Lets rock !\n", FONT_SMALL);
   SDL_Delay(500);
@@ -228,16 +242,46 @@ void wiiero_update_world(game_t *g)
   wiiero_lock_layers(g);
 
   player_event_update(g->worms[PLAYER_1], g->wiiero_map, g->worms[PLAYER_2]);
+  player_event_update(g->worms[PLAYER_1], g->wiiero_map, g->worms[PLAYER_3]);
+  player_event_update(g->worms[PLAYER_1], g->wiiero_map, g->worms[PLAYER_4]);
+
   player_event_update(g->worms[PLAYER_2], g->wiiero_map, g->worms[PLAYER_1]);
+  player_event_update(g->worms[PLAYER_2], g->wiiero_map, g->worms[PLAYER_3]);
+  player_event_update(g->worms[PLAYER_2], g->wiiero_map, g->worms[PLAYER_4]);
+
+  player_event_update(g->worms[PLAYER_3], g->wiiero_map, g->worms[PLAYER_1]);
+  player_event_update(g->worms[PLAYER_3], g->wiiero_map, g->worms[PLAYER_2]);
+  player_event_update(g->worms[PLAYER_3], g->wiiero_map, g->worms[PLAYER_4]);
+
+  player_event_update(g->worms[PLAYER_4], g->wiiero_map, g->worms[PLAYER_1]);
+  player_event_update(g->worms[PLAYER_4], g->wiiero_map, g->worms[PLAYER_2]);
+  player_event_update(g->worms[PLAYER_4], g->wiiero_map, g->worms[PLAYER_3]);
+
   DBG(" - UPDATE DYNAMICS \n");
   proceed_dynamics_objs(g->wiiero_dynamic_objects, g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_map->layers[GROUND_MAP_LAYER]);
   DBG(" - UPDATE PLAYERS DATA\n");
   player_update(g->worms[PLAYER_1], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
   player_update(g->worms[PLAYER_2], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
+  player_update(g->worms[PLAYER_3], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
+  player_update(g->worms[PLAYER_4], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
   DBG(" - UPDATE PLAYERS RETICLES\n");
 
   player_is_aiming(g->worms[PLAYER_1], g->worms[PLAYER_2]);
+  player_is_aiming(g->worms[PLAYER_1], g->worms[PLAYER_3]);
+  player_is_aiming(g->worms[PLAYER_1], g->worms[PLAYER_4]);
+
   player_is_aiming(g->worms[PLAYER_2], g->worms[PLAYER_1]);
+  player_is_aiming(g->worms[PLAYER_2], g->worms[PLAYER_3]);
+  player_is_aiming(g->worms[PLAYER_2], g->worms[PLAYER_4]);
+  
+  player_is_aiming(g->worms[PLAYER_3], g->worms[PLAYER_1]);
+  player_is_aiming(g->worms[PLAYER_3], g->worms[PLAYER_2]);
+  player_is_aiming(g->worms[PLAYER_3], g->worms[PLAYER_4]);
+  
+  player_is_aiming(g->worms[PLAYER_4], g->worms[PLAYER_1]);
+  player_is_aiming(g->worms[PLAYER_4], g->worms[PLAYER_2]);
+  player_is_aiming(g->worms[PLAYER_4], g->worms[PLAYER_3]);
+
   if (g->wiiero_opt_gift_nb)
     if ((rand() % (2000 / g->wiiero_opt_gift_nb)) == 0)
     {
@@ -264,6 +308,13 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
     return (game_score[player].tag_time < g->wiiero_opt_got_time / 5);
     break;
   case GAME_CAPTURE_FLAG_MODE:
+    //FIXME
+    /*switch(player){
+      case PLAYER_1:return g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG;
+      case PLAYER_2:return g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG;
+      case PLAYER_3:return g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG;
+      default:      return g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG;
+    }*/
     return (player == PLAYER_1)
                ? (g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG)
                : (g->worms[PLAYER_1]->worms_status & STATUS_HAVE_FLAG);
@@ -274,47 +325,84 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
 
 void wiiero_blit_world(game_t *g)
 {
+  int8_t p;
   /* BLIT WIIERO GAME */
   ASSERT(g);
   DBG(" - BLIT BG\n");
-  camera_blit(g->worms[PLAYER_1]->worms_camera, g->wiiero_map->layers[BACKGROUND_LAYER]);
-  camera_blit(g->worms[PLAYER_2]->worms_camera, g->wiiero_map->layers[BACKGROUND_LAYER]);
-
+  for(p = PLAYER_1; p < NB_PLAYERS; p++)
+    camera_blit(g->worms[p]->worms_camera, g->wiiero_map->layers[BACKGROUND_LAYER]);
+  
   DBG(" - BLIT FIRSTGROUND\n");
   if (g->wiiero_opt_shadow)
   {
-    camera_blit_shadow(g->worms[PLAYER_1]->worms_camera, g->wiiero_map->layers[GROUND_MAP_LAYER]);
-    camera_blit_shadow(g->worms[PLAYER_2]->worms_camera, g->wiiero_map->layers[GROUND_MAP_LAYER]);
+    for(p = PLAYER_1; p < NB_PLAYERS; p++)
+      camera_blit_shadow(g->worms[p]->worms_camera, g->wiiero_map->layers[GROUND_MAP_LAYER]);
   }
-  camera_blit(g->worms[PLAYER_1]->worms_camera, g->wiiero_map->layers[GROUND_MAP_LAYER]);
-  camera_blit(g->worms[PLAYER_2]->worms_camera, g->wiiero_map->layers[GROUND_MAP_LAYER]);
+  for(p = PLAYER_1; p < NB_PLAYERS; p++)
+    camera_blit(g->worms[p]->worms_camera, g->wiiero_map->layers[GROUND_MAP_LAYER]);
 
   DBG(" - BLIT STATICS\n");
-  camera_blit(g->worms[PLAYER_1]->worms_camera, g->wiiero_map->layers[STATICS_MAP_LAYER]);
-  camera_blit(g->worms[PLAYER_2]->worms_camera, g->wiiero_map->layers[STATICS_MAP_LAYER]);
+  for(p = PLAYER_1; p < NB_PLAYERS; p++)
+    camera_blit(g->worms[p]->worms_camera, g->wiiero_map->layers[STATICS_MAP_LAYER]);
 
-  DBG(" - BLIT CAM\n");
-  player_show_on_cam(g->worms[PLAYER_1], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], wiiero_player_warning(PLAYER_1, g));
-  player_show_on_cam(g->worms[PLAYER_2], g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], wiiero_player_warning(PLAYER_2, g));
+  DBG(" - BLIT CAM\n");  
+  for(p = PLAYER_1; p < NB_PLAYERS; p++){
+    if(p != PLAYER_1)
+      player_show_on_cam(g->worms[p], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], wiiero_player_warning(PLAYER_1, g));
+    if(p != PLAYER_2)    
+      player_show_on_cam(g->worms[p], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], wiiero_player_warning(PLAYER_2, g));
+    if(p != PLAYER_3)
+      player_show_on_cam(g->worms[p], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], wiiero_player_warning(PLAYER_3, g));
+    if(p != PLAYER_4)
+      player_show_on_cam(g->worms[p], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], wiiero_player_warning(PLAYER_4, g));
+  }
 
   DBG(" - BLIT PLAY\n");
-  player_show(g->worms[PLAYER_1], wiiero_player_warning(PLAYER_1, g));
-  player_show(g->worms[PLAYER_2], wiiero_player_warning(PLAYER_2, g));
+  for(p = PLAYER_1; p < NB_PLAYERS; p++)
+    player_show(g->worms[p], wiiero_player_warning(PLAYER_1, g));
 
   if (g->wiiero_game_status == GAME_PLAYING)
   {
+    //FIXME
     DBG(" - BLIT BULLETS\n");
-    blit_bullets(g->wiiero_bullets, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM]);
+    blit_bullets( g->wiiero_bullets
+                , g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM]
+                , g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM]
+                , g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM]
+                , g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM]              
+              );
 
     DBG(" - BLIT DYNAMICS\n");
-    blit_dynamics_objs(g->wiiero_dynamic_objects, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM]);
+    blit_dynamics_objs( g->wiiero_dynamic_objects
+                      , g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM]
+                      , g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM]
+                      , g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM]
+                      , g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM]
+                      );
   }
 
+  //FIXME
   if (g->wiiero_opt_mini_map)
-    update_minimap(g->wiiero_map, g->wiiero_cameras[GLOBAL_MINI_MAP_CAM], g->worms[PLAYER_1]->worms.pos_x, g->worms[PLAYER_1]->worms.pos_y, g->worms[PLAYER_2]->worms.pos_x, g->worms[PLAYER_2]->worms.pos_y, ((g->worms[PLAYER_1]->worms_status & STATUS_STATS_UPDATE) || (g->worms[PLAYER_2]->worms_status & STATUS_STATS_UPDATE)));
-
-  player_show_stats(g->worms[PLAYER_1], g->wiiero_opt_game_mode);
-  player_show_stats(g->worms[PLAYER_2], g->wiiero_opt_game_mode);
+    update_minimap( g->wiiero_map
+                  , g->wiiero_cameras[GLOBAL_MINI_MAP_CAM]
+                  , g->worms[PLAYER_1]->worms.pos_x
+                  , g->worms[PLAYER_1]->worms.pos_y
+                  , g->worms[PLAYER_2]->worms.pos_x
+                  , g->worms[PLAYER_2]->worms.pos_y
+                  , g->worms[PLAYER_3]->worms.pos_x
+                  , g->worms[PLAYER_3]->worms.pos_y
+                  , g->worms[PLAYER_4]->worms.pos_x
+                  , g->worms[PLAYER_4]->worms.pos_y                                    
+                  , ((g->worms[PLAYER_1]->worms_status & STATUS_STATS_UPDATE) 
+                   ||(g->worms[PLAYER_2]->worms_status & STATUS_STATS_UPDATE)
+                   ||(g->worms[PLAYER_3]->worms_status & STATUS_STATS_UPDATE)
+                   ||(g->worms[PLAYER_4]->worms_status & STATUS_STATS_UPDATE)
+                   )
+                  );
+  
+  for(p = PLAYER_1; p < NB_PLAYERS; p++)
+    player_show_stats(g->worms[p], g->wiiero_opt_game_mode);
+  
 
 } /*--------------------------------------------------------------------------*/
 
@@ -340,24 +428,21 @@ static __inline__ void wiiero_restart_game(game_t *g)
     if (g->wiiero_opt_map_regen)
       map_reset(g->wiiero_map, g->wiiero_ressources, g->wiiero_opt_nb_rocks);
     /* RESET PLAYERS */
-    g->worms[PLAYER_1]->worms_status = DEFAULT_PLAYER_STATUS;
-    g->worms[PLAYER_2]->worms_status = DEFAULT_PLAYER_STATUS;
-    g->worms[PLAYER_1]->worms_action = DEFAULT_PLAYER_ACTIONS;
-    g->worms[PLAYER_2]->worms_action = DEFAULT_PLAYER_ACTIONS;
-    player_new_position(g->worms[PLAYER_1], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    player_new_position(g->worms[PLAYER_2], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    player_reset(g->worms[PLAYER_1], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    player_reset(g->worms[PLAYER_2], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    g->worms[PLAYER_1]->worms_status &= ~STATUS_RESETED;
-    g->worms[PLAYER_2]->worms_status &= ~STATUS_RESETED;
+    for(int8_t p = PLAYER_1; p < NB_PLAYERS; p++){
+      g->worms[p]->worms_status = DEFAULT_PLAYER_STATUS;
+      g->worms[p]->worms_action = DEFAULT_PLAYER_ACTIONS;
+      player_new_position(g->worms[p], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
+      player_reset(g->worms[p], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
+      g->worms[p]->worms_status &= ~STATUS_RESETED;
+    }
   }
 
   if (g->wiiero_opt_game_mode == GAME_CAPTURE_FLAG_MODE)
   {
-    set_player_house(g->wiiero_bullets, g->wiiero_ressources, PLAYER_1, g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    set_player_house(g->wiiero_bullets, g->wiiero_ressources, PLAYER_2, g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    set_player_flag(g->wiiero_bullets, g->wiiero_ressources, PLAYER_1, g->wiiero_map->layers[STATICS_MAP_LAYER]);
-    set_player_flag(g->wiiero_bullets, g->wiiero_ressources, PLAYER_2, g->wiiero_map->layers[STATICS_MAP_LAYER]);
+    for(int8_t p = PLAYER_1; p < NB_PLAYERS; p++){
+      set_player_house(g->wiiero_bullets, g->wiiero_ressources, p, g->wiiero_map->layers[STATICS_MAP_LAYER]);
+      set_player_flag(g->wiiero_bullets, g->wiiero_ressources, p, g->wiiero_map->layers[STATICS_MAP_LAYER]);
+    }  
   }
   first = 1;
   bullet_time_effect_delay = 0;

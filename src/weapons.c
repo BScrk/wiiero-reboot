@@ -877,11 +877,19 @@ void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
   }
 }
 
-
-void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2){
+static void blit(bullet_list_t* l, bullet_cell_t* cell, camera_t* cam){
+  if((cell->bullet->obj.pos_x >= cam->map_x)
+   &&(cell->bullet->obj.pos_x < (cam->map_x + cam->w))
+   &&(cell->bullet->obj.pos_y >= cam->map_y)
+   &&(cell->bullet->obj.pos_y < (cam->map_y + cam->h)))
+     cell->bullet->obj.blit_cb(cam,cell->bullet,l);
+}
+void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,camera_t* cam4){
   ASSERT(l);
   ASSERT(cam1);
   ASSERT(cam2);
+  ASSERT(cam3);
+  ASSERT(cam4);  
   bullet_cell_t* cell = l->head;
   if(!cell)
     return;
@@ -893,29 +901,26 @@ void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2){
         {
           player_t* p = ((player_t*)cell->bullet->p_origin);
           if(p->weapon_slots[p->selected_weapon]->id == WEAPON_LASER ){
-              // laser in use 
-              // blit last
-              cell->bullet->obj.blit_cb(cam1,cell->bullet,l);
-              cell->bullet->obj.blit_cb(cam2,cell->bullet,l);
+            // laser in use 
+            // blit last
+            cell->bullet->obj.blit_cb(cam1,cell->bullet,l);
+            cell->bullet->obj.blit_cb(cam2,cell->bullet,l);
+            cell->bullet->obj.blit_cb(cam3,cell->bullet,l);
+            cell->bullet->obj.blit_cb(cam4,cell->bullet,l);
           }
           break;
         }
         case WEAPON_NINJA:
           cell->bullet->obj.blit_cb(cam1,cell->bullet,l);
           cell->bullet->obj.blit_cb(cam2,cell->bullet,l);
+          cell->bullet->obj.blit_cb(cam3,cell->bullet,l);
+          cell->bullet->obj.blit_cb(cam4,cell->bullet,l);          
           break;
         default:
-          if((cell->bullet->obj.pos_x >= cam1->map_x)
-           &&(cell->bullet->obj.pos_x < (cam1->map_x + cam1->w))
-           &&(cell->bullet->obj.pos_y >= cam1->map_y)
-           &&(cell->bullet->obj.pos_y < (cam1->map_y + cam1->h)))
-              cell->bullet->obj.blit_cb(cam1,cell->bullet,l);
-
-          if((cell->bullet->obj.pos_x >= cam2->map_x)
-           &&(cell->bullet->obj.pos_x < (cam2->map_x + cam2->w))
-           &&(cell->bullet->obj.pos_y >= cam2->map_y)
-           &&(cell->bullet->obj.pos_y < (cam2->map_y + cam2->h)))
-             cell->bullet->obj.blit_cb(cam2,cell->bullet,l);
+          blit(l,cell,cam1);
+          blit(l,cell,cam2);
+          blit(l,cell,cam3);
+          blit(l,cell,cam4);
           break;
       }
     }

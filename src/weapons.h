@@ -193,7 +193,7 @@ bullet_t* weapon_add_bullet_to_list(bullet_list_t* l,bullet_t* bullet);
 void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
                      , void* p1, void* p2,void* coll_cb_userdata);
 
-void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2);
+void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,camera_t* cam4);
 
 void create_gift(bullet_list_t* l,ressources_t* r,int x,int y,int xtra_weap);
 

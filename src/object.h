@@ -135,7 +135,7 @@ extern void object_add_to_list(obj_list_t* l,obj_t* obj);
 extern void proceed_dynamics_objs(obj_list_t* l,SDL_Surface* ground,SDL_Surface* statics
                   , void* coll_cb_userdata);
 
-extern void blit_dynamics_objs(obj_list_t* l,camera_t* cam1,camera_t* cam2);
+extern void blit_dynamics_objs(obj_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,camera_t* cam4);
 
 extern void clean_dynamic_obj_list(obj_list_t* l);
 

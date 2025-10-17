@@ -59,6 +59,7 @@ void   map_reset(map_t* m ,ressources_t* loaded_res,int nb_rocks);
 void   map_clean_zone(map_t* m,int zx, int zy, int zw,int zh);
 void   map_drow_cave(map_t* m,int cx, int cy, int cr);
 void update_minimap( map_t* m,camera_t *cam , int p1_x, int p1_y
-                   , int p2_x, int p2_y, int force);
+                   , int p2_x, int p2_y, int p3_x, int p3_y
+                   , int p4_x, int p4_y, int force);
 void   fill_splash_ground(SDL_Surface *s);
 #endif

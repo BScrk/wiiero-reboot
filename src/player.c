@@ -257,7 +257,10 @@ void player_reset( player_t* p, SDL_Surface* ground
   p->reticle_pitch = ANGLE_PITCH;
   p->last_stats_update =0;
   /*p->worms_shockwave = 0;*/
-  p->worms.skin = (p->id == PLAYER_1) ? p->r->worms1_skin : p->r->worms2_skin ;
+  p->worms.skin = (p->id == PLAYER_1) ? p->r->worms1_skin
+                : (p->id == PLAYER_2) ? p->r->worms2_skin
+                : (p->id == PLAYER_3) ? p->r->worms3_skin
+                :  p->r->worms4_skin ;
 }
 
 void player_init_weapons(player_t* p,int xtra_on){
@@ -297,10 +300,14 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   p->id = id;
   p->ninja_hook = weapon_init(WEAPON_NINJA);
   while(cr!=transparent_r_value || cg!=transparent_g_value || cb!=transparent_b_value ){
-    p->worms.pos_x = (id == PLAYER_1) 
-                   ? rand() % (MAP_WIDTH / 2) /* first map part */
-                   :(MAP_WIDTH / 2) + rand() % (MAP_WIDTH / 2); /* second map part */
-    p->worms.pos_y = rand() % MAP_HEIGHT; 
+    p->worms.pos_x = (id == PLAYER_1) ? rand() % (MAP_WIDTH / 2) /* first map part */
+                   : (id == PLAYER_2) ? (MAP_WIDTH / 2) + rand() % (MAP_WIDTH / 2) /* second map part */
+                   : (id == PLAYER_3) ? rand() % (MAP_WIDTH / 2) /* second map part */
+                   :                    (MAP_WIDTH / 2) + rand() % (MAP_WIDTH / 2); /* second map part */
+    p->worms.pos_y = (id == PLAYER_1) ? rand() % (MAP_HEIGHT / 2) /* first map part */
+                   : (id == PLAYER_2) ? (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2) /* second map part */
+                   : (id == PLAYER_3) ? rand() % (MAP_HEIGHT / 2) /* first map part */
+                   :                    (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2);  /* second map part */
     get_pix_color(statics,p->worms.pos_x,p->worms.pos_y,&cr,&cg,&cb);
   }
   
@@ -318,7 +325,11 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   p->last_stats_update =0;
   p->worms.test_collision_cb = worms_check_collision_cb;
   p->worms.on_collision_cb = worms_on_collision_cb;
-  p->worms.side = (id == PLAYER_1) ? RIGHT_SIDE : LEFT_SIDE ;
+  p->worms.side = (id == PLAYER_1) ? RIGHT_SIDE
+                : (id == PLAYER_2) ? LEFT_SIDE
+                : (id == PLAYER_3) ? RIGHT_SIDE
+                : LEFT_SIDE ;
+
   p->worms_status |= STATUS_ALIVE ;
   p->worms_camera = c;
   p->worms_stats_camera = sc;
@@ -328,7 +339,10 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   p->dynamic_list_link = dl;
   p->reticle_pitch = ANGLE_PITCH;
   /*p->worms_shockwave = 0;*/
-  p->worms.skin = (id == PLAYER_1) ? r->worms1_skin : r->worms2_skin ;
+  p->worms.skin = (id == PLAYER_1) ? r->worms1_skin
+                : (id == PLAYER_2) ? r->worms2_skin
+                : (id == PLAYER_3) ? r->worms3_skin
+                : r->worms4_skin ;
   player_focus(p);
   p->worms_status |= STATUS_STATS_UPDATE;
   return p;

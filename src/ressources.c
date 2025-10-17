@@ -39,12 +39,16 @@ ressources_t* load_ressource(){
   /* Player */
   r->worms1_skin = image_load(DEFAULT_PWSKIN);
   r->worms2_skin = image_load(DEFAULT_PWSKIN);
+  r->worms3_skin = image_load(DEFAULT_PWSKIN);
+  r->worms4_skin = image_load(DEFAULT_PWSKIN);
   r->worms_iron  = image_load(DEFAULT_PWSKIN);
   
   
   r->worms1_flesh = image_load(DEFAULT_PWFLESH);
   r->worms2_flesh = image_load(DEFAULT_PWFLESH);
-  
+  r->worms3_flesh = image_load(DEFAULT_PWFLESH);
+  r->worms4_flesh = image_load(DEFAULT_PWFLESH); 
+
   /* Map */ 
   r->breakable = image_load(DEFAULT_BREAKS);
   r->lrocks    = image_load(DEFAULT_LITTLE_ROCKS);
@@ -98,23 +102,35 @@ ressources_t* load_ressource(){
   /* other */  
   r->house_p1       = image_load(DEFAULT_HOUSE);
   r->house_p2       = image_load(DEFAULT_HOUSE);
+  r->house_p3       = image_load(DEFAULT_HOUSE);
+  r->house_p4       = image_load(DEFAULT_HOUSE);  
   r->hook           = image_load(DEFAULT_HOOK);
   r->health         = image_load(DEFAULT_HEALTH);
   r->flag_p1        = image_load(DEFAULT_FLAG);
   r->flag_p2        = image_load(DEFAULT_FLAG);
+  r->flag_p3        = image_load(DEFAULT_FLAG);
+  r->flag_p4        = image_load(DEFAULT_FLAG);  
   r->bonus          = image_load(DEFAULT_BONUS);
 
   shift_ressource_colors(r->worms1_skin,-50,-50,50);
   shift_ressource_colors(r->worms2_skin,-50,0,-50);
+  shift_ressource_colors(r->worms3_skin,-50,-50,50);
+  shift_ressource_colors(r->worms4_skin,-50,0,-50);
   
   shift_ressource_colors(r->worms1_flesh,-50,-50,50);
   shift_ressource_colors(r->worms2_flesh,-50,0,-50);
-  
+  shift_ressource_colors(r->worms3_flesh,-50,-50,50);
+  shift_ressource_colors(r->worms4_flesh,-50,0,-50);
+
   shift_ressource_colors(r->house_p1,-50,-50,50);
   shift_ressource_colors(r->house_p2,-50,0,-50);
+  shift_ressource_colors(r->house_p3,-50,-50,50);
+  shift_ressource_colors(r->house_p4,-50,0,-50);
   
   shift_ressource_colors(r->flag_p1,-50,0,-50);
   shift_ressource_colors(r->flag_p2,-50,-50,50);
+  shift_ressource_colors(r->flag_p3,-50,0,-50);
+  shift_ressource_colors(r->flag_p4,-50,-50,50);
 
   return r;
 }

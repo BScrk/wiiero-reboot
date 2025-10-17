@@ -70,8 +70,7 @@ int check_all_collisions( obj_t* obj,SDL_Surface* ground,SDL_Surface* statics
   obj->pos_x = last_x;
   obj->pos_y = last_y;
   return coll;
-}
-
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void apply_physics(obj_t* obj,SDL_Surface* ground,SDL_Surface* statics,void* userdata){
   ASSERT(obj);
   ASSERT(ground);
@@ -82,13 +81,10 @@ void apply_physics(obj_t* obj,SDL_Surface* ground,SDL_Surface* statics,void* use
   check_acceleration(obj);
   DBG(" - CHECK COLL\n");
   check_all_collisions(obj,ground,statics,userdata);
-}
-
-
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 obj_list_t* object_init_list(){
   return secure_malloc(sizeof(obj_list_t));
-}
-
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void object_add_to_list(obj_list_t* l,obj_t* obj){
   ASSERT(l);
   obj_cell_t* cell = 0l;
@@ -107,8 +103,7 @@ void object_add_to_list(obj_list_t* l,obj_t* obj){
   
   l->head = cell;
   l->len++;
-}
-
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void proceed_dynamics_objs(obj_list_t* l,SDL_Surface* ground,SDL_Surface* statics, void* coll_cb_userdata){
   ASSERT(l);
   ASSERT(ground);
@@ -137,13 +132,10 @@ void proceed_dynamics_objs(obj_list_t* l,SDL_Surface* ground,SDL_Surface* static
       cell = cell->next;
     }
   }
-}
-
-
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void obj_pix(obj_t* obj,SDL_Surface* ground,int offset_x,int offset_y){
   put_pix_color(ground,obj->pos_x-offset_x,obj->pos_y-offset_y,0xFF,0,0);
-}
-
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 extern void clean_dynamic_obj_list(obj_list_t* l){
   ASSERT(l);
   obj_cell_t* cell = l->head; 
@@ -159,9 +151,15 @@ extern void clean_dynamic_obj_list(obj_list_t* l){
     }
   }
   l->head = 0l;
-}
-
-void blit_dynamics_objs(obj_list_t* l,camera_t* cam1,camera_t* cam2){
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+static void blit(obj_list_t* l, obj_cell_t* cell, camera_t* cam){
+  if((cell->object->pos_x >= cam->map_x)
+   &&(cell->object->pos_x < (cam->map_x + cam->w))
+   &&(cell->object->pos_y >= cam->map_y)
+   &&(cell->object->pos_y < (cam->map_y + cam->h)))
+    cell->object->blit_cb(cam,cell->object,l);
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void blit_dynamics_objs(obj_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,camera_t* cam4){
   ASSERT(l);
   ASSERT(cam1);
   ASSERT(cam2);
@@ -170,17 +168,10 @@ void blit_dynamics_objs(obj_list_t* l,camera_t* cam1,camera_t* cam2){
     return;
   while(cell){
     if(cell->object->blit_cb){
-      if((cell->object->pos_x >= cam1->map_x)
-       &&(cell->object->pos_x < (cam1->map_x + cam1->w))
-       &&(cell->object->pos_y >= cam1->map_y)
-       &&(cell->object->pos_y < (cam1->map_y + cam1->h)))
-          cell->object->blit_cb(cam1,cell->object,l);
-
-      if((cell->object->pos_x >= cam2->map_x)
-       &&(cell->object->pos_x < (cam2->map_x + cam2->w))
-       &&(cell->object->pos_y >= cam2->map_y)
-       &&(cell->object->pos_y < (cam2->map_y + cam2->h)))
-        cell->object->blit_cb(cam2,cell->object,l);
+      blit(l,cell,cam1);
+      blit(l,cell,cam2);
+      blit(l,cell,cam3);
+      blit(l,cell,cam4); 
     }
     if(cell->object->update_cb)
       cell->object->update_cb(cell->object,0L,0L,0L);

@@ -223,6 +223,8 @@ obj_t* create_blood_trail(int x,int y){
 enum{
   PLAYER_1,
   PLAYER_2,
+  PLAYER_3,
+  PLAYER_4,
   NB_PLAYERS 
 }; 
 

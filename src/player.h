@@ -67,6 +67,8 @@
 typedef enum{
   PLAYER_1,
   PLAYER_2,
+  PLAYER_3,
+  PLAYER_4,
   NB_PLAYERS,
   GAME_DRAW = NB_PLAYERS
 }player_id;

@@ -143,9 +143,13 @@ typedef struct{
   /* players */
   SDL_Surface * worms1_skin;
   SDL_Surface * worms2_skin;
+  SDL_Surface * worms3_skin;
+  SDL_Surface * worms4_skin;  
   SDL_Surface * worms_iron;
   SDL_Surface * worms1_flesh;
   SDL_Surface * worms2_flesh;
+  SDL_Surface * worms3_flesh;
+  SDL_Surface * worms4_flesh;  
   /* map */
   SDL_Surface * breakable;
   SDL_Surface * lrocks;
@@ -197,10 +201,14 @@ typedef struct{
   /* Others */
   SDL_Surface * house_p1;
   SDL_Surface * house_p2;
+  SDL_Surface * house_p3;
+  SDL_Surface * house_p4;  
   SDL_Surface * hook;
   SDL_Surface * health;
   SDL_Surface * flag_p1;
   SDL_Surface * flag_p2;
+  SDL_Surface * flag_p3;
+  SDL_Surface * flag_p4;  
   SDL_Surface * bonus;
   
 }ressources_t;
