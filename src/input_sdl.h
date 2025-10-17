@@ -259,32 +259,47 @@ static __inline__ void game_check_event(game_t *g)
       SDL_GameController* pad = gamepads[player_id];
       
       // D-Pad and Left Stick for movement
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) /*||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000*/) {
         g->worms[player_id]->worms_action |= ACTION_UP;
       }
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) /*||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000*/) {
         g->worms[player_id]->worms_action |= ACTION_DOWN;
       }
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) /*||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000*/) {
         g->worms[player_id]->worms_action |= ACTION_LEFT;
       }
-      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
-          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) /*||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000*/) {
         g->worms[player_id]->worms_action |= ACTION_RIGHT;
       }
       
       // A (Cross) = Jump/Cancel
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
         g->worms[player_id]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
+        printf("A button pressed [Player %d]\n", player_id);
       }
       
       // B (Circle) = Fire/OK
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
         g->worms[player_id]->worms_action |= (ACTION_FIRE | ACTION_OK);
+        printf("B button pressed [Player %d]\n", player_id);
       }
+      
+      // X (Square) = Jump/Cancel
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_X)) {
+        g->worms[player_id]->worms_action |= (ACTION_HOOK | ACTION_CANCEL);
+        printf("X button pressed [Player %d]\n", player_id);
+      }
+      
+      // Y (Triangle) = Fire/OK
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_Y)) {
+        g->worms[player_id]->worms_action |= (ACTION_CHANGE | ACTION_OK);
+        printf("Y button pressed [Player %d]\n", player_id);
+      }
+      
       
       // L1/R1 = Change weapon
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
@@ -301,6 +316,7 @@ static __inline__ void game_check_event(game_t *g)
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
         g->worms[player_id]->worms_action |= ACTION_MENU;
       }
+
     }
   }
 }

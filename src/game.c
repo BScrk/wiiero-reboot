@@ -541,7 +541,8 @@ static __inline__ void wiiero_show_weapons(game_t *g, player_id id)
     secure_free(g->worms[id]->weapon_slots[g->worms[id]->selected_weapon]);
     g->worms[id]->weapon_slots[g->worms[id]->selected_weapon] = weapon_init(wid);
   }
-  if (g->worms[id]->worms_action & ACTION_CHANGE)
+
+  if (g->worms[id]->worms_action & ACTION_CANCEL)
   {
     for (i = 0; i < WEAPON_SLOTS; i++)
     {
