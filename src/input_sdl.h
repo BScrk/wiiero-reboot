@@ -251,102 +251,56 @@ static __inline__ void game_check_event(game_t *g)
     g->worms[PLAYER_1]->worms_action |= ACTION_PAUSE;
   }
   
+
   /* === GAMEPAD INPUT === */
-  // Gamepad 0 -> Player 1
-  if (gamepad_count > 0 && gamepads[0]) {
-    SDL_GameController* pad = gamepads[0];
-    
-    // D-Pad and Left Stick for movement
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_UP;
-    }
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_DOWN;
-    }
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_LEFT;
-    }
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_RIGHT;
-    }
-    
-    // A (Cross) = Jump/Cancel
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
-      g->worms[PLAYER_1]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
-    }
-    
-    // B (Circle) = Fire/OK
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
-      g->worms[PLAYER_1]->worms_action |= (ACTION_FIRE | ACTION_OK);
-    }
-    
-    // L1/R1 = Change weapon
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
-        SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_CHANGE;
-    }
-    
-    // Start = Pause
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_PAUSE;
-    }
-    
-    // Back/Select = Menu
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
-      g->worms[PLAYER_1]->worms_action |= ACTION_MENU;
-    }
-  }
-  
-  // Gamepad 1 -> Player 2
-  if (gamepad_count > 1 && gamepads[1]) {
-    SDL_GameController* pad = gamepads[1];
-    
-    // D-Pad and Left Stick for movement
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_UP;
-    }
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_DOWN;
-    }
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_LEFT;
-    }
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
-        SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_RIGHT;
-    }
-    
-    // A (Cross) = Jump/Cancel
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
-      g->worms[PLAYER_2]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
-    }
-    
-    // B (Circle) = Fire/OK
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
-      g->worms[PLAYER_2]->worms_action |= (ACTION_FIRE | ACTION_OK);
-    }
-    
-    // L1/R1 = Change weapon
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
-        SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_CHANGE;
-    }
-    
-    // Start = Pause
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_PAUSE;
-    }
-    
-    // Back/Select = Menu
-    if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
-      g->worms[PLAYER_2]->worms_action |= ACTION_MENU;
+  // Iterate over all players and their corresponding gamepads
+  for (int player_id = 0; player_id < NB_PLAYERS; player_id++) {
+    if (player_id < gamepad_count && gamepads[player_id]) {
+      SDL_GameController* pad = gamepads[player_id];
+      
+      // D-Pad and Left Stick for movement
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP) ||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) < -8000) {
+        g->worms[player_id]->worms_action |= ACTION_UP;
+      }
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) ||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY) > 8000) {
+        g->worms[player_id]->worms_action |= ACTION_DOWN;
+      }
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) ||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) < -8000) {
+        g->worms[player_id]->worms_action |= ACTION_LEFT;
+      }
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) ||
+          SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX) > 8000) {
+        g->worms[player_id]->worms_action |= ACTION_RIGHT;
+      }
+      
+      // A (Cross) = Jump/Cancel
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A)) {
+        g->worms[player_id]->worms_action |= (ACTION_JUMP | ACTION_CANCEL);
+      }
+      
+      // B (Circle) = Fire/OK
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B)) {
+        g->worms[player_id]->worms_action |= (ACTION_FIRE | ACTION_OK);
+      }
+      
+      // L1/R1 = Change weapon
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) ||
+          SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)) {
+        g->worms[player_id]->worms_action |= ACTION_CHANGE;
+      }
+      
+      // Start = Pause
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
+        g->worms[player_id]->worms_action |= ACTION_PAUSE;
+      }
+      
+      // Back/Select = Menu
+      if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
+        g->worms[player_id]->worms_action |= ACTION_MENU;
+      }
     }
   }
 }

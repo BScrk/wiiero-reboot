@@ -107,7 +107,7 @@ void wiiero_init(game_t *g)
 #ifndef NO_SOUND
                SDL_INIT_AUDIO |
 #endif
-#if defined(PSP_MODE) || defined(LINUX_MODE)
+#ifdef SDL_INPUT_MODE
                SDL_INIT_GAMECONTROLLER |
 #endif
                0) == -1)
@@ -1504,6 +1504,9 @@ void wiiero_quit(game_t *g)
    printf("\\ - deaths   : %d\n",game_score[PLAYER_2].nb_death);*/
 
   sengine_release();
+
+  //g->wiiero_screen->mode = FULL_SCREEN_MODE;
+  //screen_flip_mode(g->wiiero_screen);
 
   // release bullets
   clean_bullets_list(g->wiiero_bullets);
