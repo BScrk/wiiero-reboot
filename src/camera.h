@@ -30,7 +30,7 @@
 #define CAMERA_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #define CAMERA_NOSHAKE 0  /* Don't shake camera on explosion */
 #define CAMERA_SHAKE   1  /* Shake camera on explosion */
@@ -56,7 +56,7 @@ typedef struct{
   int w;                       /* Camera width  */
   int h;                       /* Camera height */
   int bpp;                     /* Camera bpp    */
-  int alpha;                   /* Camera alpha (only on OLD_MODE) */
+  int alpha;                   /* Camera alpha  */
   int map_x;                   /* Camera x position on game map   */
   int map_y;                   /* Camera x position on game map   */
   point_t focused_pos;         /* Camera focused point  */

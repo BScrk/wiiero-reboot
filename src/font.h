@@ -29,7 +29,7 @@
 
 #ifndef FONT_H
 #define FONT_H
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "camera.h"
 
 typedef enum{

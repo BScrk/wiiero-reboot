@@ -35,7 +35,7 @@
 #include "map.h"
 #include "ressources.h"
 #include "weapons.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 
 #define CROP_SIZE 5

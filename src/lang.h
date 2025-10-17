@@ -28,7 +28,7 @@
 
 #ifndef LANG_H
 #define LANG_H
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 enum{
   /*Game labels */

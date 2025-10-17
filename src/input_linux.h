@@ -30,7 +30,7 @@
 #define INPUT_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "player.h"
 #include "game.h"
 #include "font.h"
@@ -65,23 +65,24 @@ char *cmd_key[2][MAX_CMD] = {
 
 enum
 { /* - -- --- WIIERO EVENTS ---- --- -- - */
-  P1_ACTION_KEY_UP = SDLK_i,
-  P1_ACTION_KEY_DOWN = SDLK_k,
-  P1_ACTION_KEY_LEFT = SDLK_j,
-  P1_ACTION_KEY_RIGTH = SDLK_l,
-  P1_ACTION_KEY_JUMP = SDLK_a,
-  P1_ACTION_KEY_CHANGE = SDLK_z,
-  P1_ACTION_KEY_FIRE = SDLK_d,
-  P2_ACTION_KEY_UP = SDLK_KP8,
-  P2_ACTION_KEY_DOWN = SDLK_KP5,
-  P2_ACTION_KEY_LEFT = SDLK_KP4,
-  P2_ACTION_KEY_RIGTH = SDLK_KP6,
-  P2_ACTION_KEY_JUMP = SDLK_INSERT,
-  P2_ACTION_KEY_CHANGE = SDLK_HOME,
-  P2_ACTION_KEY_FIRE = SDLK_PAGEUP,
-  GAME_ACTION_KEY_EXIT = SDLK_ESCAPE,
-  GAME_ACTION_KEY_FLIP = SDLK_TAB,
-  GAME_ACTION_KEY_PAUSE = SDLK_SPACE,
+  /* SDL2: Using scancodes for SDL_GetKeyboardState */
+  P1_ACTION_KEY_UP = SDL_SCANCODE_I,
+  P1_ACTION_KEY_DOWN = SDL_SCANCODE_K,
+  P1_ACTION_KEY_LEFT = SDL_SCANCODE_J,
+  P1_ACTION_KEY_RIGTH = SDL_SCANCODE_L,
+  P1_ACTION_KEY_JUMP = SDL_SCANCODE_A,
+  P1_ACTION_KEY_CHANGE = SDL_SCANCODE_Z,
+  P1_ACTION_KEY_FIRE = SDL_SCANCODE_D,
+  P2_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
+  P2_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
+  P2_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
+  P2_ACTION_KEY_RIGTH = SDL_SCANCODE_KP_6,
+  P2_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
+  P2_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
+  P2_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
+  GAME_ACTION_KEY_EXIT = SDL_SCANCODE_ESCAPE,
+  GAME_ACTION_KEY_FLIP = SDL_SCANCODE_TAB,
+  GAME_ACTION_KEY_PAUSE = SDL_SCANCODE_SPACE,
 }; /* - -- --- WIIERO EVENTS ---- --- -- */
 
 static __inline__ void init_controllers()
@@ -99,7 +100,7 @@ static __inline__ int are_controls_ready()
 static __inline__ void game_check_event(game_t *g)
 {
   /* CHECK GAME EVENTS */
-  Uint8 *keystate;
+  const Uint8 *keystate;
   ASSERT(g);
 
   /* FLUSH EVENTS */
@@ -114,7 +115,7 @@ static __inline__ void game_check_event(game_t *g)
     }
   }
   /* GET KEYS */
-  keystate = SDL_GetKeyState(NULL);
+  keystate = SDL_GetKeyboardState(NULL);
 
   /* Player 1 keyboard */
   if (keystate[P1_ACTION_KEY_UP])

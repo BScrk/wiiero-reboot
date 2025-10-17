@@ -29,7 +29,7 @@
 #ifndef RESSOURCE_H
 #define RESSOURCE_H
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 
 #define SPRITEDIR "sprites"

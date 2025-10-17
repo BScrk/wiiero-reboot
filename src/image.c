@@ -63,7 +63,7 @@ SDL_Surface* image_load(char * filename){
 //  HARD_DBG(" >> Getting transparent color\n");
   get_surface_trcolor(tmp,&r,&g,&b);
 //  HARD_DBG(" >> Setting transparent color\n");
-  SDL_SetColorKey(tmp, SDL_SRCCOLORKEY, SDL_MapRGB(tmp->format,r,g,b));
+  SDL_SetColorKey(tmp, SDL_TRUE, SDL_MapRGB(tmp->format,r,g,b));
   image = tmp;//SDL_DisplayFormat(tmp);
   //SDL_FreeSurface(tmp);
   ASSERT(image);

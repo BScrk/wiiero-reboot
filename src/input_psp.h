@@ -31,7 +31,7 @@
 #define INPUT_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "player.h"
 #include "game.h"
 #include "font.h"

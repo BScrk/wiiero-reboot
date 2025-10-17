@@ -30,7 +30,7 @@
 #define INPUT_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "player.h"
 #include "game.h"
 #include "font.h"
@@ -102,26 +102,26 @@ static MacGamepad gamepads[MAX_GAMEPADS];
 static IOHIDManagerRef hid_manager = NULL;
 static int gamepads_initialized = 0;
 
-/* Keyboard keys (same as PC) */
+/* Keyboard keys (SDL2 Scancodes for SDL_GetKeyboardState) */
 enum
 {
-  P1_ACTION_KEY_UP = SDLK_i,
-  P1_ACTION_KEY_DOWN = SDLK_k,
-  P1_ACTION_KEY_LEFT = SDLK_j,
-  P1_ACTION_KEY_RIGTH = SDLK_l,
-  P1_ACTION_KEY_JUMP = SDLK_a,
-  P1_ACTION_KEY_CHANGE = SDLK_z,
-  P1_ACTION_KEY_FIRE = SDLK_d,
-  P2_ACTION_KEY_UP = SDLK_KP8,
-  P2_ACTION_KEY_DOWN = SDLK_KP5,
-  P2_ACTION_KEY_LEFT = SDLK_KP4,
-  P2_ACTION_KEY_RIGTH = SDLK_KP6,
-  P2_ACTION_KEY_JUMP = SDLK_INSERT,
-  P2_ACTION_KEY_CHANGE = SDLK_HOME,
-  P2_ACTION_KEY_FIRE = SDLK_PAGEUP,
-  GAME_ACTION_KEY_EXIT = SDLK_ESCAPE,
-  GAME_ACTION_KEY_FLIP = SDLK_TAB,
-  GAME_ACTION_KEY_PAUSE = SDLK_SPACE,
+  P1_ACTION_KEY_UP = SDL_SCANCODE_I,
+  P1_ACTION_KEY_DOWN = SDL_SCANCODE_K,
+  P1_ACTION_KEY_LEFT = SDL_SCANCODE_J,
+  P1_ACTION_KEY_RIGTH = SDL_SCANCODE_L,
+  P1_ACTION_KEY_JUMP = SDL_SCANCODE_A,
+  P1_ACTION_KEY_CHANGE = SDL_SCANCODE_Z,
+  P1_ACTION_KEY_FIRE = SDL_SCANCODE_D,
+  P2_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
+  P2_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
+  P2_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
+  P2_ACTION_KEY_RIGTH = SDL_SCANCODE_KP_6,
+  P2_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
+  P2_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
+  P2_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
+  GAME_ACTION_KEY_EXIT = SDL_SCANCODE_ESCAPE,
+  GAME_ACTION_KEY_FLIP = SDL_SCANCODE_TAB,
+  GAME_ACTION_KEY_PAUSE = SDL_SCANCODE_SPACE,
 };
 
 // ----------------------------------------------------------------------------
@@ -445,7 +445,7 @@ static __inline__ void game_check_event(game_t *g)
   }
 
   /* Get keyboard state */
-  Uint8 *keystate = SDL_GetKeyState(NULL);
+  const Uint8 *keystate = SDL_GetKeyboardState(NULL);
 
   /* Player 1: Try gamepad first, fallback to keyboard */
   handle_gamepad_event(0, g->worms[PLAYER_1]);

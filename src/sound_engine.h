@@ -31,9 +31,9 @@
 
 #include "common.h"
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #ifndef NO_SOUND
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 # define WIIERO_SND_FREQ  44000 //MIX_DEFAULT_FREQUENCY	// 22050
 # define WIIERO_SND_FORM  MIX_DEFAULT_FORMAT
 # define WIIERO_SND_CHAN  1

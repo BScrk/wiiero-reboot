@@ -47,9 +47,6 @@ typedef enum { RES_320_240
 /* Enable multilang spport */
 #define MULTI_LANG
 
-/* Old rendering mode */
-#define OLD_MODE
-
 /* InGame debug (LoadScreen) */
 #define INGAME_DEBUG_ON
 
@@ -57,7 +54,7 @@ typedef enum { RES_320_240
 #define SHOW_FPS
 
 /* Disable sound */
-#define NO_SOUND
+// #define NO_SOUND
 
 //#define DEBUG_ON
 

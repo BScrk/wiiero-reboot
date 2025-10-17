@@ -46,7 +46,9 @@ static int screen_is_init = 0;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 void screen_set_gamma(int gamma){
-  SDL_SetGamma(gamma,gamma,gamma);
+  // SDL2: Gamma is now per-window, skipping for compatibility
+  // Can be implemented with SDL_SetWindowBrightness if needed
+  (void)gamma; // Suppress unused warning
 }
 
 
@@ -72,24 +74,68 @@ screen_t* screen_init(screen_res_t res){
 
 void screen_release(screen_t* s){
   ASSERT(s);
-  ASSERT(s->surface);
-  SDL_FreeSurface( s->surface );
+  if(s->surface)
+    SDL_FreeSurface(s->surface);
+  if(s->renderer)
+    SDL_DestroyRenderer(s->renderer);
+  if(s->window)
+    SDL_DestroyWindow(s->window);
   secure_free(s);
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void screen_reset_mode(screen_t* s){
   ASSERT(s);
-  if(s->surface)
-    SDL_FreeSurface( s->surface );
-  if(s->mode == WIN_SCREEN_MODE){
-    s->surface = SDL_SetVideoMode(s->w, s->h, s->bpp, SDL_HWSURFACE
-                                                      | SDL_DOUBLEBUF );
-    SDL_ShowCursor( SDL_ENABLE );
+  
+  // Destroy existing window/renderer if switching modes
+  if(s->window){
+    if(s->renderer){
+      SDL_DestroyRenderer(s->renderer);
+      s->renderer = NULL;
+    }
+    SDL_DestroyWindow(s->window);
+    s->window = NULL;
+  }
+  if(s->surface){
+    SDL_FreeSurface(s->surface);
+    s->surface = NULL;
+  }
+  
+  // Create window
+  Uint32 window_flags = SDL_WINDOW_SHOWN;
+  if(s->mode == FULL_SCREEN_MODE){
+    window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    SDL_ShowCursor(SDL_DISABLE);
   }else{
-    s->surface = SDL_SetVideoMode(s->w, s->h, s->bpp, SDL_HWSURFACE
-                                                       | SDL_DOUBLEBUF
-                                                       | SDL_FULLSCREEN );
-    SDL_ShowCursor( SDL_DISABLE );
+    SDL_ShowCursor(SDL_ENABLE);
+  }
+  
+  s->window = SDL_CreateWindow("Wiiero",
+                                SDL_WINDOWPOS_CENTERED,
+                                SDL_WINDOWPOS_CENTERED,
+                                s->w, s->h,
+                                window_flags);
+  if(!s->window){
+    HARD_DBG("SDL_CreateWindow Error: %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
+  }
+  
+  // Create renderer with VSync
+  s->renderer = SDL_CreateRenderer(s->window, -1,
+                                   SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  if(!s->renderer){
+    HARD_DBG("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
+  }
+  
+  // Set logical size to maintain aspect ratio
+  SDL_RenderSetLogicalSize(s->renderer, s->w, s->h);
+  
+  // Create a surface for compatibility with existing code
+  s->surface = SDL_CreateRGBSurface(0, s->w, s->h, 32,
+                                    0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+  if(!s->surface){
+    HARD_DBG("SDL_CreateRGBSurface Error: %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
   }
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -118,9 +164,17 @@ void screen_loading_splash(screen_t* s){
 #else
     SDL_Delay(5);
 #endif
-  SDL_SetAlpha(splash,SDL_SRCALPHA | SDL_RLEACCEL, alpha);
+  SDL_SetSurfaceAlphaMod(splash, alpha);
+  SDL_SetSurfaceBlendMode(splash, SDL_BLENDMODE_BLEND);
   SDL_BlitSurface( splash, 0 , s->surface, &offset );
-  SDL_Flip(s->surface);
+  // Create texture and present (SDL2)
+  if(s->renderer){
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(s->renderer, s->surface);
+    SDL_RenderClear(s->renderer);
+    SDL_RenderCopy(s->renderer, tex, NULL, NULL);
+    SDL_RenderPresent(s->renderer);
+    SDL_DestroyTexture(tex);
+  }
   }
 
   SDL_FreeSurface(splash);  
@@ -135,7 +189,9 @@ void screen_clean(screen_t* s){
 screen_t* screen_custom_init(int w,int h,int bpp){
   ASSERT(!screen_is_init);
   screen_t* s = secure_malloc(sizeof(screen_t));
-  s->surface = 0L;
+  s->window = NULL;
+  s->renderer = NULL;
+  s->surface = NULL;
   screen_is_init = 1;
   s->h = h;
   s->w = w;
@@ -178,27 +234,44 @@ camera_t* screen_add_custom_camera(screen_t* s,int cx,int cy,int cw,int ch,int c
 void screen_display(screen_t* s){
   ASSERT(s);
   ASSERT(screen_is_init);
-#ifdef OLD_MODE
-  if(!s->screen_cam_list){
-    SDL_Flip(s->surface);
-  }else{
+  ASSERT(s->renderer);
+  ASSERT(s->surface);
+  
+  // First, blit all cameras onto the screen surface
+  if(s->screen_cam_list){
     camera_list_t * cur_cam_slot = s->screen_cam_list;
-
+    
     while(cur_cam_slot){
       if( camera_is_on(cur_cam_slot->cam) ){
         SDL_Rect offset;
-        /* Recuperation des coordonnées */
+        /* Get camera coordinates */
         offset.x = cur_cam_slot->cam->screen_x;
         offset.y = cur_cam_slot->cam->screen_y;
         offset.h = cur_cam_slot->cam->h;
         offset.w = cur_cam_slot->cam->w;    
-        SDL_BlitSurface( cur_cam_slot->cam->cam_surface, 0 , s->surface, &offset );
+        /* Blit camera surface onto screen surface */
+        SDL_BlitSurface(cur_cam_slot->cam->cam_surface, NULL, s->surface, &offset);
       }
       cur_cam_slot = cur_cam_slot->next;
     }
-    SDL_Flip(s->surface);
   }
-#else
-  SDL_Flip(s->surface);  
-#endif
+  
+  // Create texture from the complete screen surface
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(s->renderer, s->surface);
+  if(!texture){
+    HARD_DBG("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
+    return;
+  }
+  
+  // Clear renderer
+  SDL_RenderClear(s->renderer);
+  
+  // Copy texture to renderer
+  SDL_RenderCopy(s->renderer, texture, NULL, NULL);
+  
+  // Present
+  SDL_RenderPresent(s->renderer);
+  
+  // Cleanup
+  SDL_DestroyTexture(texture);
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

@@ -166,9 +166,10 @@ void fill_background(map_t* m,ressources_t* r){
       skin_offset.y = rand() % 4 * (r->breakable->h/4);  
       skin_offset.w = r->breakable->w/2; 
       skin_offset.h = r->breakable->h/4;
-      SDL_SetAlpha(r->breakable,SDL_SRCALPHA | SDL_RLEACCEL, 150);
+      SDL_SetSurfaceAlphaMod(r->breakable, 150);
+      SDL_SetSurfaceBlendMode(r->breakable, SDL_BLENDMODE_BLEND);
       SDL_BlitSurface(r->breakable, &skin_offset ,m->layers[BACKGROUND_LAYER] , &pos );
-      SDL_SetAlpha(r->breakable,SDL_SRCALPHA | SDL_RLEACCEL, 255);
+      SDL_SetSurfaceAlphaMod(r->breakable, 255);
   }
 }/* * * * * * * * * *i * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void fill_ground(map_t* m,ressources_t* r){
@@ -184,7 +185,7 @@ void fill_ground(map_t* m,ressources_t* r){
                           , transparent_g_value
                           , transparent_b_value));
   SDL_SetColorKey(m->layers[GROUND_MAP_LAYER]
-               , SDL_SRCCOLORKEY
+               , SDL_TRUE
                , SDL_MapRGB( m->layers[GROUND_MAP_LAYER]->format
                            , transparent_r_value
                            , transparent_g_value
@@ -216,7 +217,7 @@ void fill_ground(map_t* m,ressources_t* r){
     map_drow_big_cave(m);
 
   SDL_SetColorKey(m->layers[GROUND_MAP_LAYER]
-                 , SDL_SRCCOLORKEY
+                 , SDL_TRUE
                  , SDL_MapRGB( m->layers[GROUND_MAP_LAYER]->format
                              , transparent_r_value
                              , transparent_g_value
@@ -261,7 +262,7 @@ void fill_statics(map_t* m,ressources_t* r, int nb_rocks){
   }
 
   SDL_SetColorKey(m->layers[STATICS_MAP_LAYER]
-                 , SDL_SRCCOLORKEY
+                 , SDL_TRUE
                  , SDL_MapRGB( m->layers[STATICS_MAP_LAYER]->format
                              , transparent_r_value
                              , transparent_g_value

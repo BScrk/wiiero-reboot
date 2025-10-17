@@ -30,7 +30,7 @@
 #ifndef FRAME_RATE_H
 #define FRAME_RATE_H
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "camera.h"
 #include "common.h"
 

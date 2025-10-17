@@ -70,7 +70,6 @@ static char str_errno[128];
 #define SCREEN_HEIGHT screen_get_height(g->wiiero_opt_screen_resolution)
 #define SCREEN_BPP screen_get_bpp(g->wiiero_opt_screen_resolution)
 
-#ifdef OLD_MODE
 #define CAMERA_OFF(...)             \
   {                                 \
     ASSERT(g);                      \
@@ -78,15 +77,6 @@ static char str_errno[128];
     screen_clean(g->wiiero_screen); \
     camera_switch_off(__VA_ARGS__); \
   };
-#else
-#define CAMERA_OFF(...)             \
-  {                                 \
-    ASSERT(g);                      \
-    skeep_current_frame = 1;        \
-    camera_clean(__VA_ARGS__);      \
-    camera_switch_off(__VA_ARGS__); \
-  };
-#endif
 
 int bullet_time_effect_delay;
 

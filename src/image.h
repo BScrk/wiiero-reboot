@@ -32,7 +32,7 @@
 
 #include "common.h"
 #include "colors.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 SDL_Surface* image_load(char * filename);
 SDL_Surface* image_custom_load(char * filename,Uint8 trcolor[COLORS]);

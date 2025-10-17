@@ -30,7 +30,7 @@
 #define MAP_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "screen.h"
 #include "ressources.h"
 

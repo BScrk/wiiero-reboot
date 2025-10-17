@@ -44,16 +44,16 @@ In Wiiero game you can fight your opponent in 3 different game modes: Deathmatch
 
 ## Todo
 Macro todo list :
-* SDL 1.2 Mac / Lunix build project ✅
+* SDL 1.2 Mac / Linux build project ✅
 * Mac gamepads supports via IOKit ✅
-* SDL2 upgrade ❌
-* Mac builds ❌
-* Windows port & builds ❌
-* Linux port & builds ❌
-* Linux gamepads supports (via SDL 2) ❌
-* Mac gamepads supports (SDL 2/IOKit) ❌
-* Win gamepads supports (via SDL 2) ❌
-* Gamepads config option ❌
+* **SDL2 upgrade ✅** (branch: migration/sdl2)
+* Mac builds (SDL2) ✅
+* Windows port & builds ⏳
+* Linux port & builds ⏳
+* Linux gamepads supports (via SDL 2) ⏳
+* Mac gamepads supports (SDL2 + IOKit) ✅
+* Win gamepads supports (via SDL 2) ⏳
+* Gamepads config option ⏳
 
 
 ## Installation / Build Guides
@@ -63,7 +63,7 @@ Macro todo list :
 #### Installation
 
 ```bash
-sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev makedepend
+sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev makedepend
 ```
 
 #### Build
@@ -83,13 +83,13 @@ make compil
 
 #### Installation
 
-Wiiero requires SDL 1.2 and SDL_image libraries. Install them using Homebrew:
+Wiiero requires SDL2, SDL2_image and SDL2_mixer libraries. Install them using Homebrew:
 
 ```bash
-brew install sdl12-compat sdl_image makedepend
+brew install sdl2 sdl2_image sdl2_mixer makedepend
 ```
 
-**Note**: The Makefile automatically detects macOS (both Intel and Apple Silicon) and configures the appropriate paths using Homebrew.
+**Note**: The Makefile automatically detects macOS (both Intel and Apple Silicon) and configures the appropriate paths using Homebrew and SDL2.
 
 #### Build
 
@@ -290,6 +290,19 @@ BScrk - Wiiero Reboot Author
 Have Fun !
 
 ## Changelog 
+
+2025-01-17 BScrk (Luca Benevolo) <wiiero@free.fr>
+
+ * Wiiero version: Release 1.5 (SDL2 Migration)
+ * **Complete SDL2 migration**
+   - Migrated from SDL 1.2 to SDL2
+   - SDL_Window + SDL_Renderer architecture
+   - Hardware acceleration support
+   - Better performance and compatibility
+ * Updated build system for SDL2
+ * macOS and Linux SDL2 support
+ * Maintained backward compatibility with existing code structure
+ * IOKit gamepad support preserved
 
 2025-10-16 BScrk (Luca Benevolo) <wiiero@free.fr>
 

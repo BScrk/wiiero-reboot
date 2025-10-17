@@ -30,7 +30,7 @@
 #define WEAPON_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "object.h"
 #include "ressources.h"
 

@@ -30,7 +30,7 @@
 #define COLOR_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #define DIRT_AMB     0
 #define SAND_AMB     1

@@ -30,7 +30,7 @@
 #define SURFACE_MANIP_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #define LAYERS_OPTIM_MODE
 

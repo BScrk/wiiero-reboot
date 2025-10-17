@@ -35,34 +35,46 @@ VPATH = src:bin
 
 #-------------------- Auto-detect system and configure
 ifeq ($(SYSTEM),Darwin)
-    # macOS (Apple Silicon or Intel)
+    # macOS (Apple Silicon or Intel) - SDL2
     PLATFORM = macOS
     HOMEBREW_PREFIX := $(shell brew --prefix 2>/dev/null || echo /opt/homebrew)
     LOCALBASE = $(HOMEBREW_PREFIX)
+    SDL2_CFLAGS := $(shell $(LOCALBASE)/bin/sdl2-config --cflags 2>/dev/null || echo -I$(LOCALBASE)/include/SDL2)
+    SDL2_LIBS := $(shell $(LOCALBASE)/bin/sdl2-config --libs 2>/dev/null || echo -L$(LOCALBASE)/lib -lSDL2)
     PLATFORM_DEF = -DOSX_MODE -D_THREAD_SAFE
-    PLATFORM_LIBS = -lm -lSDL -lSDLmain -Wl,-framework,Cocoa -framework IOKit -framework CoreFoundation
+    PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image -Wl,-framework,Cocoa -framework IOKit -framework CoreFoundation
+    PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else ifeq ($(SYSTEM),Linux)
-    # Linux
+    # Linux - SDL2
     PLATFORM = Linux
     LOCALBASE = /usr
+    SDL2_CFLAGS := $(shell sdl2-config --cflags 2>/dev/null || echo -I/usr/include/SDL2)
+    SDL2_LIBS := $(shell sdl2-config --libs 2>/dev/null || echo -lSDL2)
     PLATFORM_DEF = -DLINUX_MODE -D_THREAD_SAFE
-    PLATFORM_LIBS = -lm -lSDL -lSDLmain -lSDL_image
+    PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image
+    PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else ifeq ($(SYSTEM),FreeBSD)
-    # FreeBSD
+    # FreeBSD - SDL2
     PLATFORM = FreeBSD
     LOCALBASE = /usr/local
+    SDL2_CFLAGS := $(shell sdl2-config --cflags 2>/dev/null || echo -I/usr/local/include/SDL2)
+    SDL2_LIBS := $(shell sdl2-config --libs 2>/dev/null || echo -lSDL2)
     PLATFORM_DEF =  -DLINUX_MODE
-    PLATFORM_LIBS = -lm -lSDL -lSDLmain -lSDL_image
+    PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image
+    PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 else
-    # Generic Unix fallback
+    # Generic Unix fallback - SDL2
     PLATFORM = Unix
     LOCALBASE = /usr/local
+    SDL2_CFLAGS := $(shell sdl2-config --cflags 2>/dev/null || echo -I/usr/local/include/SDL2)
+    SDL2_LIBS := $(shell sdl2-config --libs 2>/dev/null || echo -lSDL2)
     PLATFORM_DEF =  -DLINUX_MODE
-    PLATFORM_LIBS = -lm -lSDL -lSDLmain -lSDL_image
+    PLATFORM_LIBS = -lm $(SDL2_LIBS) -lSDL2_mixer -lSDL2_image
+    PLATFORM_CFLAGS = $(SDL2_CFLAGS)
 endif
 
 # Construct final flags
-CFLAGS = $(MYCFLAGS) -I$(LOCALBASE)/include $(PLATFORM_DEF)
+CFLAGS = $(MYCFLAGS) $(PLATFORM_CFLAGS) -I$(LOCALBASE)/include $(PLATFORM_DEF)
 LDFLAGS = -L$(LOCALBASE)/lib $(PLATFORM_LIBS)
 
 compil: createbin $(EXES)

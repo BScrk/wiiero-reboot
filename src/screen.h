@@ -30,7 +30,7 @@
 #define SCREEN_H
 
 #include "common.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "camera.h"
 
 
@@ -70,7 +70,9 @@ typedef struct{
   int w;
   int bpp;
   int mode;
-  SDL_Surface* surface;
+  SDL_Window* window;
+  SDL_Renderer* renderer;
+  SDL_Surface* surface;  // Kept for compatibility with existing code
   camera_list_t* screen_cam_list;
 }screen_t;
 

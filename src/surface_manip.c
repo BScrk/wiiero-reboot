@@ -224,17 +224,12 @@ void drow_line(SDL_Surface* surface,int x1, int y1, int x2, int y2,int cr, int c
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 SDL_Surface* surface_try_to_optimize(SDL_Surface* in, char* layer_name){
 #ifdef LAYERS_OPTIM_MODE
-  SDL_Surface* tmp = 0l;
-  tmp = SDL_DisplayFormat(in);
-  if(!tmp){
-    printf("can't optimise %s!\n",layer_name);
-    return in;
-  }else{
-    //printf("%s optim done!\n",layer_name);
-    SDL_FreeSurface(in);
-    return tmp;
-  }
+  // SDL2: SDL_DisplayFormat is removed, surfaces are already optimized
+  // Just return the input surface
+  (void)layer_name; // Suppress unused warning
+  return in;
 #else
+  (void)layer_name; // Suppress unused warning
   return in;
 #endif
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

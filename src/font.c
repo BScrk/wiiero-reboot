@@ -220,7 +220,9 @@ void font_console_print(char* text,fontsize_t fsize){
     }
     text++;
   } 
-  SDL_Flip(s);
+  // SDL2: SDL_Flip no longer works on arbitrary surfaces
+  // Debug output would need to go through renderer
+  // SDL_Flip(s);
 
 }
 
@@ -244,6 +246,7 @@ void font_progress_print(char* text,fontsize_t fsize){
     text++;
     x += (used_font->w / FONT_IMG_W_ELEMS);
   }
-  SDL_Flip(output_surface);
+  // SDL2: SDL_Flip no longer works on arbitrary surfaces
+  // SDL_Flip(output_surface);
 
 }
