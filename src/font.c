@@ -38,6 +38,7 @@ static SDL_Surface * used_medfont = 0L;
 static SDL_Surface * used_bigfont = 0L;
 static SDL_Surface * used_font = 0L;
 static SDL_Surface * output_surface = 0L;
+static SDL_Renderer * debug_renderer = NULL;
 
 #define FONT_IMG_H_ELEMS 6
 #define FONT_IMG_W_ELEMS 7
@@ -190,8 +191,15 @@ void font_putc_strict_pos(camera_t* c,char charact,int x, int y,fontsize_t fsize
 }
 
 /* ************************************************************************** */
+/* Set renderer for debug display (SDL2) */
+void font_set_debug_renderer(SDL_Renderer* renderer) {
+  debug_renderer = renderer;
+}
+
 void font_console_print_debug(char* text,fontsize_t fsize){
 #ifdef INGAME_DEBUG_ON
+  // Also print to stderr for debugging (SDL2: on-screen debug doesn't work well during init)
+  fprintf(stderr, "[DEBUG] %s", text);
   font_console_print(text,fsize);
 #else
   font_progress_print(".",fsize);
@@ -220,9 +228,17 @@ void font_console_print(char* text,fontsize_t fsize){
     }
     text++;
   } 
-  // SDL2: SDL_Flip no longer works on arbitrary surfaces
-  // Debug output would need to go through renderer
-  // SDL_Flip(s);
+  
+  // SDL2: Display the debug surface using renderer
+  if (debug_renderer && s) {
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(debug_renderer, s);
+    if (texture) {
+      // Don't clear - just update the display with accumulated surface content
+      SDL_RenderCopy(debug_renderer, texture, NULL, NULL);
+      SDL_RenderPresent(debug_renderer);
+      SDL_DestroyTexture(texture);
+    }
+  }
 
 }
 

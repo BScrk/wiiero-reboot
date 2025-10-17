@@ -30,6 +30,7 @@
 #include "screen.h"
 #include "image.h"
 #include "ressources.h"
+#include "font.h"
 #include <unistd.h>
 
 static int screen_resolution[MAX_RES][3]={{320,220,32}
@@ -130,6 +131,9 @@ void screen_reset_mode(screen_t* s){
   // Set logical size to maintain aspect ratio
   SDL_RenderSetLogicalSize(s->renderer, s->w, s->h);
   
+  // Set debug renderer for font console output (SDL2)
+  font_set_debug_renderer(s->renderer);
+  
   // Create a surface for compatibility with existing code
   s->surface = SDL_CreateRGBSurface(0, s->w, s->h, 32,
                                     0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
@@ -137,6 +141,18 @@ void screen_reset_mode(screen_t* s){
     HARD_DBG("SDL_CreateRGBSurface Error: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
+  
+  // Force window to be visible immediately (SDL2)
+  SDL_ShowWindow(s->window);
+  SDL_RaiseWindow(s->window);
+  
+  // Clear and present to make window visible immediately (SDL2)
+  SDL_SetRenderDrawColor(s->renderer, 0, 0, 0, 255);
+  SDL_RenderClear(s->renderer);
+  SDL_RenderPresent(s->renderer);
+  
+  // Pump events to ensure window is shown (critical on macOS)
+  SDL_PumpEvents();
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 void screen_flip_mode(screen_t* s){
@@ -164,13 +180,16 @@ void screen_loading_splash(screen_t* s){
 #else
     SDL_Delay(5);
 #endif
+  // Clear entire surface before blitting (clean slate for each frame)
+  SDL_FillRect(s->surface, NULL, SDL_MapRGB(s->surface->format, 0, 0, 0));
+  
   SDL_SetSurfaceAlphaMod(splash, alpha);
   SDL_SetSurfaceBlendMode(splash, SDL_BLENDMODE_BLEND);
   SDL_BlitSurface( splash, 0 , s->surface, &offset );
   // Create texture and present (SDL2)
   if(s->renderer){
     SDL_Texture* tex = SDL_CreateTextureFromSurface(s->renderer, s->surface);
-    SDL_RenderClear(s->renderer);
+    // Don't clear - just update to preserve debug text
     SDL_RenderCopy(s->renderer, tex, NULL, NULL);
     SDL_RenderPresent(s->renderer);
     SDL_DestroyTexture(tex);

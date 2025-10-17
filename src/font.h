@@ -43,6 +43,7 @@ typedef enum{
 extern const char font_charset[CHARSET_SIZE];
 
 void  font_load(SDL_Surface* console_surface);
+void  font_set_debug_renderer(SDL_Renderer* renderer);
 void  font_print(camera_t* c,char* text,int x,int y,fontsize_t fsize);
 void  font_print_center(camera_t* c,char* text,int x,int y,fontsize_t fsize);
 void  font_print_strict_pos(camera_t* c,char* text,int x,int y,fontsize_t fsize);
