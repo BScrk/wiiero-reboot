@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef LINUX_MODE
+#ifdef LINUX_BUILD
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <sys/stat.h>
@@ -49,7 +49,7 @@ int main(int argc, char * argv[]) {
   srand(time(NULL));
 
 
-#ifdef LINUX_MODE
+#ifdef LINUX_BUILD
   if(1){//set coredump
     struct rlimit rlim;
     rlim.rlim_cur = RLIM_INFINITY;

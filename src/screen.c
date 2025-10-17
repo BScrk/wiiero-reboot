@@ -217,7 +217,7 @@ screen_t* screen_custom_init(int w,int h,int bpp){
   s->bpp = bpp;
   s->screen_cam_list = 0L;
   screen_set_gamma(1);
-#if defined(LINUX_MODE) || defined(OSX_MODE)
+#ifdef DESKTOP_MODE
   s->mode = WIN_SCREEN_MODE;
 #else
   s->mode = FULL_SCREEN_MODE;

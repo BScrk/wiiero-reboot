@@ -39,22 +39,17 @@
 #include "weapons.h"
 #include "sound_engine.h"
 
-#ifdef LINUX_MODE
-#define WIIERO_VERSION "wiiero v1.4    [linux edition]"
+#ifdef DESKTOP_MODE
+#define WIIERO_VERSION "wiiero v1.5    [Desktop Edition]"
 #endif
-
-#ifdef OSX_MODE
-#define WIIERO_VERSION "wiiero v1.4    [osx edition]"
-#endif
-
 
 
 #ifdef PSP_MODE
-#define WIIERO_VERSION "wiiero v1.4    [psp edition]"
+#define WIIERO_VERSION "wiiero v1.3    [PSP Edition]"
 #endif
 
 #ifdef WII_MODE
-#define WIIERO_VERSION "wiiero v1.4    [wii edition]"
+#define WIIERO_VERSION "wiiero v1.3    [Wii Edition]"
 #endif
 
 
