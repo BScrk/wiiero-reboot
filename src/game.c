@@ -148,13 +148,13 @@ void wiiero_init(game_t *g)
   get_trcolor(&transparent_r_value, &transparent_g_value, &transparent_b_value);
 
   font_load((g->wiiero_screen)->surface);
-  font_console_print(WIIERO_VERSION "\n", FONT_SMALL);
   
-  // Give window time to appear on screen (SDL2/macOS)
+  // Give window time to appear on screen
   SDL_Delay(100);
   SDL_PumpEvents();
-  
+    
   screen_loading_splash(g->wiiero_screen);
+  font_console_print(WIIERO_VERSION "\n", FONT_SMALL);
   font_progress_print(wiiero_label[WIIERO_LANG_GAME_LOAD], FONT_SMALL);
 } /*--------------------------------------------------------------------------*/
 

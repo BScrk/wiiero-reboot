@@ -262,7 +262,15 @@ void font_progress_print(char* text,fontsize_t fsize){
     text++;
     x += (used_font->w / FONT_IMG_W_ELEMS);
   }
-  // SDL2: SDL_Flip no longer works on arbitrary surfaces
-  // SDL_Flip(output_surface);
+  
+  // SDL2: Display the progress text using renderer
+  if (debug_renderer && s) {
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(debug_renderer, s);
+    if (texture) {
+      SDL_RenderCopy(debug_renderer, texture, NULL, NULL);
+      SDL_RenderPresent(debug_renderer);
+      SDL_DestroyTexture(texture);
+    }
+  }
 
 }
