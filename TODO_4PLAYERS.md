@@ -19,6 +19,7 @@
 - [x] Ajuster la taille des caméras stats pour s'adapter à la grille 2x2
 - [x] Changer nicknames des joueurs 3 et 4 via le menu
 - [x] Sauver/Charger les nicknames des joueurs 3 et 4 dans le fichier de sauvegarde.
+- [x] Si moins de 4 gamepads, les gamepads sont reservés aux joueurs 3 et 4. P1 et P2 utiliseront le clavier.
 
 ## 🔨 À faire - Gameplay Core
 
