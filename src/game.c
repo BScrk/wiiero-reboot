@@ -731,7 +731,17 @@ void option_change_p2_name_cb(game_t *g)
   g->wiiero_game_status = GAME_SET_EDIT_NAME;
 } /*--------------------------------------------------------------------------*/
 
-// TODO 4P: Add option_change_p3_name_cb() and option_change_p4_name_cb() callbacks
+void option_change_p3_name_cb(game_t *g)
+{
+  name_to_change = PLAYER_3;
+  g->wiiero_game_status = GAME_SET_EDIT_NAME;
+} /*--------------------------------------------------------------------------*/
+
+void option_change_p4_name_cb(game_t *g)
+{
+  name_to_change = PLAYER_4;
+  g->wiiero_game_status = GAME_SET_EDIT_NAME;
+} /*--------------------------------------------------------------------------*/
 
 void option_regen_new_map(game_t *g)
 {
@@ -986,7 +996,8 @@ static __inline__ void wiiero_option(game_t *g)
       {OPTION_SHADOWS, wiiero_label[WIIERO_LANG_OPT_MENU_SHADO], &(g->wiiero_opt_shadow), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
       {OPTION_P1_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P1NAM], game_nicknames[PLAYER_1], option_format_string_cb, 0L, 0L, option_change_p1_name_cb},
       {OPTION_P2_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P2NAM], game_nicknames[PLAYER_2], option_format_string_cb, 0L, 0L, option_change_p2_name_cb},
-      // TODO 4P: Add menu entries for PLAYER_3 and PLAYER_4 names (will need to update OPTION_MAX enum)
+      {OPTION_P3_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P3NAM], game_nicknames[PLAYER_3], option_format_string_cb, 0L, 0L, option_change_p3_name_cb},
+      {OPTION_P4_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P4NAM], game_nicknames[PLAYER_4], option_format_string_cb, 0L, 0L, option_change_p4_name_cb},
       {OPTION_BIS_MENU, wiiero_label[WIIERO_LANG_OPT_MENU_NEXT], 0L, 0L, 0L, 0L, option_menu_bis_cb},
       {OPTION_RETURN, wiiero_label[WIIERO_LANG_OPT_MENU_RETUR], 0L, 0L, 0L, 0L, option_return_cb}};
   wiiero_menu(g);
@@ -1276,7 +1287,8 @@ int wiiero_load_config(game_t *g)
   if(!fread(&selected_amb, sizeof(Uint8), 1, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file)){return 0;}
-  // TODO 4P: Load nicknames for PLAYER_3 and PLAYER_4 from config file
+  if(!fread(game_nicknames[PLAYER_3], sizeof(char), 10, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_4], sizeof(char), 10, conf_file)){return 0;}
   if(!fread(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file)){return 0;}
   /* Wiiero 1.2 new config file part */
   if(!fread(&mud_particle, sizeof(Uint8), 1, conf_file)){return 0;}
@@ -1293,7 +1305,6 @@ int wiiero_load_config(game_t *g)
       apply_lang(filename);
     }
   }
-
   fclose(conf_file);
   return 1;
 } /*--------------------------------------------------------------------------*/
@@ -1319,7 +1330,8 @@ int wiiero_save_config(game_t *g)
   fwrite(&selected_amb, sizeof(Uint8), 1, conf_file);
   fwrite(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file);
   fwrite(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file);
-  // TODO 4P: Save nicknames for PLAYER_3 and PLAYER_4 to config file
+  fwrite(game_nicknames[PLAYER_3], sizeof(char), 10, conf_file);
+  fwrite(game_nicknames[PLAYER_4], sizeof(char), 10, conf_file);  
   fwrite(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file);
   fwrite(&mud_particle, sizeof(Uint8), 1, conf_file);
   if (get_nb_loaded_lang_files())

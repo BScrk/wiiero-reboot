@@ -46,6 +46,7 @@
 #include "lang.h"
 int main(int argc, char * argv[]) {
   game_t game;
+  memset(&game, 0, sizeof(game_t));
   srand(time(NULL));
 
 

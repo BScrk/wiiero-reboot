@@ -78,6 +78,8 @@ char *wiiero_label[WIIERO_LANG_NB_LABELS] = {
   , "shadow fx:"
   , "player1 name:"
   , "player2 name:"
+  , "player3 name:"
+  , "player4 name:"  
   , "xtra weapons:"
   , "return ..." 
   /* Weapon selection part */

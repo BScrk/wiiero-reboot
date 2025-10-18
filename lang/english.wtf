@@ -66,6 +66,8 @@
   shadow fx:
   player1 name:
   player2 name:
+  player3 name:
+  player4 name:  
   xtra weapons:
   return ... 
 ## Weapon selection part ###

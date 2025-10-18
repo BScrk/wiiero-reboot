@@ -45,23 +45,23 @@
 ## 🎨 À faire - UI & Menus
 
 ### src/game.c
-- [ ] **Line 734**: Ajouter callbacks `option_change_p3_name_cb()` et `option_change_p4_name_cb()`
+- [X] **Line 734**: Ajouter callbacks `option_change_p3_name_cb()` et `option_change_p4_name_cb()`
   - Pour permettre le changement de noms des joueurs 3 et 4
 
-- [ ] **Line 989**: Ajouter entrées de menu pour les noms PLAYER_3 et PLAYER_4
+- [X] **Line 989**: Ajouter entrées de menu pour les noms PLAYER_3 et PLAYER_4
   - Nécessite d'update l'enum `OPTION_MAX` dans `menu.h`
 
 ### src/menu.h
-- [ ] **Line 69**: Ajouter `OPTION_P3_NAME` et `OPTION_P4_NAME` dans l'enum
+- [X] **Line 69**: Ajouter `OPTION_P3_NAME` et `OPTION_P4_NAME` dans l'enum
   - Mettre à jour `OPTION_MAX` en conséquence
 
 ## 💾 À faire - Configuration
 
 ### src/game.c
-- [ ] **Line 1279**: `wiiero_load_config()` - Charger les nicknames de PLAYER_3 et PLAYER_4 depuis le fichier config
+- [X] **Line 1279**: `wiiero_load_config()` - Charger les nicknames de PLAYER_3 et PLAYER_4 depuis le fichier config
   - Format fichier config à étendre
 
-- [ ] **Line 1322**: `wiiero_save_config()` - Sauvegarder les nicknames de PLAYER_3 et PLAYER_4
+- [X] **Line 1322**: `wiiero_save_config()` - Sauvegarder les nicknames de PLAYER_3 et PLAYER_4
   - Synchroniser avec le load
 
 ## 🔧 À faire - Armes & Collision

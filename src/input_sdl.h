@@ -60,8 +60,13 @@ typedef enum
 char *cmd_labels[MAX_CMD] = {
     "PC controls", "", "fire:", "jump:", "Dig:", "show weapon:", "prev weapon:", "next weapon:", "ninja hook:", "up:", "down:", "left:", "right:", "pause:", "menu:", "ok:", "cancel:"};
 
-char *cmd_key[2][MAX_CMD] = {
-    {"", "Player 1", "[d]", "[a]", "[j+l]", "[z]", "[z+j]", "[z+l]", "[a+z]", "[i]", "[k]", "[j]", "[l]", "[space]", "[escape]", "[d]", "[a]"}, {"", "Player 2", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}};
+char *cmd_key[4][MAX_CMD] = {
+    {"", "Player 1", "[d]", "[a]", "[j+l]", "[z]", "[z+j]", "[z+l]", "[a+z]", "[i]", "[k]", "[j]", "[l]", "[space]", "[escape]", "[d]", "[a]"}
+  , {"", "Player 2", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
+  //TODO update keys for P3 and P4
+  , {"", "Player 3", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
+  , {"", "Player 4", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
+};
 
 enum
 { /* - -- --- WIIERO EVENTS ---- --- -- - */
@@ -75,6 +80,8 @@ enum
   P1_ACTION_KEY_CHANGE = SDL_SCANCODE_Z,
   P1_ACTION_KEY_CHANGE_BIS = SDL_SCANCODE_W,
   P1_ACTION_KEY_FIRE = SDL_SCANCODE_D,
+
+  //FIXME P2, P3, P4 use same keys to test nickname option menu
   P2_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
   P2_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
   P2_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
@@ -82,6 +89,25 @@ enum
   P2_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
   P2_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
   P2_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
+   
+  //FIXME P2, P3, P4 use same keys to test nickname option menu
+  P3_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
+  P3_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
+  P3_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
+  P3_ACTION_KEY_RIGTH = SDL_SCANCODE_KP_6,
+  P3_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
+  P3_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
+  P3_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
+
+  //FIXME P2, P3, P4 use same keys to test nickname option menu
+  P4_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
+  P4_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
+  P4_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
+  P4_ACTION_KEY_RIGTH = SDL_SCANCODE_KP_6,
+  P4_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
+  P4_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
+  P4_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
+
   GAME_ACTION_KEY_EXIT = SDL_SCANCODE_ESCAPE,
   GAME_ACTION_KEY_FLIP = SDL_SCANCODE_TAB,
   GAME_ACTION_KEY_PAUSE = SDL_SCANCODE_SPACE,
@@ -239,6 +265,38 @@ static __inline__ void game_check_event(game_t *g)
     g->worms[PLAYER_2]->worms_action |= (ACTION_CHANGE | ACTION_FROM_KEYBOARD);
   if (keystate[P2_ACTION_KEY_FIRE])
     g->worms[PLAYER_2]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);
+
+  /* Player 3 keyboard */
+  if (keystate[P3_ACTION_KEY_UP])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_UP | ACTION_FROM_KEYBOARD);
+  if (keystate[P3_ACTION_KEY_DOWN])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_DOWN | ACTION_FROM_KEYBOARD);
+  if (keystate[P3_ACTION_KEY_LEFT])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_LEFT | ACTION_FROM_KEYBOARD);
+  if (keystate[P3_ACTION_KEY_RIGTH])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_RIGHT | ACTION_FROM_KEYBOARD);
+  if (keystate[P3_ACTION_KEY_JUMP])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_JUMP | ACTION_CANCEL | ACTION_FROM_KEYBOARD);
+  if (keystate[P3_ACTION_KEY_CHANGE])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_CHANGE | ACTION_FROM_KEYBOARD);
+  if (keystate[P3_ACTION_KEY_FIRE])
+    g->worms[PLAYER_3]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);    
+
+  /* Player 4 keyboard */
+  if (keystate[P4_ACTION_KEY_UP])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_UP | ACTION_FROM_KEYBOARD);
+  if (keystate[P4_ACTION_KEY_DOWN])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_DOWN | ACTION_FROM_KEYBOARD);
+  if (keystate[P4_ACTION_KEY_LEFT])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_LEFT | ACTION_FROM_KEYBOARD);
+  if (keystate[P4_ACTION_KEY_RIGTH])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_RIGHT | ACTION_FROM_KEYBOARD);
+  if (keystate[P4_ACTION_KEY_JUMP])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_JUMP | ACTION_CANCEL | ACTION_FROM_KEYBOARD);
+  if (keystate[P4_ACTION_KEY_CHANGE])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_CHANGE | ACTION_FROM_KEYBOARD);
+  if (keystate[P4_ACTION_KEY_FIRE])
+    g->worms[PLAYER_4]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);
 
   // TODO 4P: Add keyboard controls for PLAYER_3 and PLAYER_4
 
