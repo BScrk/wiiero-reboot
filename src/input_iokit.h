@@ -497,7 +497,7 @@ static __inline__ void game_check_event(game_t *g)
 
 // ----------------------------------------------------------------------------
 /* Player keyboard event update Mac */
-static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t *other_p)
+static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t **other_pls)
 {
   ASSERT(p);
   ASSERT(m);
@@ -539,7 +539,7 @@ static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t *o
       {
         /* Launch new */
         // printf("lauch new\n");
-        player_remove_hook(p, other_p);
+        player_remove_hook(p, other_pls);
         player_launch_hook(p);
       }
       p->worms_status |= STATUS_NINJA_ACTION;
@@ -557,7 +557,7 @@ static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t *o
         if (p->ninja_hook->last_bullet != 0l)
         {
           // printf("remove\n");
-          player_remove_hook(p, other_p);
+          player_remove_hook(p, other_pls);
         }
     }
     p->worms_status &= ~STATUS_NINJA_ACTION;
@@ -620,7 +620,7 @@ static __inline__ void player_kb_event_update(player_t *p, map_t *m, player_t *o
 
 // ----------------------------------------------------------------------------
 
-static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *other_p)
+static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t **other_pls)
 {
   /* ============= GAMEPAD CONTROLS (similar to Wii Nunchuk/Classic) ============= */
   ASSERT(p);
@@ -655,7 +655,7 @@ static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *o
       }
       else
       {
-        player_remove_hook(p, other_p);
+        player_remove_hook(p, other_pls);
         player_launch_hook(p);
       }
       p->worms_status |= STATUS_NINJA_ACTION;
@@ -669,7 +669,7 @@ static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *o
       {
         if (p->ninja_hook->last_bullet != 0l)
         {
-          player_remove_hook(p, other_p);
+          player_remove_hook(p, other_pls);
         }
       }
     }
@@ -730,7 +730,7 @@ static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t *o
 
 // ----------------------------------------------------------------------------
 /* Player general event update Mac */
-static __inline__ void player_event_update(player_t *p, map_t *m, player_t *other_p)
+static __inline__ void player_event_update(player_t *p, map_t *m, player_t **other_plsls)
 {
   ASSERT(p);
   ASSERT(m);
@@ -738,16 +738,16 @@ static __inline__ void player_event_update(player_t *p, map_t *m, player_t *othe
   if (!(p->worms_status & STATUS_ALIVE))
   {
     if (p->ninja_hook->last_bullet)
-      player_remove_hook(p, other_p);
+      player_remove_hook(p, other_pls);
     return;
   }
 
   p->worms_status &= ~STATUS_SHOW_W;
 
   if(p->worms_action & ACTION_FROM_KEYBOARD){
-    player_kb_event_update(p,m,other_p);
+    player_kb_event_update(p,m,other_pls);
   }else{
-    player_gp_event_update(p,m,other_p);
+    player_gp_event_update(p,m,other_pls);
   }
 }
 

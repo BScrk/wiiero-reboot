@@ -26,41 +26,16 @@
  *
  */
 
-#ifndef MAP_H
-#define MAP_H
+#ifndef NB_PLAYERS_H
+#define NB_PLAYERS_H
 
-#include "common.h"
-#include <SDL2/SDL.h>
-#include "screen.h"
+typedef enum{
+  PLAYER_1,
+  PLAYER_2,
+  PLAYER_3,
+  PLAYER_4,
+  NB_PLAYERS,
+  GAME_DRAW = NB_PLAYERS
+}player_id;
 
-#include "ressources.h"
-
-#define MAP_WIDTH  800
-#define MAP_HEIGHT 500
-
-#define MINI_MAP_UPDATE_IDLE 1000
-
-enum{
-  BACKGROUND_LAYER,
-  GROUND_MAP_LAYER,
-  STATICS_MAP_LAYER,
-  MAX_TOTAL_LAYERS
-};
-
-
-typedef struct{
-  SDL_Surface*  layers[MAX_TOTAL_LAYERS];
-  int           last_minimap_update;
-}map_t;
-
-
-map_t* map_init(ressources_t* loaded_res,int nb_rocks,screen_res_t res);
-void   map_release(map_t* m);
-void   map_reset(map_t* m ,ressources_t* loaded_res,int nb_rocks);
-void   map_clean_zone(map_t* m,int zx, int zy, int zw,int zh);
-void   map_drow_cave(map_t* m,int cx, int cy, int cr);
-void update_minimap( map_t* m,camera_t *cam , int p1_x, int p1_y
-                   , int p2_x, int p2_y, int p3_x, int p3_y
-                   , int p4_x, int p4_y, int force);
-void   fill_splash_ground(SDL_Surface *s);
 #endif

@@ -386,13 +386,13 @@ static __inline__ void game_check_event(game_t* g){
 
 
 /* Player event update Wii */
-static __inline__  void player_event_update(player_t* p,map_t* m,player_t* other_p){
+static __inline__  void player_event_update(player_t* p,map_t* m,player_t** other_pls){
   ASSERT(p);
   ASSERT(m);
 
   if(!(p->worms_status & STATUS_ALIVE)){
     if(p->ninja_hook->last_bullet)
-      player_remove_hook(p,other_p);
+      player_remove_hook(p,other_pls);
     return;
   }
   p->worms_status &= ~STATUS_SHOW_W;
@@ -423,7 +423,7 @@ static __inline__  void player_event_update(player_t* p,map_t* m,player_t* other
           if(p->ninja_hook->last_bullet==0l){/* Launch */
             player_launch_hook(p);
           }else{/* Launch new */
-            player_remove_hook(p,other_p);
+            player_remove_hook(p,other_pls);
             player_launch_hook(p);
           }
           p->worms_status |= STATUS_NINJA_ACTION;
@@ -434,7 +434,7 @@ static __inline__  void player_event_update(player_t* p,map_t* m,player_t* other
           /* Remove hook */
           if(!(p->worms_status & STATUS_NINJA_ACTION))
             if(p->ninja_hook->last_bullet!=0l){
-               player_remove_hook(p,other_p);
+               player_remove_hook(p,other_pls);
             }
         }
         p->worms_status &= ~STATUS_NINJA_ACTION;
@@ -485,7 +485,7 @@ static __inline__  void player_event_update(player_t* p,map_t* m,player_t* other
           if(p->ninja_hook->last_bullet==0l){/* Launch */
             player_launch_hook(p);
           }else{/* Launch new */
-            player_remove_hook(p,other_p);
+            player_remove_hook(p,other_pls);
             player_launch_hook(p);
           }
           p->worms_status |= STATUS_NINJA_ACTION;
@@ -497,7 +497,7 @@ static __inline__  void player_event_update(player_t* p,map_t* m,player_t* other
         /* Remove hook */
         if(!(p->worms_status & STATUS_NINJA_ACTION)){
           if(p->ninja_hook->last_bullet!=0l){
-             player_remove_hook(p,other_p);
+             player_remove_hook(p,other_pls);
           }
         }
       }

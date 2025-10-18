@@ -219,14 +219,14 @@ obj_t* create_blood_trail(int x,int y){
 
 
 
-/* Flesh source */
-enum{
-  PLAYER_1,
-  PLAYER_2,
-  PLAYER_3,
-  PLAYER_4,
-  NB_PLAYERS 
-}; 
+// /* Flesh source */
+// enum{
+//   PLAYER_1,
+//   PLAYER_2,
+//   PLAYER_3,
+//   PLAYER_4,
+//   NB_PLAYERS 
+// }; 
 
 /* ************************************************************************** *
  * Flesh peace collision callback                                             */
@@ -292,9 +292,7 @@ obj_t* create_flesh(int x,int y,ressources_t* r,int pl_id){
   o->test_collision_cb = std_dynamic_collision_cb;
   o->on_collision_cb   = flesh_on_collision_cb;
   o->blit_cb           = flesh_blit_cb;
-  o->skin = r->worms1_flesh;
-  if(pl_id == PLAYER_2)
-   o->skin = r->worms2_flesh; 
+  o->skin = r->worms_flesh[pl_id]; 
   o->animation_pos = 0;
   return o;
 }

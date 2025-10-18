@@ -90,17 +90,17 @@ void map_reset(map_t* m ,ressources_t* loaded_res, int nb_rocks){
   fill_statics(m,loaded_res, nb_rocks);
   m->last_minimap_update=-10000;
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void static update_player_position(int p_x, int p_y, float x_step , float y_step, camera_t* cam){
+void static update_player_position(int p_x, int p_y, float x_step , float y_step, camera_t* cam, int r,int g, int b){
   p_x = (p_x/x_step == 0) ? 1 : p_x/x_step;
   p_y = (p_y/y_step == 0) ? 1 : p_y/y_step;
   p_x = (p_x >= cam->w) ? cam->w-1 : p_x;
   p_y = (p_y >= cam->h) ? cam->h-1 : p_y;
   
-  camera_put_pix_color(cam,p_x-1, p_y-1, 0, 0, 255);
-  camera_put_pix_color(cam,p_x-1, p_y+1, 0, 0, 255);
-  camera_put_pix_color(cam,p_x  , p_y  , 0, 0, 255);
-  camera_put_pix_color(cam,p_x+1, p_y-1, 0, 0, 255);
-  camera_put_pix_color(cam,p_x+1, p_y+1, 0, 0, 255);
+  camera_put_pix_color(cam,p_x-1, p_y-1, r, g, b);
+  camera_put_pix_color(cam,p_x-1, p_y+1, r, g, b);
+  camera_put_pix_color(cam,p_x  , p_y  , r, g, b);
+  camera_put_pix_color(cam,p_x+1, p_y-1, r, g, b);
+  camera_put_pix_color(cam,p_x+1, p_y+1, r, g, b);
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void update_minimap( map_t* m,camera_t *cam 
                    , int p1_x, int p1_y
@@ -133,10 +133,10 @@ void update_minimap( map_t* m,camera_t *cam
     }
   }
   /* Update players position */
-  update_player_position(p1_x, p1_y, x_step , y_step, cam);
-  update_player_position(p2_x, p2_y, x_step , y_step, cam);
-  update_player_position(p3_x, p3_y, x_step , y_step, cam);
-  update_player_position(p4_x, p4_y, x_step , y_step, cam);
+  update_player_position(p1_x, p1_y, x_step , y_step, cam,  0,  0,255);
+  update_player_position(p2_x, p2_y, x_step , y_step, cam,  0,255,  0);
+  update_player_position(p3_x, p3_y, x_step , y_step, cam,200,100,200);
+  update_player_position(p4_x, p4_y, x_step , y_step, cam,255,  0,  0);
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void fill_background(map_t* m,ressources_t* r){
   ASSERT(m);

@@ -257,10 +257,7 @@ void player_reset( player_t* p, SDL_Surface* ground
   p->reticle_pitch = ANGLE_PITCH;
   p->last_stats_update =0;
   /*p->worms_shockwave = 0;*/
-  p->worms.skin = (p->id == PLAYER_1) ? p->r->worms1_skin
-                : (p->id == PLAYER_2) ? p->r->worms2_skin
-                : (p->id == PLAYER_3) ? p->r->worms3_skin
-                :  p->r->worms4_skin ;
+  p->worms.skin = p->r->worms_skins[p->id];
 }
 
 void player_init_weapons(player_t* p,int xtra_on){
@@ -302,11 +299,12 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   while(cr!=transparent_r_value || cg!=transparent_g_value || cb!=transparent_b_value ){
     p->worms.pos_x = (id == PLAYER_1) ? rand() % (MAP_WIDTH / 2) /* first map part */
                    : (id == PLAYER_2) ? (MAP_WIDTH / 2) + rand() % (MAP_WIDTH / 2) /* second map part */
-                   : (id == PLAYER_3) ? rand() % (MAP_WIDTH / 2) /* second map part */
+                   : (id == PLAYER_3) ? rand() % (MAP_WIDTH / 2) /* first map part */
                    :                    (MAP_WIDTH / 2) + rand() % (MAP_WIDTH / 2); /* second map part */
+
     p->worms.pos_y = (id == PLAYER_1) ? rand() % (MAP_HEIGHT / 2) /* first map part */
-                   : (id == PLAYER_2) ? (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2) /* second map part */
-                   : (id == PLAYER_3) ? rand() % (MAP_HEIGHT / 2) /* first map part */
+                   : (id == PLAYER_2) ? rand() % (MAP_HEIGHT / 2) /* first map part */
+                   : (id == PLAYER_3) ? (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2)   /* second map part */
                    :                    (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2);  /* second map part */
     get_pix_color(statics,p->worms.pos_x,p->worms.pos_y,&cr,&cg,&cb);
   }
@@ -329,7 +327,6 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
                 : (id == PLAYER_2) ? LEFT_SIDE
                 : (id == PLAYER_3) ? RIGHT_SIDE
                 : LEFT_SIDE ;
-
   p->worms_status |= STATUS_ALIVE ;
   p->worms_camera = c;
   p->worms_stats_camera = sc;
@@ -339,10 +336,7 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   p->dynamic_list_link = dl;
   p->reticle_pitch = ANGLE_PITCH;
   /*p->worms_shockwave = 0;*/
-  p->worms.skin = (id == PLAYER_1) ? r->worms1_skin
-                : (id == PLAYER_2) ? r->worms2_skin
-                : (id == PLAYER_3) ? r->worms3_skin
-                : r->worms4_skin ;
+  p->worms.skin = r->worms_skins[id];
   player_focus(p);
   p->worms_status |= STATUS_STATS_UPDATE;
   return p;
@@ -353,9 +347,8 @@ void player_pix(player_t* p){
         , p->worms_camera->map_x,p->worms_camera->map_y);
 }
 
-void player_is_aiming(player_t* p , player_t* target){
-  p->worms_status &= ~STATUS_AIMING;
 
+__inline__ void player_is_aiming_player(player_t* p , player_t* target){
   float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X)
                                          - target->worms.pos_x)
                                + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y)
@@ -373,6 +366,17 @@ void player_is_aiming(player_t* p , player_t* target){
     }
   }
 }
+
+
+void player_is_aiming(player_id pid , player_t** targets){
+  for(int i=0;i<NB_PLAYERS;i++){
+    if(i!=pid){
+      targets[pid]->worms_status &= ~STATUS_AIMING; 
+      player_is_aiming_player( targets[pid] , targets[i]);
+    }
+  }
+}
+
 
 
 void player_show(player_t* p,int warding_flag){
@@ -960,10 +964,12 @@ void player_change_rope_len(player_t* p,int len_modif){
         p->worms_rope_len = ROPE_LEN_CHANGE_PITCH;   
 }
 
-void player_remove_hook(player_t* p,player_t* other_p){
+void player_remove_hook(player_t* p,player_t** other_p){
   /* Remove Hook */
   ASSERT(p->ninja_hook->last_bullet)
-  ninja_hook_disconnect(p->ninja_hook->last_bullet,p,other_p,0l);
+  for(player_id i=PLAYER_1;i<NB_PLAYERS;i++){
+    ninja_hook_disconnect(p->ninja_hook->last_bullet,p,other_p[i],0l);
+  }
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;
 

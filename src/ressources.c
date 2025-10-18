@@ -37,18 +37,15 @@ ressources_t* load_ressource(){
   DBG("- loading ressources\n");
   
   /* Player */
-  r->worms1_skin = image_load(DEFAULT_PWSKIN);
-  r->worms2_skin = image_load(DEFAULT_PWSKIN);
-  r->worms3_skin = image_load(DEFAULT_PWSKIN);
-  r->worms4_skin = image_load(DEFAULT_PWSKIN);
+  for(int i=0;i<NB_PLAYERS;i++){
+    r->worms_skins[i] = image_load(DEFAULT_PWSKIN);
+    r->worms_flesh[i] = image_load(DEFAULT_PWFLESH);
+    r->houses[i]      = image_load(DEFAULT_HOUSE);
+    r->flags[i]       = image_load(DEFAULT_FLAG);
+  }
   r->worms_iron  = image_load(DEFAULT_PWSKIN);
   
   
-  r->worms1_flesh = image_load(DEFAULT_PWFLESH);
-  r->worms2_flesh = image_load(DEFAULT_PWFLESH);
-  r->worms3_flesh = image_load(DEFAULT_PWFLESH);
-  r->worms4_flesh = image_load(DEFAULT_PWFLESH); 
-
   /* Map */ 
   r->breakable = image_load(DEFAULT_BREAKS);
   r->lrocks    = image_load(DEFAULT_LITTLE_ROCKS);
@@ -100,37 +97,29 @@ ressources_t* load_ressource(){
   r->pinball        = image_load(DEFAULT_PINBALL);
 
   /* other */  
-  r->house_p1       = image_load(DEFAULT_HOUSE);
-  r->house_p2       = image_load(DEFAULT_HOUSE);
-  r->house_p3       = image_load(DEFAULT_HOUSE);
-  r->house_p4       = image_load(DEFAULT_HOUSE);  
   r->hook           = image_load(DEFAULT_HOOK);
   r->health         = image_load(DEFAULT_HEALTH);
-  r->flag_p1        = image_load(DEFAULT_FLAG);
-  r->flag_p2        = image_load(DEFAULT_FLAG);
-  r->flag_p3        = image_load(DEFAULT_FLAG);
-  r->flag_p4        = image_load(DEFAULT_FLAG);  
   r->bonus          = image_load(DEFAULT_BONUS);
 
-  shift_ressource_colors(r->worms1_skin,-50,-50,50);
-  shift_ressource_colors(r->worms2_skin,-50,0,-50);
-  shift_ressource_colors(r->worms3_skin,-50,-50,50);
-  shift_ressource_colors(r->worms4_skin,-50,0,-50);
-  
-  shift_ressource_colors(r->worms1_flesh,-50,-50,50);
-  shift_ressource_colors(r->worms2_flesh,-50,0,-50);
-  shift_ressource_colors(r->worms3_flesh,-50,-50,50);
-  shift_ressource_colors(r->worms4_flesh,-50,0,-50);
+  shift_ressource_colors(r->worms_skins[PLAYER_1],-50,-50, 50);
+  shift_ressource_colors(r->worms_skins[PLAYER_2],-50, -0,-50);
+  shift_ressource_colors(r->worms_skins[PLAYER_3], -0,  0, 50);
+  shift_ressource_colors(r->worms_skins[PLAYER_4],100,  0, 0);
 
-  shift_ressource_colors(r->house_p1,-50,-50,50);
-  shift_ressource_colors(r->house_p2,-50,0,-50);
-  shift_ressource_colors(r->house_p3,-50,-50,50);
-  shift_ressource_colors(r->house_p4,-50,0,-50);
-  
-  shift_ressource_colors(r->flag_p1,-50,0,-50);
-  shift_ressource_colors(r->flag_p2,-50,-50,50);
-  shift_ressource_colors(r->flag_p3,-50,0,-50);
-  shift_ressource_colors(r->flag_p4,-50,-50,50);
+  shift_ressource_colors(r->worms_flesh[PLAYER_1],-50,-50, 50);
+  shift_ressource_colors(r->worms_flesh[PLAYER_2],-50, -0,-50);
+  shift_ressource_colors(r->worms_flesh[PLAYER_3],  0,  0, 50);
+  shift_ressource_colors(r->worms_flesh[PLAYER_4],100,  0, 0);
+
+  shift_ressource_colors(r->houses[PLAYER_1],-50,-50, 50);
+  shift_ressource_colors(r->houses[PLAYER_2],-50, -0,-50);
+  shift_ressource_colors(r->houses[PLAYER_3],  0,  0, 50);
+  shift_ressource_colors(r->houses[PLAYER_4],100,  0, 0);
+
+  shift_ressource_colors(r->flags[PLAYER_1],-50,-50, 50);
+  shift_ressource_colors(r->flags[PLAYER_2],-50, -0,-50);
+  shift_ressource_colors(r->flags[PLAYER_3],  0,  0, 50);
+  shift_ressource_colors(r->flags[PLAYER_4],100,  0, 0);
 
   return r;
 }
@@ -152,11 +141,15 @@ void shift_ressource_colors(SDL_Surface * s,Uint8 sr,Uint8 sg,Uint8 sb){
 
 void release_ressource(ressources_t* r){
   ASSERT(r)
-  SDL_FreeSurface( r->worms1_skin );
-  SDL_FreeSurface( r->worms2_skin );
+  /* Player */
+  for(int i=0;i<NB_PLAYERS;i++){
+    SDL_FreeSurface( r->worms_skins[i] );
+    SDL_FreeSurface( r->worms_flesh[i] );
+    SDL_FreeSurface( r->houses[i] );
+    SDL_FreeSurface( r->flags[i] );
+  }
+
   SDL_FreeSurface( r->worms_iron );
-  SDL_FreeSurface( r->worms1_flesh );
-  SDL_FreeSurface( r->worms2_flesh );
   SDL_FreeSurface( r->breakable  );
   SDL_FreeSurface( r->lrocks );
   SDL_FreeSurface( r->brocks );
@@ -198,14 +191,10 @@ void release_ressource(ressources_t* r){
   SDL_FreeSurface( r->missile );
   SDL_FreeSurface( r->napalm );
   SDL_FreeSurface( r->spikeball );
-  SDL_FreeSurface(  r->zimm );
+  SDL_FreeSurface( r->zimm );
   SDL_FreeSurface( r->pinball );
-  SDL_FreeSurface( r->house_p1 );
-  SDL_FreeSurface( r->house_p2 );
   SDL_FreeSurface( r->hook );
   SDL_FreeSurface( r->health );
-  SDL_FreeSurface( r->flag_p1 );
-  SDL_FreeSurface( r->flag_p2 );
   SDL_FreeSurface( r->bonus );
 }
 

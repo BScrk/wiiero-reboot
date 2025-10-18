@@ -33,6 +33,7 @@
 #include <SDL2/SDL.h>
 #include "camera.h"
 #include "tools.h"
+#include "nb_players.h"
 
 #define MOVE_PITCH 2
 #define ANGLE_PITCH 1
@@ -57,10 +58,10 @@ typedef enum{
     MAX_SIDE_POSITIONS = 2
 }side_t;
 
-typedef void (*on_coll_callback)( void* obj
+typedef void (*on_coll_callback)( void* obj  
                                 , int lastx, int lasty
                                 , int colx,  int coly
-                                , void* p1,void* p2
+                                , void* p1,void* p2 // TODO, replace by void* p[NB_PLAYERS]
                                 , void* userdata);
 
 typedef int (*test_coll_callback)(SDL_Surface* ground,int pos_x,int pos_y,int acc_x,int acc_y);
@@ -135,7 +136,7 @@ extern void object_add_to_list(obj_list_t* l,obj_t* obj);
 extern void proceed_dynamics_objs(obj_list_t* l,SDL_Surface* ground,SDL_Surface* statics
                   , void* coll_cb_userdata);
 
-extern void blit_dynamics_objs(obj_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,camera_t* cam4);
+extern void blit_dynamics_objs(obj_list_t* l,camera_t** cams);
 
 extern void clean_dynamic_obj_list(obj_list_t* l);
 

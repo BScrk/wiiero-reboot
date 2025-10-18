@@ -36,7 +36,7 @@
 #include "ressources.h"
 #include "weapons.h"
 #include <SDL2/SDL.h>
-
+#include "nb_players.h"
 
 #define CROP_SIZE 5
 
@@ -63,15 +63,6 @@
 
 #define JUMP_POWER 7
 #define PLAYER_STATS_UPDATE_IDLE 1000
-
-typedef enum{
-  PLAYER_1,
-  PLAYER_2,
-  PLAYER_3,
-  PLAYER_4,
-  NB_PLAYERS,
-  GAME_DRAW = NB_PLAYERS
-}player_id;
 
 
 enum{
@@ -191,9 +182,9 @@ void player_clean(player_t* p);
 void player_change_rope_len(player_t* p,int len_modif);
 void player_crop(player_t* p,map_t* m);
 void player_launch_hook(player_t* p);
-void player_remove_hook(player_t* p,player_t* other_p);
+void player_remove_hook(player_t* p,player_t** other_players);
 	
-//void player_event_update(player_t* p,map_t* m,player_t* other_p);
+//void player_event_update(player_t* p,map_t* m,player_t** other_pls);
 void player_update( player_t* p,SDL_Surface* ground, SDL_Surface* statics);
 
 void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag);
@@ -202,7 +193,7 @@ void player_look_down(player_t* p);
 void player_look_at(player_t* p, float angle);
 void player_jump(player_t* p);
 
-void player_is_aiming(player_t* p , player_t* target);
+void player_is_aiming(player_id pid , player_t** targets);
 
 void player_change(player_t* p,int indice);
 void player_fire(player_t* p);

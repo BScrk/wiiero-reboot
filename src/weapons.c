@@ -37,6 +37,8 @@
 #include "font.h"
 #include "sound_engine.h"
 #include "lang.h"
+#include "game.h"
+
 #define DEBUG_ELEMENT_POS   put_pix_color(c->cam_surface,o->pos_x-c->map_x,o->pos_y-c->map_y,255,0,0);
 
 typedef struct{
@@ -877,19 +879,10 @@ void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
   }
 }
 
-static void blit(bullet_list_t* l, bullet_cell_t* cell, camera_t* cam){
-  if((cell->bullet->obj.pos_x >= cam->map_x)
-   &&(cell->bullet->obj.pos_x < (cam->map_x + cam->w))
-   &&(cell->bullet->obj.pos_y >= cam->map_y)
-   &&(cell->bullet->obj.pos_y < (cam->map_y + cam->h)))
-     cell->bullet->obj.blit_cb(cam,cell->bullet,l);
-}
-void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,camera_t* cam4){
+
+void blit_bullets(bullet_list_t* l,camera_t** cams){
   ASSERT(l);
-  ASSERT(cam1);
-  ASSERT(cam2);
-  ASSERT(cam3);
-  ASSERT(cam4);  
+  ASSERT(cams);
   bullet_cell_t* cell = l->head;
   if(!cell)
     return;
@@ -901,26 +894,28 @@ void blit_bullets(bullet_list_t* l,camera_t* cam1,camera_t* cam2,camera_t* cam3,
         {
           player_t* p = ((player_t*)cell->bullet->p_origin);
           if(p->weapon_slots[p->selected_weapon]->id == WEAPON_LASER ){
-            // laser in use 
-            // blit last
-            cell->bullet->obj.blit_cb(cam1,cell->bullet,l);
-            cell->bullet->obj.blit_cb(cam2,cell->bullet,l);
-            cell->bullet->obj.blit_cb(cam3,cell->bullet,l);
-            cell->bullet->obj.blit_cb(cam4,cell->bullet,l);
+              // laser in use 
+              // blit last
+              for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+                cell->bullet->obj.blit_cb(cams[i],cell->bullet,l);
+              }
           }
           break;
         }
         case WEAPON_NINJA:
-          cell->bullet->obj.blit_cb(cam1,cell->bullet,l);
-          cell->bullet->obj.blit_cb(cam2,cell->bullet,l);
-          cell->bullet->obj.blit_cb(cam3,cell->bullet,l);
-          cell->bullet->obj.blit_cb(cam4,cell->bullet,l);          
+          for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+            cell->bullet->obj.blit_cb(cams[i],cell->bullet,l);
+          }
           break;
         default:
-          blit(l,cell,cam1);
-          blit(l,cell,cam2);
-          blit(l,cell,cam3);
-          blit(l,cell,cam4);
+          for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+            camera_t* cam = cams[i];
+            if((cell->bullet->obj.pos_x >= cam->map_x)
+            &&(cell->bullet->obj.pos_x < (cam->map_x + cam->w))
+            &&(cell->bullet->obj.pos_y >= cam->map_y)
+            &&(cell->bullet->obj.pos_y < (cam->map_y + cam->h)))
+                cell->bullet->obj.blit_cb(cam,cell->bullet,l);
+          }
           break;
       }
     }
@@ -954,11 +949,10 @@ void set_player_house(bullet_list_t* l,ressources_t* r,int playerid,void* layer)
   ASSERT(r)
   int x=0, y=0;
   get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1) 
+  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO: P3/P4 support
                                              ? WEAPON_P1_HOUSE: WEAPON_P2_HOUSE)
                                             ,x, y, 0, 0
-                                            ,((playerid == PLAYER_1) 
-                                             ? r->house_p1: r->house_p2)
+                                            ,r->houses[playerid]
                                             ,0l));
 }
 
@@ -968,11 +962,10 @@ void set_player_flag(bullet_list_t* l,ressources_t* r,int playerid,void* layer){
   ASSERT(r)
   int x=0, y=0;
   get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1) 
+  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO: P3/P4 support
                                              ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
                                             ,x, y, 0, 0
-                                            ,((playerid == PLAYER_1) 
-                                             ? r->flag_p1: r->flag_p2)
+                                            ,r->flags[playerid]
                                             ,0l));
 }
 
@@ -980,11 +973,10 @@ void drop_player_flag(bullet_list_t* l,ressources_t* r,int playerid,int x,int y)
   ASSERT(r)
   int acc_x= rand()%7-3;
   int acc_y= - rand()%3 - 1;
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1) 
-                                             ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
+  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO: P3/P4 support
+                                            ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
                                             ,x, y, acc_x, acc_y
-                                            ,((playerid == PLAYER_1) 
-                                             ? r->flag_p1: r->flag_p2)
+                                            ,r->flags[playerid]
                                             ,0l));
 }
 
