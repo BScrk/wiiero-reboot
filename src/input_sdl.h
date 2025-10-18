@@ -88,6 +88,7 @@ enum
 }; /* - -- --- WIIERO EVENTS ---- --- -- */
 
 /* SDL2 GameController support */
+// TODO 4P: Increase MAX_GAMEPADS to 4 for 4-player support
 #define MAX_GAMEPADS 2
 static SDL_GameController* gamepads[MAX_GAMEPADS] = {NULL, NULL};
 static int gamepad_count = 0;
@@ -238,6 +239,8 @@ static __inline__ void game_check_event(game_t *g)
     g->worms[PLAYER_2]->worms_action |= (ACTION_CHANGE | ACTION_FROM_KEYBOARD);
   if (keystate[P2_ACTION_KEY_FIRE])
     g->worms[PLAYER_2]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);
+
+  // TODO 4P: Add keyboard controls for PLAYER_3 and PLAYER_4
 
   // [OTHER]
   if (keystate[GAME_ACTION_KEY_EXIT])

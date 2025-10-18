@@ -269,6 +269,7 @@ void wiiero_update_world(game_t *g)
     }
 
   DBG(" - UPDATE BULLETS\n");
+  // TODO 4P: Refactor proceed_bullets() to accept array of all 4 players instead of just 2
   /* For now, keep using 2 players until we refactor proceed_bullets */
   proceed_bullets(g->wiiero_bullets, g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER], g->worms[PLAYER_1], g->worms[PLAYER_2], g->wiiero_map->layers[GROUND_MAP_LAYER]);
 
@@ -287,7 +288,7 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
     return (game_score[player].tag_time < g->wiiero_opt_got_time / 5);
     break;
   case GAME_CAPTURE_FLAG_MODE:
-    // TODO: improve flag warning (distance from flag ?)
+    // TODO 4P: improve flag warning (distance from flag ?)
     return (player == PLAYER_1)
                ? (g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG)
                : (g->worms[PLAYER_1]->worms_status & STATUS_HAVE_FLAG);
@@ -388,7 +389,7 @@ static __inline__ void wiiero_restart_game(game_t *g)
 
   if (g->wiiero_opt_game_mode == GAME_CAPTURE_FLAG_MODE){
     for(int8_t p = PLAYER_1; p < NB_PLAYERS; p++){
-      // Todo : if team only 2 houses ! 
+      // TODO 4P: if team only 2 houses ! 
       set_player_house(g->wiiero_bullets, g->wiiero_ressources, p, g->wiiero_map->layers[STATICS_MAP_LAYER]);
       set_player_flag(g->wiiero_bullets, g->wiiero_ressources, p, g->wiiero_map->layers[STATICS_MAP_LAYER]);
     }  
@@ -399,7 +400,7 @@ static __inline__ void wiiero_restart_game(game_t *g)
 
 static __inline__ void wiiero_got_game_mode(game_t *g)
 {
-  // TODO: refactor for more than 2 players 
+  // TODO 4P: refactor for more than 2 players 
   static int wiiero_time_tag = 0;
 
   if ((g->worms[PLAYER_1]->worms_status & STATUS_RESETED) && (g->worms[PLAYER_2]->worms_status & STATUS_RESETED))
@@ -471,7 +472,7 @@ static __inline__ void wiiero_got_game_mode(game_t *g)
 
 static __inline__ void wiiero_deathm_game_mode(game_t *g)
 {
-  // Todo: refactor for more than 2 players
+  // TODO 4P:: refactor for more than 2 players
   if (((game_score[PLAYER_1].nb_lifes == 0) && (g->worms[PLAYER_1]->worms_status & STATUS_ALIVE)) && ((game_score[PLAYER_2].nb_lifes == 0) && (g->worms[PLAYER_2]->worms_status & STATUS_ALIVE)))
   {
     /* draw */
@@ -494,7 +495,7 @@ static __inline__ void wiiero_deathm_game_mode(game_t *g)
 
 static __inline__ void wiiero_cflag_game_mode(game_t *g)
 {
-  // Todo: refactor for more than 2 players
+  // TODO 4P:: refactor for more than 2 players
   if (game_score[PLAYER_1].nb_flags == g->wiiero_opt_nb_flags)
   {
     /* p1 win */
@@ -661,7 +662,7 @@ static __inline__ void wiiero_menu(game_t *g)
       font_print_center(g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], wiiero_menu[i].label, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM]->w / 2, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM]->h / 6 + (i * 15), FONT_SELECTED);
   }
 
-  // Todo: handle more than 2 players ?
+  // TODO 4P:: handle more than 2 players ?
   if (g->wiiero_game_status == GAME_MENU)
   {
     if (g->worms[PLAYER_1]->worms_action & ACTION_UP || g->worms[PLAYER_2]->worms_action & ACTION_UP)
@@ -729,6 +730,8 @@ void option_change_p2_name_cb(game_t *g)
   name_to_change = PLAYER_2;
   g->wiiero_game_status = GAME_SET_EDIT_NAME;
 } /*--------------------------------------------------------------------------*/
+
+// TODO 4P: Add option_change_p3_name_cb() and option_change_p4_name_cb() callbacks
 
 void option_regen_new_map(game_t *g)
 {
@@ -983,6 +986,7 @@ static __inline__ void wiiero_option(game_t *g)
       {OPTION_SHADOWS, wiiero_label[WIIERO_LANG_OPT_MENU_SHADO], &(g->wiiero_opt_shadow), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
       {OPTION_P1_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P1NAM], game_nicknames[PLAYER_1], option_format_string_cb, 0L, 0L, option_change_p1_name_cb},
       {OPTION_P2_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P2NAM], game_nicknames[PLAYER_2], option_format_string_cb, 0L, 0L, option_change_p2_name_cb},
+      // TODO 4P: Add menu entries for PLAYER_3 and PLAYER_4 names (will need to update OPTION_MAX enum)
       {OPTION_BIS_MENU, wiiero_label[WIIERO_LANG_OPT_MENU_NEXT], 0L, 0L, 0L, 0L, option_menu_bis_cb},
       {OPTION_RETURN, wiiero_label[WIIERO_LANG_OPT_MENU_RETUR], 0L, 0L, 0L, 0L, option_return_cb}};
   wiiero_menu(g);
@@ -1241,6 +1245,7 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
 /* Round stats */
 static __inline__ void wiiero_round_stats(game_t *g)
 {
+  // TODO 4P: Check actions for all 4 players, not just PLAYER_1 and PLAYER_2
   if ((g->worms[PLAYER_1]->worms_action != ACTION_NONE) ||
       (g->worms[PLAYER_2]->worms_action != ACTION_NONE))
   {
@@ -1271,6 +1276,7 @@ int wiiero_load_config(game_t *g)
   if(!fread(&selected_amb, sizeof(Uint8), 1, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file)){return 0;}
+  // TODO 4P: Load nicknames for PLAYER_3 and PLAYER_4 from config file
   if(!fread(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file)){return 0;}
   /* Wiiero 1.2 new config file part */
   if(!fread(&mud_particle, sizeof(Uint8), 1, conf_file)){return 0;}
@@ -1313,6 +1319,7 @@ int wiiero_save_config(game_t *g)
   fwrite(&selected_amb, sizeof(Uint8), 1, conf_file);
   fwrite(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file);
   fwrite(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file);
+  // TODO 4P: Save nicknames for PLAYER_3 and PLAYER_4 to config file
   fwrite(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file);
   fwrite(&mud_particle, sizeof(Uint8), 1, conf_file);
   if (get_nb_loaded_lang_files())

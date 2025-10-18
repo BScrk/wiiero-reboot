@@ -841,6 +841,7 @@ void clean_bullets_list(bullet_list_t* l){
   l->head = 0l;
 }
 
+// TODO 4P: Refactor to accept array of 4 players instead of just p1 and p2
 void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
                      , void* p1, void* p2,void* coll_cb_userdata){
   ASSERT(l);
@@ -949,7 +950,7 @@ void set_player_house(bullet_list_t* l,ressources_t* r,int playerid,void* layer)
   ASSERT(r)
   int x=0, y=0;
   get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO: P3/P4 support
+  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO 4P: P3/P4 support
                                              ? WEAPON_P1_HOUSE: WEAPON_P2_HOUSE)
                                             ,x, y, 0, 0
                                             ,r->houses[playerid]
@@ -962,7 +963,7 @@ void set_player_flag(bullet_list_t* l,ressources_t* r,int playerid,void* layer){
   ASSERT(r)
   int x=0, y=0;
   get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO: P3/P4 support
+  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO 4P: P3/P4 support
                                              ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
                                             ,x, y, 0, 0
                                             ,r->flags[playerid]
@@ -973,7 +974,7 @@ void drop_player_flag(bullet_list_t* l,ressources_t* r,int playerid,int x,int y)
   ASSERT(r)
   int acc_x= rand()%7-3;
   int acc_y= - rand()%3 - 1;
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO: P3/P4 support
+  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO 4P: P3/P4 support
                                             ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
                                             ,x, y, acc_x, acc_y
                                             ,r->flags[playerid]

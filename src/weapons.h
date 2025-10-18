@@ -191,7 +191,7 @@ bullet_list_t* weapon_init_bullet_list();
 bullet_t* weapon_add_bullet_to_list(bullet_list_t* l,bullet_t* bullet);
 
 void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
-                     , void* p1, void* p2 // TODO, replace by void* p[NB_PLAYERS]
+                     , void* p1, void* p2 // TODO 4P: replace by void* p[NB_PLAYERS]
                      ,void* coll_cb_userdata);
 
 void blit_bullets(bullet_list_t* l,camera_t** cams);

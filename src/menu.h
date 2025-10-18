@@ -66,6 +66,7 @@
       , OPTION_SHADOWS
       , OPTION_P1_NAME
       , OPTION_P2_NAME
+      // TODO 4P: Add OPTION_P3_NAME and OPTION_P4_NAME here, update OPTION_MAX accordingly
       , OPTION_BIS_MENU
       , OPTION_RETURN
       , OPTION_MAX

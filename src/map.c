@@ -175,22 +175,7 @@ void fill_ground(map_t* m,ressources_t* r){
   int i,x,y;
   ASSERT(r);
   ASSERT(m);
-  /* put ground */
-    
-  /* TODO, REMOVE THIS (empty map for weapons tests) !!! *//*
-  SDL_FillRect( m->layers[GROUND_MAP_LAYER],NULL
-              , SDL_MapRGB(m->layers[GROUND_MAP_LAYER]->format
-                          , transparent_r_value
-                          , transparent_g_value
-                          , transparent_b_value));
-  SDL_SetColorKey(m->layers[GROUND_MAP_LAYER]
-               , SDL_TRUE
-               , SDL_MapRGB( m->layers[GROUND_MAP_LAYER]->format
-                           , transparent_r_value
-                           , transparent_g_value
-                           , transparent_b_value));
-  return;*/
-    
+  /* put ground */    
   for(x=0; x < MAP_WIDTH; x ++){
     for(y=0; y < MAP_HEIGHT; y ++){
       int color = rand() % CPALETT; 
