@@ -348,7 +348,7 @@ void player_pix(player_t* p){
 }
 
 
-__inline__ void player_is_aiming_player(player_t* p , player_t* target){
+static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
   float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X)
                                          - target->worms.pos_x)
                                + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y)
