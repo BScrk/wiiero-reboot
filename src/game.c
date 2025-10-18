@@ -1365,12 +1365,10 @@ static __inline__ void wiiero_how_to_play(game_t *g)
   h = g->wiiero_cameras[FULL_SCREEN_CAM]->h / 20 + 8;
   for (lab_id = EXTRA_INFO; lab_id < MAX_CMD; lab_id++)
   {
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], cmd_key[0][lab_id], 2 * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 6, h += (font_get_height(FONT_STANDARD) + 4), FONT_STANDARD);
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], cmd_key[1][lab_id], 3 * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 6, h, FONT_STANDARD);
-    // font_print_strict_pos( g->wiiero_cameras[FULL_SCREEN_CAM], cmd_key[2][lab_id]
-    //                      , 4*g->wiiero_cameras[FULL_SCREEN_CAM]->w / 6,  h , FONT_STANDARD);
-    // font_print_strict_pos( g->wiiero_cameras[FULL_SCREEN_CAM], cmd_key[3][lab_id]
-    //                      , 5*g->wiiero_cameras[FULL_SCREEN_CAM]->w / 6,  h , FONT_STANDARD);
+    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], cmd_key[0][lab_id], 2 * (g->wiiero_cameras[FULL_SCREEN_CAM]->w / 6), h += (font_get_height(FONT_STANDARD) + 4), FONT_STANDARD);
+    for( uint8_t k=1; k<MAX_CONTROLS; k++){
+      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], cmd_key[k][lab_id], (k+2) * (g->wiiero_cameras[FULL_SCREEN_CAM]->w / 6), h, FONT_STANDARD);
+    }
   }
 
   next_stat = GAME_MENU;
@@ -1384,7 +1382,7 @@ static __inline__ void wiiero_how_to_play(game_t *g)
 static __inline__ void wiiero_about(game_t *g)
 {
   static char *about[ABOUT_LINES] =
-      {"", "Two worms... lots of heavy weapons... lots of fun!", "", "Wiiero is a Liero clone for Wii PSP and PC.       ", "This program is free software.                    ", "", "Developement : BScrk                              ", "Design : BScrk  based on original liero design    ", "Beta testers : Kyfran and Pedro                   ", "Xtra weapons ideas : BScrk and Kyfran             ", "Original game concept : Joosa Riekkinen in 1998   ", "Sound Track : Binaerpilot      www.binaerpilot.no ", "Special thanks to Flark.                          ", "", "Wiiero is licensed under the GPL.                 ", "Thanks for trying Wiiero...                       ", "", "                                             BScrk", "Copyright [C] 2008 2009             wiiero.free.fr"};
+      {"", "Two (or 4) worms... lots of heavy weapons... lots of fun!", "", "Wiiero is a Liero clone for Wii PSP and Desktop.       ", "This program is free software.                    ", "", "Developement : BScrk & Kyfran                             ", "Design : BScrk  based on original liero design    ", "Beta testers : Kyfran and Pedro                   ", "Xtra weapons ideas : BScrk and Kyfran             ", "Original game concept : Joosa Riekkinen in 1998   ", "Sound Track : Binaerpilot      www.binaerpilot.no ", "Special thanks to Flark.                          ", "", "Wiiero is licensed under the GPL.                 ", "Thanks for trying Wiiero...                       ", "", "                                             BScrk", "Copyright [C] 2008 2009             wiiero.free.fr"};
 
   int h = g->wiiero_cameras[FULL_SCREEN_CAM]->h / 20;
   lab_id_t lab_id = MODE_CMD;

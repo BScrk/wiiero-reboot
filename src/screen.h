@@ -35,7 +35,7 @@
 
 
 #ifdef DESKTOP_MODE
-  #define SCREEN_RES   RES_640_480
+  #define SCREEN_RES   RES_800_600
 #endif
 
 
