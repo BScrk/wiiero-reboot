@@ -130,7 +130,7 @@ typedef enum{
     GAME_CAPTURE_FLAG_MODE,
 }game_mode_t;
 
-typedef struct{
+typedef struct player_s{
   player_id      id;
   Uint32         worms_status;
   Uint16         worms_action;
@@ -151,7 +151,8 @@ typedef struct{
   camera_t*      worms_camera;
   camera_t*      worms_stats_camera;
   ressources_t*  r;
-  Uint16         worms_rope_len;  
+  Uint16         worms_rope_len;
+  struct player_s * tricked_worm;
 }player_t;
 
 typedef struct{

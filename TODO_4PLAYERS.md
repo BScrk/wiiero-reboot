@@ -24,7 +24,7 @@
 ## 🔨 À faire - Gameplay Core
 
 ### src/game.c
-- [ ] **Line 272**: `proceed_bullets()` - Refactoriser pour accepter un tableau de tous les 4 joueurs au lieu de juste 2
+- [X] **Line 272**: `proceed_bullets()` - Refactoriser pour accepter un tableau de tous les 4 joueurs au lieu de juste 2
   - Actuellement passe seulement PLAYER_1 et PLAYER_2
   - Besoin de gérer collisions pour tous les joueurs
 
@@ -40,7 +40,7 @@
 ## 🔧 À faire - Armes & Collision
 
 ### src/weapons.c
-- [ ] **Line 844**: `proceed_bullets()` - Accepter un tableau de 4 joueurs
+- [X] **Line 844**: `proceed_bullets()` - Accepter un tableau de 4 joueurs
   - Actuellement signature: `void* p1, void* p2`
   - Proposé: `player_t** players` ou `void** players`
   - Impact sur toutes les fonctions de collision
