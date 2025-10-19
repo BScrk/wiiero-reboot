@@ -167,7 +167,10 @@ int worms_check_collision_cb(SDL_Surface* ground,int pos_x,int pos_y,int acc_x,i
 
 void worms_on_collision_cb( void* o , int lastx, int lasty
                           , int colx,  int coly
-                          , void* null, void* null2, void* userdata){
+                          //, void* null, void* null2
+                          , void* p_arr
+                          , uint8_t p_arr_sz
+                          , void* userdata){
   obj_t* obj = (obj_t*)o;
   player_t* player = (player_t*)userdata;
 
@@ -968,7 +971,7 @@ void player_remove_hook(player_t* p,player_t** other_p){
   /* Remove Hook */
   ASSERT(p->ninja_hook->last_bullet)
   for(player_id i=PLAYER_1;i<NB_PLAYERS;i++){
-    ninja_hook_disconnect(p->ninja_hook->last_bullet,p,other_p[i],0l);
+    ninja_hook_disconnect(p->ninja_hook->last_bullet,p,NB_PLAYERS,0l);//FIXME NB_PLAYERS was other player any pb ?
   }
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;

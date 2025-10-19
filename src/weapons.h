@@ -191,14 +191,14 @@ bullet_list_t* weapon_init_bullet_list();
 bullet_t* weapon_add_bullet_to_list(bullet_list_t* l,bullet_t* bullet);
 
 void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
-                     , void* p1, void* p2 // TODO 4P: replace by void* p[NB_PLAYERS]
+                     , void* p_arr, uint8_t p_arr_sz
                      ,void* coll_cb_userdata);
 
 void blit_bullets(bullet_list_t* l,camera_t** cams);
 
 void create_gift(bullet_list_t* l,ressources_t* r,int x,int y,int xtra_weap);
 
-void ninja_hook_disconnect(void* bullet,void *p1,void *p2, void* userdata);
+void ninja_hook_disconnect(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 void clean_bullets_list(bullet_list_t* l);
 
 void set_player_house(bullet_list_t* l,ressources_t* r,int playerid,void* layer);

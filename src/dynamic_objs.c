@@ -65,7 +65,10 @@ int std_dynamic_collision_cb( SDL_Surface* ground,int pos_x,int pos_y,int acc_x
 /* ************************************************************************** *
  * Particles collision callback                                               */
 void particle_on_collision_cb(void* obj, int lastx, int lasty, int colx,int coly
-                             ,void* none,void* none2, void* userdata){
+                             //,void* none,void* none2
+                             , void* none
+                             , uint8_t none2
+                             , void* userdata){
   SDL_Rect particle;
   ASSERT(obj)
   ASSERT(userdata)
@@ -144,7 +147,10 @@ obj_t* create_blood_drop(int x,int y){
 /* ************************************************************************** *
  * Mud particle collision callback                                            */
 void mud_on_collision_cb( void* obj, int lastx, int lasty, int colx,  int coly
-                             ,void* none,void* none2, void* userdata){
+                             //,void* none,void* none2
+                             , void* none
+                             , uint8_t none2
+                             , void* userdata){
   SDL_Rect particle;
   ASSERT(obj)
   ASSERT(userdata)
@@ -231,7 +237,10 @@ obj_t* create_blood_trail(int x,int y){
 /* ************************************************************************** *
  * Flesh peace collision callback                                             */
 void flesh_on_collision_cb( void* obj, int lastx, int lasty, int colx,  int coly
-                         ,void* none,void* none2, void* userdata){
+                         //,void* none,void* none2
+                         , void* none
+                         , uint8_t none2
+                         , void* userdata){
   SDL_Rect map_offset;
   SDL_Rect skin_offset;
   ASSERT(obj)
@@ -301,7 +310,10 @@ obj_t* create_flesh(int x,int y,ressources_t* r,int pl_id){
 /* ************************************************************************** *
  * Ammo shell collision callback                                              */
 void shell_on_collision_cb( void* obj, int lastx, int lasty, int colx,  int coly
-                          ,void* none, void* none2, void* userdata){
+                          //,void* none, void* none2
+                          , void* none
+                          , uint8_t none2
+                          , void* userdata){
   obj_t* o = (obj_t*)obj;  
   ASSERT(obj);
   if(o->acc_y<=1 && o->acc_y>=-1){
@@ -391,7 +403,11 @@ void explosion_blit_cb(camera_t* c,void* obj,void* userdata){
 
 /* ************************************************************************** *
  * Explosion update callback                                                  */
-void explosion_update(void* obj,void *p1,void *p2, void* userdata){
+void explosion_update(void* obj
+  //,void *p1,void *p2
+  , void* p_arr
+  , uint8_t p_arr_sz
+  , void* userdata){
   ASSERT(obj)
   obj_t* o = (obj_t*)obj;
   o->animation_pos = (o->animation_pos-1);
@@ -443,7 +459,11 @@ void smoke_blit_cb(camera_t* c,void* obj,void* userdata){
 
 /* ************************************************************************** *
  * Smoke update callback                                                      */
-void smoke_update(void* obj,void *p1,void *p2, void* userdata){
+void smoke_update(void* obj
+  //,void *p1,void *p2
+  , void* p_arr
+  , uint8_t p_arr_sz
+  , void* userdata){
   ASSERT(obj)
   obj_t* o = (obj_t*)obj;  
   o->animation_pos += 1;
@@ -474,7 +494,11 @@ obj_t* create_smoke(int x,int y,ressources_t* r){
 
 /* ************************************************************************** *
  * Rocket reactor particle update callback                                    */
-void reactor_particle_update(void* obj,void *p1,void *p2, void* userdata){
+void reactor_particle_update(void* obj
+  //,void *p1,void *p2
+  , void* p_arr
+  , uint8_t p_arr_sz
+  , void* userdata){
   ASSERT(obj)
   obj_t* o = (obj_t*)obj;  
   o->animation_pos += 1;
@@ -534,7 +558,11 @@ void nuke_smoke_blit_cb(camera_t* c,void* obj,void* userdata){
 
 /* ************************************************************************** *
  * Nuke smoke update callback                                                 */
-void nuke_smoke_update(void* obj,void *p1,void *p2, void* userdata){
+void nuke_smoke_update(void* obj
+  //,void *p1,void *p2
+  , void* p_arr
+  , uint8_t p_arr_sz
+  , void* userdata){
   ASSERT(obj)
   obj_t* o = (obj_t*)obj;  
   o->animation_pos += 1;
@@ -585,7 +613,11 @@ void flash_blit_cb(camera_t* c,void* obj,void* userdata){
 
 /* ************************************************************************** *
  * Flash update callback                                                      */
-void flash_update(void* obj,void *p1,void *p2, void* userdata){
+void flash_update(void* obj
+  //,void *p1,void *p2
+  , void* p_arr
+  , uint8_t p_arr_sz
+  , void* userdata){
   ASSERT(obj)
   obj_t* o = (obj_t*)obj;  
   o->animation_pos += 1;

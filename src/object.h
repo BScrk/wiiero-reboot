@@ -61,14 +61,18 @@ typedef enum{
 typedef void (*on_coll_callback)( void* obj  
                                 , int lastx, int lasty
                                 , int colx,  int coly
-                                , void* p1,void* p2 // TODO 4P: replace by void* p[NB_PLAYERS]
+                                //, void* p1,void* p2 // TODO 4P: replace by void* p[NB_PLAYERS]
+                                , void* p_arr, uint8_t p_arr_sz
                                 , void* userdata);
 
 typedef int (*test_coll_callback)(SDL_Surface* ground,int pos_x,int pos_y,int acc_x,int acc_y);
 
 typedef void (*blit_callback)(camera_t* c,void* obj,void* userdata);
 
-typedef void (*update_callback)(void* obj,void *p1,void *p2, void* userdata);
+typedef void (*update_callback)(void* obj
+  //,void *p1,void *p2
+   , void* p_arr, uint8_t p_arr_sz
+   , void* userdata);
 
 enum{
     ANGLE_DOWN_FULL,

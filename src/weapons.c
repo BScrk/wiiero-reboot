@@ -70,15 +70,15 @@ bullet_t* create_mg_bullet(weapon_id w_id,player_t *p,int acc_x,int acc_y); // m
 int bullet_collision_cb(SDL_Surface* ground,int pos_x,int pos_y,int acc_x,int acc_y);
 void bullet_blit_cb(camera_t* c,void* obj,void* userdata);
 void bullet_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* null,void* null2, void* userdata);
+                             ,void* null,uint8_t null2, void* userdata);
 /* *** SHOOTGUNS CALLBACKS *** */
 bullet_t* create_shootgun_bullet(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 bullet_t* create_super_shootgun_bullet(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void shootgun_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 /* *** RIFLE CALLBACK *** */
 void rifle_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 /* *** CANNON *** */
 bullet_t* create_cannonball(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void cannonball_blit_cb(camera_t* c,void* obj,void* userdata);
@@ -88,89 +88,89 @@ void cannonball_blit_cb(camera_t* c,void* obj,void* userdata);
 void grass_hopper_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_grass_hopper(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void grass_hopper_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
-void grass_hopper_update(void* bullet,void *p1,void *p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
+void grass_hopper_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 
 /* *** MINE *** */
 void mine_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
-void ceiling_mine_update(void* bullet,void *p1,void *p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
+void ceiling_mine_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** SPIKE TIME BOMB *** */
 void spike_tbomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** BOUNCY MINE *** */
 void bouncy_mine_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_bouncy_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void bouncy_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
                                  
 /* *** FLOAT MINE *** */
 void float_mine_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_float_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void float_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
-void float_mine_update_cb(void* bullet,void *p1,void *p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
+void float_mine_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** NINJA HOOK *** */
 bullet_t* create_ninja_hook(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void ninja_hook_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void ninja_hook_blit_cb(camera_t* c,void* obj,void* userdata);
-void ninja_hook_update_cb(void* bullet,void *p1,void *p2, void* userdata);
+void ninja_hook_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 
 /* *** GRENADE *** */
 void grenade_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata);
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata);
       
 /* *** GAUSS *** */
 void gauss_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_gauss(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void gauss_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata);
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata);
     
 /* *** CLUSTER BOMB *** */
 void cluster_bomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 , void* p1,void* p2, void* userdata);
+                                 , void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** CLUSTER PIECE *** */
 void cluster_piece_blit_cb(camera_t* c,void* obj,void* userdata);
 void cluster_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** ZIMM *** */
 void zimm_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_zimm(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void zimm_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** HOLY_GRENADE *** */
 void holy_grenade_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_holy_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void holy_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** GRASSHOPPER grenade *** */
 void gh_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                               , void* p1,void* p2, void* userdata);
+                               , void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** AN-M14 Grenade *** */
 bullet_t* create_red_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void an_m14_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                   , void* p1,void* p2, void* userdata);
+                                   , void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** GAZ Grenade *** */
 bullet_t* create_white_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void gaz_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
-void gaz_grenade_update(void* bullet,void *p1,void *p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
+void gaz_grenade_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** FLAME & FIRE *** */
 void fire_blit_cb(camera_t* c,void* obj,void* userdata);
@@ -180,140 +180,140 @@ bullet_t* create_flame(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 bullet_t* create_blue_flame(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 
 void flame_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void fire_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata); 
-void fire_update(void* bullet,void *p1,void *p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata); 
+void fire_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
  
  
 /* *** GAZ *** */
 bullet_t* create_gaz(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void gaz_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata); 
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata); 
 void gaz_blit_cb(camera_t* c,void* obj,void* userdata);
-void gaz_update(void* bullet,void *p1,void *p2, void* userdata);
+void gaz_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** SPIKE *** */
 void spike_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_spike(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void spike_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
  
 /* *** CHIQUITA BOMB *** */ 
 void chiquita_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_chiquita(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void chiquita_piece_blit_cb(camera_t* c,void* obj,void* userdata);
 void chiquita_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void sticky_chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 /* *** Blaster *** */
 void blaster_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_blaster(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void blaster_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata); 
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata); 
 
 /* *** RB Rampage *** */
 void rb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata); 
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata); 
  
 /* *** HELLRAIDER *** */
 void hellraider_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_hellraider(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void hellraider_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** NAPALM *** */
 void nflame_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 bullet_t* create_napalm(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void napalm_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void napalm_blit_cb(camera_t* c,void* obj,void* userdata);
 
 /* *** LASER *** */
 void laser_blit_cb(camera_t* c,void* obj,void* userdata);
 bullet_t* create_laser(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void laser_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
-void laser_update(void* bullet,void *p1,void *p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
+void laser_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** EXPLOSIVES *** */
 bullet_t* create_explosives(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void explosives_blit_cb(camera_t* c,void* bullet,void* userdata);
 void explosive_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
                              
 /* *** BOUNCY LARPA *** */
 bullet_t* create_bouncy_larpa(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void bouncy_larpa_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void bouncy_larpa_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** LARPA *** */
 bullet_t* create_larpa(weapon_id w_id,player_t *p,int acc_x,int acc_y);
-void larpa_update(void* bullet,void *p1,void *p2, void* userdata);
+void larpa_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** NUKE LARPA *** */
-void nuke_larpa_update(void* bullet,void *p1,void *p2, void* userdata);
+void nuke_larpa_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** CTRL NUKE LARPA *** */
-void cnuke_larpa_update(void* bullet,void *p1,void *p2, void* userdata);
+void cnuke_larpa_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** HEALTH GIFT *** */
 bullet_t* create_health_gift(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void health_gift_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void health_gift_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** CRACKLER *** */
 bullet_t* create_crackler(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void crackler_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void crackler_blit_cb(camera_t* c,void* bullet,void* userdata);
-void crackler_update(void* bullet,void *p1,void *p2, void* userdata);
+void crackler_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 /* *** MINI NUKE *** */
 bullet_t* create_mini_nuke(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void mini_nuke_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void mini_nuke_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** BIG NUKE *** */
 bullet_t* create_big_nuke(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void big_nuke_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void big_nuke_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 
 /* *** NUKE PIECE *** */
 bullet_t* create_nuke_piece(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void nuke_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void nuke_piece_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** VERMI NUKE*** */
 void vermi_nuke_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
                               
 /* *** DIRTBALL *** */
 bullet_t* create_dirtball(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void dirtball_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void dirtball_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** PLASMA CANNON *** */
 bullet_t* create_plasma_cannon(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void plasma_cannon_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void plasma_cannon_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** BAZOOKA *** */
 bullet_t* create_bazooka(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void bazooka_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void bazooka_blit_cb(camera_t* c,void* bullet,void* userdata);
 void wsprite_blit_cb(camera_t* c,void* bullet,void* userdata);
 
@@ -328,18 +328,18 @@ bullet_t* create_minirocket(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 /* *** VERMIFUGE *** */
 bullet_t* create_vermifuge(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void vermifuge_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** JUMPING MINE *** */
 bullet_t* create_jumping_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void jumping_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 void jmine_activ_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** JUMPING MINE *** */
 void trap_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata);
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** KAMIKASE *** */
 bullet_t* create_kamikase(weapon_id w_id,player_t *p,int acc_x,int acc_y);
@@ -347,7 +347,7 @@ bullet_t* create_kamikase(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 /* *** GHIFTS *** */ 
 bullet_t* create_bonus_gift(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void bonus_gift_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void bonus_gift_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** SPORE & Bug CASE *** */ 
@@ -355,21 +355,21 @@ bullet_t* create_spore(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void spore_blit_cb(camera_t* c,void* bullet,void* userdata);
 bullet_t* create_bug_case(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void bug_case_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void bug_case_blit_cb(camera_t* c,void* bullet,void* userdata);
-void bug_case_update(void* bullet,void *p1,void *p2, void* userdata);
+void bug_case_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 
 
 /* *** bug Grenade *** */
 bullet_t* create_bug_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void bug_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                   , void* p1,void* p2, void* userdata);
+                                   , void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 
 
 /* *** BOOBY *** */ 
 void  booby_trap_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
 bullet_t* create_booby_trap(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 
 /* *** MEDIKIT *** */
@@ -382,29 +382,29 @@ void shield_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 /* *** PLAYERS HOUSES *** */
 void house_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void house_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void house_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 
 /* *** PLAYERS FLAGS *** */
 void flag_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void flag_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata);
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void flag_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 
 /* *** PINBALL *** */
 bullet_t* create_pinball(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void  pinball_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             , void* p1,void* p2, void* userdata);
+                             , void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* *** MISSILE *** */
-void missile_update(void* bullet,void *p1,void *p2, void* userdata);
+void missile_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 void missile_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata);
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata);
 
 /* DEFAULT WEAPON DATA */
 typedef struct{
@@ -677,17 +677,17 @@ Uint8 weapon_shoot(weapon_t* w,void* p,int acc_x,int acc_y){
 }
 
 int weapon_check_all_collisions( bullet_t* bullet,SDL_Surface* ground,SDL_Surface* statics
-                               , void* p1, void* p2, void* userdata){
+                               , void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet);
   ASSERT(ground);
   ASSERT(statics);
-  ASSERT(p1);
-  ASSERT(p2);
+  ASSERT(p_arr);
+  ASSERT(p_arr_sz);
   int coll=0;
   int i = 0;
   int last_x = bullet->obj.pos_x;
   int last_y = bullet->obj.pos_y; 
-
+  player_t ** p = (player_t **) p_arr;
   if(!bullet->obj.test_collision_cb) return 0;
   if(bullet->obj.acc_x || bullet->obj.acc_y){
 
@@ -704,31 +704,32 @@ int weapon_check_all_collisions( bullet_t* bullet,SDL_Surface* ground,SDL_Surfac
         DBG("test %d (%d) %d (%d)\n",x,((i * bullet->obj.acc_x) / MOVE_DECOMPO)
                                       ,y,((i * bullet->obj.acc_y) / MOVE_DECOMPO));
 
-        if((((player_t*)p1)->worms_status & STATUS_ALIVE)
-            &&( x - bullet->range <= ((player_t*)p1)->worms.pos_x)
-            &&( x + bullet->range >= ((player_t*)p1)->worms.pos_x)
-            &&( y - bullet->range <= ((player_t*)p1)->worms.pos_y-3)
-            &&( y + bullet->range >= ((player_t*)p1)->worms.pos_y-3)){
-              ((player_t*)p1)->worms_status |= STATUS_SHOT;
+        if(((p[0])->worms_status & STATUS_ALIVE)
+            &&( x - bullet->range <= (p[0])->worms.pos_x)
+            &&( x + bullet->range >= (p[0])->worms.pos_x)
+            &&( y - bullet->range <= (p[0])->worms.pos_y-3)
+            &&( y + bullet->range >= (p[0])->worms.pos_y-3)){
+              p[0]->worms_status |= STATUS_SHOT;
               coll = 1;
         }
-        if((((player_t*)p2)->worms_status & STATUS_ALIVE)
-            &&( x - bullet->range <= ((player_t*)p2)->worms.pos_x)
-            &&( x + bullet->range >= ((player_t*)p2)->worms.pos_x)
-            &&( y - bullet->range <= ((player_t*)p2)->worms.pos_y-3)
-            &&( y + bullet->range >= ((player_t*)p2)->worms.pos_y-3)){
-              ((player_t*)p2)->worms_status |= STATUS_SHOT;
+        if((p[1]->worms_status & STATUS_ALIVE)
+            &&( x - bullet->range <= p[1]->worms.pos_x)
+            &&( x + bullet->range >= p[1]->worms.pos_x)
+            &&( y - bullet->range <= p[1]->worms.pos_y-3)
+            &&( y + bullet->range >= p[1]->worms.pos_y-3)){
+              p[1]->worms_status |= STATUS_SHOT;
               coll = 1;
         }
+        //TODO P3 P4 ?
         coll += bullet->obj.test_collision_cb(ground, x , y,bullet->obj.acc_x,bullet->obj.acc_y); 
         coll += bullet->obj.test_collision_cb(statics, x , y,bullet->obj.acc_x,bullet->obj.acc_y);
 
         if(coll!=0){
            if(bullet->obj.on_collision_cb)
-              bullet->obj.on_collision_cb(bullet,last_x,last_y,x,y,p1,p2,userdata);
+              bullet->obj.on_collision_cb(bullet,last_x,last_y,x,y,p_arr,p_arr_sz,userdata);
 
-           ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-           ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+           p[0]->worms_status &= ~STATUS_SHOT;
+           p[1]->worms_status &= ~STATUS_SHOT;
            return coll;
         }
         last_x = x;
@@ -739,26 +740,26 @@ int weapon_check_all_collisions( bullet_t* bullet,SDL_Surface* ground,SDL_Surfac
   }else{
         coll = 0;
         /* don't move */
-        if((((player_t*)p1)->worms_status & STATUS_ALIVE)
-            &&( last_x - bullet->range <= ((player_t*)p1)->worms.pos_x)
-            &&( last_x + bullet->range >= ((player_t*)p1)->worms.pos_x)
-            &&( last_y - bullet->range <= ((player_t*)p1)->worms.pos_y-3)
-            &&( last_y + bullet->range >= ((player_t*)p1)->worms.pos_y-3)){
-              ((player_t*)p1)->worms_status |= STATUS_SHOT;
+        if((p[0]->worms_status & STATUS_ALIVE)
+            &&( last_x - bullet->range <= p[0]->worms.pos_x)
+            &&( last_x + bullet->range >= p[0]->worms.pos_x)
+            &&( last_y - bullet->range <= p[0]->worms.pos_y-3)
+            &&( last_y + bullet->range >= p[0]->worms.pos_y-3)){
+              p[0]->worms_status |= STATUS_SHOT;
               coll = 1;
         }
-        if((((player_t*)p2)->worms_status & STATUS_ALIVE)
-            &&( last_x - bullet->range <= ((player_t*)p2)->worms.pos_x)
-            &&( last_x + bullet->range >= ((player_t*)p2)->worms.pos_x)
-            &&( last_y - bullet->range <= ((player_t*)p2)->worms.pos_y-3)
-            &&( last_y + bullet->range >= ((player_t*)p2)->worms.pos_y-3)){
-              ((player_t*)p2)->worms_status |= STATUS_SHOT;
+        if((p[1]->worms_status & STATUS_ALIVE)
+            &&( last_x - bullet->range <= p[1]->worms.pos_x)
+            &&( last_x + bullet->range >= p[1]->worms.pos_x)
+            &&( last_y - bullet->range <= p[1]->worms.pos_y-3)
+            &&( last_y + bullet->range >= p[1]->worms.pos_y-3)){
+              p[1]->worms_status |= STATUS_SHOT;
               coll = 1;
         } 
         if(coll){
-          bullet->obj.on_collision_cb(bullet,last_x,last_y,last_x,last_y,p1,p2,userdata);
-          ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-          ((player_t*)p2)->worms_status &= ~STATUS_SHOT;    
+          bullet->obj.on_collision_cb(bullet,last_x,last_y,last_x,last_y,p_arr,p_arr_sz,userdata);
+          p[0]->worms_status &= ~STATUS_SHOT;
+          p[1]->worms_status &= ~STATUS_SHOT;    
           return coll;
         }
   }
@@ -768,16 +769,18 @@ int weapon_check_all_collisions( bullet_t* bullet,SDL_Surface* ground,SDL_Surfac
   return coll;
 }
 
-static __inline__ void weapon_apply_physics(bullet_t* bullet,SDL_Surface* ground,SDL_Surface* statics,void* p1, void* p2,void* userdata){
+static __inline__ void weapon_apply_physics(bullet_t* bullet,SDL_Surface* ground,SDL_Surface* statics
+  ,void * p_arr, uint8_t p_arr_sz,void* userdata){
   ASSERT(bullet);
   ASSERT(ground);
   ASSERT(statics);
-  ASSERT(p1);
-  ASSERT(p2);
+  ASSERT(p_arr);
+  ASSERT(p_arr_sz);
+  //player_t ** p = (player_t **) p_arr;
   if(std_weap_info[bullet->w_id].timeout){
     if(bullet->timeout == 0){
       if(std_weap_info[bullet->w_id].on_collision_cb)
-        std_weap_info[bullet->w_id].on_collision_cb(bullet,bullet->obj.pos_x,bullet->obj.pos_y,bullet->obj.pos_x,bullet->obj.pos_y,p1,p2,ground);
+        std_weap_info[bullet->w_id].on_collision_cb(bullet,bullet->obj.pos_x,bullet->obj.pos_y,bullet->obj.pos_x,bullet->obj.pos_y,p_arr,p_arr_sz,ground);
       bullet->obj.remove_flag = 1;
       return;
     }else{
@@ -787,7 +790,7 @@ static __inline__ void weapon_apply_physics(bullet_t* bullet,SDL_Surface* ground
     if(bullet->timeout){
        bullet->timeout--;
       if(bullet->timeout == 0){
-        bullet_on_collision_cb(bullet,bullet->obj.pos_x,bullet->obj.pos_y,bullet->obj.pos_x,bullet->obj.pos_y,p1,p2,ground);
+        bullet_on_collision_cb(bullet,bullet->obj.pos_x,bullet->obj.pos_y,bullet->obj.pos_x,bullet->obj.pos_y,p_arr,p_arr_sz,ground);
         bullet->obj.remove_flag = 1;
         return;
       }
@@ -796,7 +799,7 @@ static __inline__ void weapon_apply_physics(bullet_t* bullet,SDL_Surface* ground
   DBG(" - APPLY GRAV\n");
   apply_gravity(&(bullet->obj));
   DBG(" - CHECK COLL\n");
-  weapon_check_all_collisions(bullet,ground,statics,p1,p2,userdata);
+  weapon_check_all_collisions(bullet,ground,statics,p_arr,p_arr_sz,userdata);
 }
 
 
@@ -843,16 +846,16 @@ void clean_bullets_list(bullet_list_t* l){
 
 // TODO 4P: Refactor to accept array of 4 players instead of just p1 and p2
 void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
-                     , void* p1, void* p2,void* coll_cb_userdata){
+                     , void * p_arr, uint8_t p_arr_sz,void* coll_cb_userdata){
   ASSERT(l);
   ASSERT(ground);
   ASSERT(statics);
-  ASSERT(p1);
-  ASSERT(p2);
+  ASSERT(p_arr);
+  ASSERT(p_arr_sz);
   bullet_cell_t* last_cell = 0l;
   bullet_cell_t* cell_to_remove = 0l;
   bullet_cell_t* cell = l->head;
-
+  //player_t ** p = (player_t **) p_arr;
   if(!cell)
     return;
 
@@ -872,8 +875,8 @@ void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
       l->len--;
     }else{
       if(cell->bullet->obj.update_cb)
-        cell->bullet->obj.update_cb(cell->bullet,p1,p2,ground);
-      weapon_apply_physics(cell->bullet,ground,statics,p1,p2,coll_cb_userdata);
+        cell->bullet->obj.update_cb(cell->bullet,p_arr,p_arr_sz,ground);
+      weapon_apply_physics(cell->bullet,ground,statics,p_arr,p_arr_sz,coll_cb_userdata);
       last_cell=cell;
       cell = cell->next;
     }
@@ -1107,12 +1110,12 @@ bullet_t* init_pieces(int posx,int posy,int accx,int accy, Uint8 r, Uint8 g, Uin
 /* * * * * * * * * * * * * * * EXPLOSIVE PIECES * * * * * * * * * * * * * * * */
 
 void explosive_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                    , void* p1,void* p2, void* userdata){
+                                    , void * p_arr, uint8_t p_arr_sz, void* userdata){
   int i;
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
-
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly, p_arr, p_arr_sz,  userdata);
+  player_t ** p = (player_t **) p_arr;
   for(i=0;i<4;i++){
-    weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
                    , init_pieces( colx + (rand() % 7) - 3
                                 , coly + (rand() % 7) - 3 
                                 , (rand() % 9) - 4
@@ -1243,30 +1246,31 @@ static __inline__ void bullet_explode(obj_list_t* dynamic_list,int x,int y, ress
 }
 
 void bullet_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
   bullet_t* b = (bullet_t*)bullet;
+  player_t ** p = (player_t **) p_arr;
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
   b->obj.remove_flag = 1;
-  bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                , ((player_t*)p1)->r,b->explo_size);
+  bullet_explode( p[0]->dynamic_list_link,colx,coly
+                , p[0]->r,b->explo_size);
 
-   if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+   if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-   if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+   if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
   b->obj.pos_x=colx;
   b->obj.pos_y=coly;
 }
@@ -1341,36 +1345,38 @@ void fire_blit_cb(camera_t* c,void* bullet,void* userdata){
 
 
 void flame_on_collision_cb( void* bullet,int lastx,int lasty,int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
   bullet_t* b = (bullet_t*)bullet;   
+  player_t ** p = (player_t **) p_arr;
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;  
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   drow_circle(ground,colx,coly,b->range,transparent_r_value,transparent_g_value,transparent_b_value);
-   if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+   if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-   if(((player_t*)p2)->worms_status & STATUS_SHOT) 
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+   if(p[1]->worms_status & STATUS_SHOT) 
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 }
 
 void fire_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
-  bullet_t* b = (bullet_t*)bullet;   
+  bullet_t* b = (bullet_t*)bullet;  
+  player_t ** p = (player_t **) p_arr; 
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;  
@@ -1379,20 +1385,20 @@ void fire_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int col
   put_pix_color(ground, colx-1, coly-1,transparent_r_value,transparent_g_value,transparent_b_value);
   put_pix_color(ground, colx+1, coly-1,transparent_r_value,transparent_g_value,transparent_b_value);
 
-   if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+   if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
 
-   if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
+   if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;  
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;  
   b->obj.acc_y = 0;
   b->obj.acc_x = 0;  
 }
 
 
-void fire_update(void* bullet,void *p1,void *p2, void* userdata){
+void fire_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t* b = (bullet_t*)bullet;
   if(b->obj.acc_x == 0)
     b->obj.acc_x = (rand()%41 - 20)/20 ;
@@ -1444,20 +1450,21 @@ bullet_t* create_gaz(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void gaz_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
-  bullet_t* b = (bullet_t*)bullet;    
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
+  bullet_t* b = (bullet_t*)bullet;   
+  player_t ** p = (player_t **) p_arr; 
   if(rand()%3 == 2){
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
   }  
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;  
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;  
   b->obj.acc_y = 0;
   b->obj.acc_x = 0;
 }
@@ -1484,7 +1491,7 @@ void gaz_blit_cb(camera_t* c,void* bullet,void* userdata){
     o->animation_pos = 4; 
 }
 
-void gaz_update(void* bullet,void *p1,void *p2, void* userdata){
+void gaz_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t* b = (bullet_t*)bullet;
   b->obj.acc_x += (rand()%3 ) - 1 ;
   b->obj.acc_y += (rand()%3 ) - 1 ;
@@ -1498,12 +1505,13 @@ void gaz_update(void* bullet,void *p1,void *p2, void* userdata){
 
 /* * * * * * * * * * * * * * * * * * RIFLE * * * * * * * * * * * * * * * * * */
 void rifle_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
-  int i;                         
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
+  int i;
+  player_t** p = (player_t **) p_arr;                         
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);
                             
   for(i=0;i<8;i++){
-    weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
                     , init_explos_pieces( colx + (rand() % 5) - 2
                                         , coly + (rand() % 5) - 2
                                         , (rand() % 7) - 3
@@ -1528,21 +1536,22 @@ bullet_t* create_vermifuge(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void vermifuge_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t *b =  (bullet_t*) bullet;
-  if((((player_t*)p1)->worms_status & STATUS_SHOT)
-     ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+  player_t ** p = (player_t **) p_arr;
+  if((p[0]->worms_status & STATUS_SHOT)
+     ||(p[1]->worms_status & STATUS_SHOT)){
     /* HIT !*/
     if(rand()%3==0)
       return;
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT; 
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT; 
     object_add_to_list( ((player_t*)b->p_origin)->dynamic_list_link
                        , create_nuke_smoke( b->obj.pos_x + (rand() % 7) - 3
                                           , b->obj.pos_y + (rand() % 7) - 3
@@ -1592,10 +1601,11 @@ bullet_t* create_super_shootgun_bullet(weapon_id w_id,player_t *p,int acc_x,int 
 }
 
 void shootgun_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
    bullet_t* bull = (bullet_t*) bullet;
-   bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata); 
-   weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+   player_t** p = (player_t **) p_arr;
+   bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata); 
+   weapon_add_bullet_to_list( p[0]->bullet_list_link
                 , init_pieces( colx + (rand() % 7) - 3
                                     , coly + (rand() % 7) - 3 
                                     , bull->obj.acc_x + (rand() % 9) - 4
@@ -1620,12 +1630,13 @@ bullet_t* create_bazooka(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void bazooka_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   int i=0;
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
+  player_t ** p = (player_t **) p_arr;
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly, p_arr, p_arr_sz,  userdata);
   for(i=0;i<4;i++)
-   weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
-                , init_explos_pieces( colx + (rand() % 7) - 3
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
+                 , init_explos_pieces( colx + (rand() % 7) - 3
                                                         , coly + (rand() % 7) - 3 
                                                         , (rand() % 9) - 4
                                                         , (rand() % 7) - 4
@@ -1813,11 +1824,12 @@ bullet_t* create_grass_hopper(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void grass_hopper_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);               						  
-  weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+  player_t ** p = (player_t **) p_arr;
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);               						  
+  weapon_add_bullet_to_list( p[0]->bullet_list_link
 		                       , init_explos_pieces( colx + (rand() % 7) - 3
 							                                 , coly + (rand() % 7) - 3 
 							                                 , (rand() % 9) - 4
@@ -1834,12 +1846,12 @@ void grass_hopper_on_collision_cb( void* bullet, int lastx, int lasty, int colx,
     b->obj.update_cb = std_weap_info[b->w_id].special_cb;
 }
 
-void grass_hopper_update(void* bullet,void *p1,void *p2, void* userdata){
+void grass_hopper_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
    ASSERT(bullet)
    bullet_t * b = (bullet_t *) bullet;
    
    if(rand()%8 == 7){
-     grass_hopper_on_collision_cb(bullet,b->obj.pos_x,b->obj.pos_y,b->obj.pos_x,b->obj.pos_y,p1,p2,userdata);
+     grass_hopper_on_collision_cb(bullet,b->obj.pos_x,b->obj.pos_y,b->obj.pos_x,b->obj.pos_y,p_arr,p_arr_sz,userdata);
    }
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -1856,8 +1868,9 @@ bullet_t* create_bug_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void bug_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                , void* p1,void* p2, void* userdata){
+                                , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   if( b->timeout == 0 ){
     /* BOOM !*/
     int i;
@@ -1867,14 +1880,14 @@ void bug_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
     colx = (colx >= ground->w) ? ground->w-1 : colx ;
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     b->obj.remove_flag = 1;
-    object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                    , create_explosion(colx,coly,((player_t*)p1)->r,b->explo_size));
+    object_add_to_list( p[0]->dynamic_list_link
+                    , create_explosion(colx,coly,p[0]->r,b->explo_size));
     drow_circle(ground,colx,coly,b->range+b->damages/10,transparent_r_value,transparent_g_value,transparent_b_value);
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
     for(i=0;i<200;i++){
-      bullet_t * bug = weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      bullet_t * bug = weapon_add_bullet_to_list( p[0]->bullet_list_link
                 ,init_bullet( WEAPON_SPORE_PARTICULE
                         , b->obj.pos_x + rand() %7 - 3
                         , b->obj.pos_y - rand() %5
@@ -1930,11 +1943,11 @@ bullet_t* create_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 
 
 void mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
-
-  if(  (((player_t*)p1)->worms_status & STATUS_SHOT)
-     ||(((player_t*)p2)->worms_status & STATUS_SHOT)
+  player_t ** p = (player_t **) p_arr;
+  if(  (p[0]->worms_status & STATUS_SHOT)
+     ||(p[1]->worms_status & STATUS_SHOT)
      || (b->timeout == 0))
     {
   /* BOOM !*/        
@@ -1946,20 +1959,20 @@ void mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int col
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
     for(i=0;i<10;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                               , init_pieces( colx + (rand() % 7) - 3
                                            , coly + (rand() % 7) - 3
                                            , (rand() % 9) - 4
@@ -1977,8 +1990,9 @@ void mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int col
 }
 
 void spike_tbomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   if(b->timeout == 0){
   /* BOOM !*/
     int i;
@@ -1989,11 +2003,11 @@ void spike_tbomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
     for(i=0;i<40;i++)
       weapon_add_bullet_to_list( ((player_t*)b->p_origin)->bullet_list_link
           ,init_with_skin(WEAPON_SPIKEBALLS
@@ -2013,7 +2027,7 @@ void spike_tbomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
   }
 }
 
-void ceiling_mine_update(void* bullet,void *p1,void *p2, void* userdata){
+void ceiling_mine_update(void* bullet,void * p_arr,uint8_t p_arr_sz, void* userdata){
   if(((bullet_t *) bullet)->obj.acc_y > -4)
   ((bullet_t *) bullet)->obj.acc_y -= 1;
 }
@@ -2031,8 +2045,9 @@ bullet_t* create_jumping_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 
 
 void jmine_activ_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   int i;
 
   if(b->timeout != 0){
@@ -2047,11 +2062,11 @@ void jmine_activ_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
   b->obj.remove_flag = 1;
-  bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                , ((player_t*)p1)->r,b->explo_size);
+  bullet_explode( p[0]->dynamic_list_link,colx,coly
+                , p[0]->r,b->explo_size);
 
   for(i=0;i<20;i++)
-  weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+  weapon_add_bullet_to_list( p[0]->bullet_list_link
     , init_explos_pieces( colx + (rand() % 5) - 2
                  , coly + (rand() % 5) - 2
                  , (rand() % 11) - 5
@@ -2060,17 +2075,17 @@ void jmine_activ_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
 }
 
 void jumping_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
-
-  if(  (((player_t*)p1)->worms_status & STATUS_SHOT)
-     ||(((player_t*)p2)->worms_status & STATUS_SHOT)
+  player_t ** p = (player_t **) p_arr;
+  if(  (p[0]->worms_status & STATUS_SHOT)
+     ||(p[1]->worms_status & STATUS_SHOT)
      || (b->timeout == 0))
     {
   /* BOOM !*/
     b->obj.remove_flag = 1;
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
               weapon_add_bullet_to_list( ((player_t*)b->p_origin)->bullet_list_link
                           ,init_with_skin( WEAPON_JMINE_ACTIV
                                 , b->obj.pos_x
@@ -2123,13 +2138,13 @@ bullet_t* create_bouncy_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void bouncy_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
  ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
-
+  player_t** p = (player_t **) p_arr;
   if( ( b->timeout == 0 )
-    ||(((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+    ||(p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
 
     /* BOOM !*/
     int i;
@@ -2140,27 +2155,27 @@ void bouncy_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
     for(i=0;i<5;i++)      
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                   , init_pieces( colx + (rand() % 7) - 3
                                 , coly + (rand() % 7) - 3
                                     , (rand() % 9) - 4
                                     , -(rand() % 5)
                               , 0xd5,0xd5,0xd5,0,2,b->p_origin));
     for(i=0;i<5;i++)      
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                   , init_pieces( colx + (rand() % 7) - 3
                               , coly + (rand() % 7) - 3
                                   , (rand() % 9) - 4
@@ -2192,25 +2207,26 @@ bullet_t* create_pinball(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void pinball_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
  ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;
   if( b->timeout == 0 )
     b->obj.remove_flag = 1;
 
-  if((((player_t*)p1)->worms_status & STATUS_SHOT)
-     ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+  if((p[0]->worms_status & STATUS_SHOT)
+     ||(p[1]->worms_status & STATUS_SHOT)){
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT){
-      ((player_t*)p1)->worms.acc_x += 2*b->obj.acc_x/3;
-      ((player_t*)p1)->worms.acc_y += 2*b->obj.acc_y/3;
+    if(p[0]->worms_status & STATUS_SHOT){
+      p[0]->worms.acc_x += 2*b->obj.acc_x/3;
+      p[0]->worms.acc_y += 2*b->obj.acc_y/3;
     }
-    if(((player_t*)p2)->worms_status & STATUS_SHOT){
-      ((player_t*)p2)->worms.acc_x += 2*b->obj.acc_x/3;
-      ((player_t*)p2)->worms.acc_y += 2*b->obj.acc_y/3;
+    if(p[1]->worms_status & STATUS_SHOT){
+      p[1]->worms.acc_x += 2*b->obj.acc_x/3;
+      p[1]->worms.acc_y += 2*b->obj.acc_y/3;
     }
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
   }
 
   if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
@@ -2259,12 +2275,13 @@ bullet_t* create_float_mine(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
   
 void float_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;
   if( ( b->timeout == 0 )
-    ||(((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+    ||(p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
 
     /* BOOM !*/
     int i;
@@ -2275,20 +2292,20 @@ void float_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
     for(i=0;i<8;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                                , init_pieces( colx + (rand() % 7) - 3
                                             , coly + (rand() % 7) - 3
                                             , (rand() % 9) - 4
@@ -2306,8 +2323,9 @@ void float_mine_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
   }
 }
 
-void float_mine_update_cb(void* bullet,void *p1,void *p2, void* userdata){
+void float_mine_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  //player_t** p = (player_t **) p_arr;   
   b->obj.acc_y = b->obj.acc_y/(rand()%2+1);
   b->obj.acc_x = b->obj.acc_x/(rand()%2+1);
   
@@ -2335,11 +2353,12 @@ bullet_t* create_explosives(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void explosive_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( b->timeout == 0 
-     || ((((player_t*)p1)->worms_status & STATUS_SHOT) 
-        || (((player_t*)p2)->worms_status & STATUS_SHOT)) ){
+     || ((p[0]->worms_status & STATUS_SHOT) 
+        || (p[1]->worms_status & STATUS_SHOT)) ){
     /* BOOM !*/
     SDL_Surface* ground = (SDL_Surface*) userdata;  
     colx = (colx < 0)? 0 : colx ;
@@ -2348,17 +2367,17 @@ void explosive_on_collision_cb( void* bullet, int lastx, int lasty, int colx, in
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(4*b->obj.acc_x/5);
@@ -2429,8 +2448,9 @@ bullet_t* create_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 
 
 void grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( b->timeout == 0 ){
     /* BOOM !*/
     int i;
@@ -2441,19 +2461,19 @@ void grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int 
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
     for(i=0;i<50;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                              , init_pieces( colx + (rand() % 11) - 5
                                           , coly + (rand() % 11) - 5 
                                           , (rand() % 11) - 5
@@ -2492,12 +2512,13 @@ void cluster_piece_blit_cb(camera_t* c,void* bullet,void* userdata){
 }
 
 void cluster_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
    int i;
-   bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
+  player_t** p = (player_t **) p_arr;    
+   bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);
 
     for(i=0;i<6;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
          , init_explos_pieces( colx + (rand() % 7) - 3
                               , coly + (rand() % 7) - 3 
                               , (rand() % 9) - 4
@@ -2506,11 +2527,12 @@ void cluster_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx
 }
 
 void cluster_bomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( ( b->timeout == 0 )
-    ||(((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+    ||(p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
     /* BOOM !*/
     int i;
     SDL_Surface* ground = (SDL_Surface*) userdata;  
@@ -2520,26 +2542,26 @@ void cluster_bomb_on_collision_cb( void* bullet, int lastx, int lasty, int colx,
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
     for(i=0;i<8;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                , init_with_skin(WEAPON_CLUSTER_PIECE
                        , colx +(rand() % 9) - 4
                        , coly +(rand() % 5) - 2
                        , (rand() % 9) - 4
                        , -(rand() % 4)
-                       , ((player_t*)p1)->r->cluster,b->p_origin)); 
+                       , p[0]->r->cluster,b->p_origin)); 
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -2564,14 +2586,15 @@ bullet_t* create_nuke_piece(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void nuke_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
- bullet_t * b = (bullet_t *) bullet;
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
+  bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;  
   if( b->timeout == 0 ){
     int i;
-    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
+    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);
     b->obj.remove_flag = 1;
     for(i=0;i<4;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
          , init_explos_pieces( colx + (rand() % 7) - 3
                               , coly + (rand() % 7) - 3 
                               , (rand() % 9) - 4
@@ -2626,20 +2649,21 @@ bullet_t* create_mini_nuke(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void mini_nuke_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( b->timeout == 0 ){
     int i;
-    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,userdata);
+    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,userdata);
     b->obj.remove_flag = 1;
     for(i=0;i<25;i++){
-      bullet_t * piece =  weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      bullet_t * piece =  weapon_add_bullet_to_list( p[0]->bullet_list_link
                                , init_with_skin( WEAPON_NUKE_PIECE
                                                , colx + (rand() % 13) - 6
                                                , coly - 2 - (rand() % 9)
                                                , (rand() % 9) - 4
                                                , -(rand() % 5)
-                                               , ((player_t*)p1)->r->nuke_piece
+                                               , p[0]->r->nuke_piece
                                                , b->p_origin));
       piece->timeout += (rand()%21) - 10;
     }
@@ -2686,20 +2710,21 @@ bullet_t* create_big_nuke(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void big_nuke_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( b->timeout == 0 ){
     int i;
-    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,userdata);
+    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,userdata);
     b->obj.remove_flag = 1;
     for(i=0;i<80;i++){
-     bullet_t * piece = weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+     bullet_t * piece = weapon_add_bullet_to_list( p[0]->bullet_list_link
                                , init_with_skin( WEAPON_NUKE_PIECE
                                                , colx + (rand() % 17) - 8
                                                , coly - 2 - (rand() % 9)
                                                , (rand() % 17) - 8
                                                , -(rand() % 8)
-                                               , ((player_t*)p1)->r->nuke_piece
+                                               , p[0]->r->nuke_piece
                                                , b->p_origin));
         piece->timeout += (rand()%21) - 10;
     }
@@ -2721,14 +2746,15 @@ void big_nuke_blit_cb(camera_t* c,void* bullet,void* userdata){
 
 /* * * * * * * * * * * * * * * * VERMI NUKE * * * * * * * * * * * * * * * * * */
 void vermi_nuke_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( b->timeout == 0 ){
     int i;                         
-    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,userdata);
+    bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,userdata);
     b->obj.remove_flag = 1;                        
     for(i=0;i<30;i++){
-      bullet_t * piece =  weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      bullet_t * piece =  weapon_add_bullet_to_list( p[0]->bullet_list_link
                                , init_bullet( WEAPON_VERMIFUGE
                                             , colx + (rand() % 17) - 8
                                             , coly - 2 - (rand() % 9)
@@ -2785,25 +2811,26 @@ void gauss_blit_cb(camera_t* c,void* bullet,void* userdata){
 }
 
 void gauss_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   int i,j;
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   for(i=0;i<4;i++){
     if(i<3){
-      bullet_on_collision_cb(bullet, 0, 0, colx+(i*b->obj.acc_x/3), coly+(i*b->obj.acc_y/3),p1, p2,  userdata);
+      bullet_on_collision_cb(bullet, 0, 0, colx+(i*b->obj.acc_x/3), coly+(i*b->obj.acc_y/3),p_arr, p_arr_sz,  userdata);
     }else{
       drow_circle((SDL_Surface*)userdata, colx+(i*b->obj.acc_x/3)
                                         , coly+(i*b->obj.acc_y/3)
                                         , b->range+3+b->damages/15
                                         ,transparent_r_value,transparent_g_value,transparent_b_value);
-      bullet_explode( ((player_t*)p1)->dynamic_list_link
+      bullet_explode( p[0]->dynamic_list_link
                     ,colx+(i*b->obj.acc_x/3)
                     ,coly+(i*b->obj.acc_y/3)
-                    , ((player_t*)p1)->r,b->explo_size+3);
+                    , p[0]->r,b->explo_size+3);
 
     }
     for(j=0;j<4;j++){ 
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
            , init_explos_pieces(  colx+(i*b->obj.acc_x/3) + (rand() % 7) - 3
                                 , coly+(i*b->obj.acc_y/3) + (rand() % 7) - 3 
                                 , (rand() % 3) - 1
@@ -2816,37 +2843,39 @@ void gauss_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int co
 
 /* * * * * * * * * * * * * * * PLAYERS HOUSES * * * * * * * * * * * * * * * * */
 void house_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   b->obj.acc_x = 0;
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  if((((player_t*)p1)->worms_status & STATUS_SHOT )
-     &&(((player_t*)p1)->worms_status & STATUS_HAVE_FLAG)){
-      ((player_t*)p1)->worms_status &= ~STATUS_HAVE_FLAG;
+  if((p[0]->worms_status & STATUS_SHOT )
+     &&(p[0]->worms_status & STATUS_HAVE_FLAG)){
+      p[0]->worms_status &= ~STATUS_HAVE_FLAG;
       game_score[PLAYER_1].nb_flags++;
-      set_player_flag( ((player_t*)p1)->bullet_list_link,((player_t*)p1)->r,PLAYER_1, (SDL_Surface*)userdata);
+      set_player_flag( p[0]->bullet_list_link,p[0]->r,PLAYER_1, (SDL_Surface*)userdata);
   }
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 }
 
 void house_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   b->obj.acc_x = 0;
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  if((((player_t*)p2)->worms_status & STATUS_SHOT )
-     &&(((player_t*)p2)->worms_status & STATUS_HAVE_FLAG)){
-      ((player_t*)p2)->worms_status &= ~STATUS_HAVE_FLAG;
+  if((p[1]->worms_status & STATUS_SHOT )
+     &&(p[1]->worms_status & STATUS_HAVE_FLAG)){
+      p[1]->worms_status &= ~STATUS_HAVE_FLAG;
       game_score[PLAYER_2].nb_flags++;
-      set_player_flag( ((player_t*)p2)->bullet_list_link,((player_t*)p2)->r,PLAYER_2, (SDL_Surface*)userdata);
+      set_player_flag( p[1]->bullet_list_link,p[1]->r,PLAYER_2, (SDL_Surface*)userdata);
   }
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 }
 
 void house_blit_cb(camera_t* c,void* bullet,void* userdata){
@@ -2870,35 +2899,37 @@ void house_blit_cb(camera_t* c,void* bullet,void* userdata){
 
 /* * * * * * * * * * * * * * * PLAYERS FLAGS * * * * * * * * * * * * * * * * */
 void flag_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   b->obj.acc_x = 0;
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  if((((player_t*)p1)->worms_status & STATUS_SHOT )
-     && !(((player_t*)p2)->worms_status & STATUS_HAVE_FLAG)){
-    ((player_t*)p1)->worms_status |= STATUS_HAVE_FLAG;
+  if((p[0]->worms_status & STATUS_SHOT )
+     && !(p[1]->worms_status & STATUS_HAVE_FLAG)){
+    p[0]->worms_status |= STATUS_HAVE_FLAG;
     b->obj.remove_flag = 1;
   }
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 }
 
 void flag_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   b->obj.acc_x = 0;
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  if((((player_t*)p2)->worms_status & STATUS_SHOT )
-     && !(((player_t*)p1)->worms_status & STATUS_HAVE_FLAG)){
-    ((player_t*)p2)->worms_status |= STATUS_HAVE_FLAG;
+  if((p[1]->worms_status & STATUS_SHOT )
+     && !(p[0]->worms_status & STATUS_HAVE_FLAG)){
+    p[1]->worms_status |= STATUS_HAVE_FLAG;
     b->obj.remove_flag = 1;
   }
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 }
 
 void flag_blit_cb(camera_t* c,void* bullet,void* userdata){
@@ -2952,26 +2983,27 @@ bullet_t* create_zimm(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void zimm_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void* p_arr,uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
 
   if( ( b->timeout == 0 )
-    ||(((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+    ||(p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
 
     b->obj.remove_flag = 1;
-    object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                      , create_flash(colx,coly,((player_t*)p1)->r));
+    object_add_to_list( p[0]->dynamic_list_link
+                      , create_flash(colx,coly,p[0]->r));
 
-     if(((player_t*)p1)->worms_status & STATUS_SHOT)
-       player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+     if(p[0]->worms_status & STATUS_SHOT)
+       player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-     if(((player_t*)p2)->worms_status & STATUS_SHOT)
-       player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+     if(p[1]->worms_status & STATUS_SHOT)
+       player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-     ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-     ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+     p[0]->worms_status &= ~STATUS_SHOT;
+     p[1]->worms_status &= ~STATUS_SHOT;
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -b->obj.acc_x;
@@ -3021,8 +3053,9 @@ void holy_grenade_blit_cb(camera_t* c,void* bullet,void* userdata){
 }
 
 void holy_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   if( b->timeout == 0 ){
     /* BOOM !*/
     int i;
@@ -3033,44 +3066,44 @@ void holy_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx,
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     drow_circle(ground,colx,coly,b->range+b->damages,transparent_r_value,transparent_g_value,transparent_b_value);
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                    , create_explosion(colx,coly-5,((player_t*)p1)->r,b->explo_size));
-    object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                    , create_explosion(colx-4,coly+4,((player_t*)p1)->r,b->explo_size));
-    object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                    , create_explosion(colx+4,coly+4,((player_t*)p1)->r,b->explo_size));
+    object_add_to_list( p[0]->dynamic_list_link
+                    , create_explosion(colx,coly-5,p[0]->r,b->explo_size));
+    object_add_to_list( p[0]->dynamic_list_link
+                    , create_explosion(colx-4,coly+4,p[0]->r,b->explo_size));
+    object_add_to_list( p[0]->dynamic_list_link
+                    , create_explosion(colx+4,coly+4,p[0]->r,b->explo_size));
     
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)                 
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)                 
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
                         
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)                 
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)                 
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
                   
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;         
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;         
     for(i=0;i<20;i++){        
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
 		    , init_explos_pieces( colx + (rand() % 11) - 5
                             , coly + (rand() % 11) - 5 
                             , (rand() % 21) - 10
                             , (rand() % 21) - 10
                             , 0xd5,0xd5,0xd5,0,5,b->p_origin));
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
 		    , init_explos_pieces( colx + (rand() % 11) - 5
                             , coly-5 + (rand() % 11) - 5 
                             , (rand() % 21) - 10
                             , (rand() % 21) - 10
                             , 0xd5,0xd5,0xd5,0,5,b->p_origin));
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
 		    , init_explos_pieces( colx-4 + (rand() % 11) - 5
                             , coly+4 + (rand() % 11) - 5 
                             , (rand() % 21) - 10
                             , (rand() % 21) - 10
                             , 0xd5,0xd5,0xd5,0,5,b->p_origin));
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
 		    , init_explos_pieces( colx-4 + (rand() % 11) - 5
                             , coly+4 + (rand() % 11) - 5 
                             , (rand() % 21) - 10
@@ -3092,8 +3125,9 @@ void holy_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx,
 
 /* * * * * * * * * * * * * GRASS HOPPER GRENADE * * * * * * * * * * * * * * * */
 void gh_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   if( b->timeout == 0 ){
     /* BOOM !*/        
     int i;
@@ -3103,26 +3137,26 @@ void gh_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
     colx = (colx >= ground->w) ? ground->w-1 : colx ;  
     coly = (coly >= ground->h) ? ground->h-1 : coly ;                              
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
                     
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)                 
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)                 
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
                         
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)                 
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)                 
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
                   
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
     
       for(i=0;i<3;i++)
-        weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+        weapon_add_bullet_to_list( p[0]->bullet_list_link
                      ,init_with_skin(WEAPON_GRASSHAPPER
                          , colx + rand() %15 - 7
                          , coly + rand() %15 - 7
                          , rand() %5 - 2
                          , rand() %5 - 2
-                         , ((player_t*)p1)->r->grass_hopper,b->p_origin));
+                         , p[0]->r->grass_hopper,b->p_origin));
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3149,18 +3183,19 @@ bullet_t* create_plasma_cannon(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void plasma_cannon_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   int i;                         
   bullet_t * b = (bullet_t *) bullet;   
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);                                
+  player_t ** p = (player_t **) p_arr;
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);                                
   for(i=0;i<30;i++){
-    bullet_t * flam = weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    bullet_t * flam = weapon_add_bullet_to_list( p[0]->bullet_list_link
                   ,init_with_skin( WEAPON_BLUE_FIRE
                          , colx + rand() %17 - 8
                          , coly + rand() %17 - 8
                          , rand() %15 - 7
                          , rand() %10 - 7
-                         , ((player_t*)p1)->r->blue_flamer,b->p_origin));
+                         , p[0]->r->blue_flamer,b->p_origin));
     flam->timeout += rand()%21-10;
   }                             
 }
@@ -3202,8 +3237,9 @@ bullet_t* create_red_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void an_m14_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                            , void* p1,void* p2, void* userdata){
+                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   if( b->timeout == 0 ){
     /* BOOM !*/
     int i;
@@ -3213,21 +3249,21 @@ void an_m14_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int col
     colx = (colx >= ground->w) ? ground->w-1 : colx ;
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     b->obj.remove_flag = 1;
-    object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                    , create_explosion(colx,coly,((player_t*)p1)->r,b->explo_size));
+    object_add_to_list( p[0]->dynamic_list_link
+                    , create_explosion(colx,coly,p[0]->r,b->explo_size));
     drow_circle(ground,colx,coly,b->range+b->damages/10,transparent_r_value,transparent_g_value,transparent_b_value);
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
       for(i=0;i<200;i++){
-        bullet_t * flam = weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+        bullet_t * flam = weapon_add_bullet_to_list( p[0]->bullet_list_link
                   ,init_with_skin( WEAPON_FIRE
                          , colx + rand() %17 - 8
                          , coly + rand() %17 - 8
                          , rand() %15 - 7
                          , rand() %10 - 7
-                         , ((player_t*)p1)->r->flamer,b->p_origin));
+                         , p[0]->r->flamer,b->p_origin));
         flam->timeout += rand()%21-10;
       }
 
@@ -3254,13 +3290,14 @@ bullet_t* create_bug_case(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void bug_case_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   if( b->timeout == 0 ){
     /* BOOM !*/                                    
     b->obj.remove_flag = 1;     
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT; 
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT; 
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3291,10 +3328,11 @@ void bug_case_blit_cb(camera_t* c,void* bullet,void* userdata){
   camera_blit_surface_on(c,o->skin,&skin_offset,&camera_offset);
 }
 
-void bug_case_update(void* bullet,void *p1,void *p2, void* userdata){
+void bug_case_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if(b->timeout < 25*8){
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                 ,init_bullet( WEAPON_SPORE_PARTICULE
                        , b->obj.pos_x + rand() %7 - 3
                        , b->obj.pos_y - rand() %5
@@ -3319,13 +3357,14 @@ bullet_t* create_white_grenade(weapon_id w_id,player_t *p,int acc_x,int acc_y){
                                    , p->r->gaz_grenade,p)); 
 }
 void gaz_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr;   
   if( b->timeout == 0 ){
     /* BOOM !*/
     b->obj.remove_flag = 1;     
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT; 
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT; 
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3337,18 +3376,19 @@ void gaz_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, 
   }
 }
 
-void gaz_grenade_update(void* bullet,void *p1,void *p2, void* userdata){
+void gaz_grenade_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if(b->timeout < 25*8){
     int i=0;
     for(i=0;i<2;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                 ,init_with_skin( WEAPON_GAZ_PARTICLE
                        , b->obj.pos_x + rand() %3 - 1
                        , b->obj.pos_y + rand() %3 - 1
                        , 0
                        , 0
-                       , ((player_t*)p1)->r->smoke,b->p_origin));
+                       , p[0]->r->smoke,b->p_origin));
   }else{
     if(b->timeout == 25*8)
       sengine_play(WIIERO_SOUND_GAZ,SENGINE_PLAY_ACTION);
@@ -3394,21 +3434,22 @@ bullet_t* create_spike(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void spike_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
-  if( (((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+  player_t** p = (player_t **) p_arr; 
+  if( (p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
     /* SPLASH :-) !*/                         
     b->obj.remove_flag = 1;
                     
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)                 
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)                 
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
                         
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)                 
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)                 
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
                   
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;         
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;         
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(4*b->obj.acc_x/5);
@@ -3456,8 +3497,9 @@ void chiquita_blit_cb(camera_t* c,void* bullet,void* userdata){
 }
 
 void chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if( b->timeout == 0 ){
     /* BOOM !*/
     int i;
@@ -3467,26 +3509,26 @@ void chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
     colx = (colx >= ground->w) ? ground->w-1 : colx ;
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
       for(i=0;i<20;i++)
-        weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+        weapon_add_bullet_to_list( p[0]->bullet_list_link
                      ,init_with_skin(WEAPON_CHIQUITA_PIECE
                          ,colx + (rand() % 21) - 10
                          , coly + (rand() % 21) - 10
                          , (rand() % 21) - 10
                          , (rand() % 21) - 15
-                         , ((player_t*)p1)->r->chiquita_piece,b->p_origin));
+                         , p[0]->r->chiquita_piece,b->p_origin));
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3521,16 +3563,16 @@ void chiquita_piece_blit_cb(camera_t* c,void* bullet,void* userdata){
 }
 
 void chiquita_piece_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   int i;
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
-
+  player_t** p = (player_t **) p_arr; 
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata); 
   for(i=0;i<3;i++){
-    weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
         , init_pieces( colx + (rand() % 7) - 3, coly + (rand() % 7) - 3 
                             , (rand() % 9) - 4, -(rand() % 5)
                             , 0xc8,0xc0,0x30,0,4,((bullet_t*)bullet)->p_origin));
-    weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
         , init_pieces( colx + (rand() % 7) - 3, coly + (rand() % 7) - 3 
                             , (rand() % 9) - 4, -(rand() % 5)
                             , 0xa0,0x98,0x28,0,4,((bullet_t*)bullet)->p_origin));
@@ -3539,8 +3581,9 @@ void chiquita_piece_on_collision_cb( void* bullet, int lastx, int lasty, int col
 
 
 void sticky_chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if( b->timeout == 0 ){
     /* BOOM !*/ 
     int i;
@@ -3550,26 +3593,26 @@ void sticky_chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int co
     colx = (colx >= ground->w) ? ground->w-1 : colx ;
     coly = (coly >= ground->h) ? ground->h-1 : coly ;
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
 
       for(i=0;i<15;i++)
-        weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+        weapon_add_bullet_to_list( p[0]->bullet_list_link
                      ,init_with_skin(WEAPON_CHIQUITA_PIECE
                          ,colx + (rand() % 11) - 5
                          , coly + (rand() % 11) - 5 
                          , (rand() % 21) - 10
                          , (rand() % 21) - 15
-                         , ((player_t*)p1)->r->chiquita_piece,b->p_origin));
+                         , p[0]->r->chiquita_piece,b->p_origin));
   }else{
     b->obj.acc_x = (b->obj.acc_x>0)?1:-1;
     b->obj.acc_y = (b->obj.acc_y>0)?1:-1;
@@ -3588,22 +3631,23 @@ void sticky_chiquita_on_collision_cb( void* bullet, int lastx, int lasty, int co
 /* * * * * * * * * * * * * * * * * RB Rampage * * * * * * * * * * * * * * * * * * * */
 
 void rb_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
-  if( (((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+  player_t** p = (player_t **) p_arr;   
+  if( (p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
     /* SPLASH :-) !*/
     b->obj.remove_flag = 1;
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size); 
-    if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size); 
+    if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-    if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+    if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3643,27 +3687,28 @@ bullet_t* create_hellraider(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void hellraider_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
   bullet_t* b = (bullet_t*)bullet;
+  player_t** p = (player_t **) p_arr; 
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
 
-   if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+   if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-   if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
+   if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata); 
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 
   if(( b->timeout % 10 == 0) && (b->obj.acc_y>0))
     b->obj.acc_y = -(b->obj.acc_y)-1;
@@ -3673,11 +3718,11 @@ void hellraider_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
     int i;
     b->obj.remove_flag = 1;
     drow_circle(ground,colx,coly,b->damages,transparent_r_value,transparent_g_value,transparent_b_value); 
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
     for(i=0;i<8;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                    ,init_with_skin(WEAPON_CANNON
                        ,colx + (rand() % 11) - 5
                        , coly + (rand() % 11) - 5 
@@ -3685,7 +3730,7 @@ void hellraider_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
                        , (rand() % 11) - 5
                        , ((player_t*)b->p_origin)->r->cannon,b->p_origin));
     for(i=0;i<20;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
                                 , init_explos_pieces( colx + (rand() % 11) - 5
                                                     , coly + (rand() % 11) - 5 
                                                     , (rand() % 21) - 10
@@ -3698,26 +3743,27 @@ void hellraider_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
 /* * * * * * * * * * * * * * * * * NAPALM * * * * * * * * * * * * * * * * * * * */
 /* napalm flame */
 void nflame_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
   bullet_t* b = (bullet_t*)bullet;
+  player_t** p = (player_t **) p_arr;   
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value);
-   if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+   if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
 
-   if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
+   if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
   b->obj.pos_x = colx;
   b->obj.pos_y = coly;
 }
@@ -3734,26 +3780,27 @@ bullet_t* create_napalm(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void napalm_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
   int i;
   bullet_t* b = (bullet_t*)bullet;
+  player_t** p = (player_t **) p_arr; 
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   for(i=0;i<10;i++)
-    weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
                  ,init_with_skin(WEAPON_NAPALM_FLAME
                      ,colx + (rand() % 11) - 5
                      , coly + (rand() % 11) - 5 
                      , (rand() % 5) - 2
                      , (rand() % 5) - 3
-                     , ((player_t*)p1)->r->cannon,b->p_origin)); 
+                     , p[0]->r->cannon,b->p_origin)); 
   b->obj.remove_flag = 1;
 }
 
@@ -3783,12 +3830,13 @@ void napalm_blit_cb(camera_t* c,void* bullet,void* userdata){
 
 
 void  booby_trap_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                           , void* p1,void* p2, void* userdata){
+                           , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t *b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if((b->timeout == 0 )
-     ||(((player_t*)p1)->worms_status & STATUS_SHOT)
-     ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
-     bullet_on_collision_cb(bullet,lastx, lasty, colx, coly,p1,p2,userdata);
+     ||(p[0]->worms_status & STATUS_SHOT)
+     ||(p[1]->worms_status & STATUS_SHOT)){
+     bullet_on_collision_cb(bullet,lastx, lasty, colx, coly,p_arr,p_arr_sz,userdata);
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(7*b->obj.acc_x/10);
@@ -3837,27 +3885,28 @@ bullet_t* create_bonus_gift(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void bonus_gift_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if( b->timeout == 0 )
     b->obj.remove_flag = 1;
 
-  if(((player_t*)p1)->worms_status & STATUS_SHOT){
-     secure_free(((player_t*)p1)->weapon_slots[((player_t*)p1)->selected_weapon]);
-     ((player_t*)p1)->weapon_slots[((player_t*)p1)->selected_weapon] = weapon_init(b->damages);
+  if(p[0]->worms_status & STATUS_SHOT){
+     secure_free(p[0]->weapon_slots[p[0]->selected_weapon]);
+     p[0]->weapon_slots[p[0]->selected_weapon] = weapon_init(b->damages);
     b->obj.remove_flag = 1;
     sengine_play(WIIERO_SOUND_GIFT,SENGINE_PLAY_ACTION);
   }
   
-  if(((player_t*)p2)->worms_status & STATUS_SHOT){
-     secure_free(((player_t*)p2)->weapon_slots[((player_t*)p2)->selected_weapon]);
-     ((player_t*)p2)->weapon_slots[((player_t*)p2)->selected_weapon] = weapon_init(b->damages);
+  if(p[1]->worms_status & STATUS_SHOT){
+     secure_free(p[1]->weapon_slots[p[1]->selected_weapon]);
+     p[1]->weapon_slots[p[1]->selected_weapon] = weapon_init(b->damages);
     b->obj.remove_flag = 1;
     sengine_play(WIIERO_SOUND_GIFT,SENGINE_PLAY_ACTION);
   }
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 
   if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
     b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3903,25 +3952,26 @@ bullet_t* create_health_gift(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void health_gift_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if( b->timeout == 0 )
     b->obj.remove_flag = 1;
 
-  if(((player_t*)p1)->worms_status & STATUS_SHOT){
-    player_regen(((player_t*)p1),b->damages);
+  if(p[0]->worms_status & STATUS_SHOT){
+    player_regen((p[0]),b->damages);
     b->obj.remove_flag = 1;
     sengine_play(WIIERO_SOUND_HEALTH,SENGINE_PLAY_ACTION);
   }
 
-  if(((player_t*)p2)->worms_status & STATUS_SHOT){
-    player_regen(((player_t*)p2),b->damages); 
+  if(p[1]->worms_status & STATUS_SHOT){
+    player_regen((p[1]),b->damages); 
     b->obj.remove_flag = 1;
     sengine_play(WIIERO_SOUND_HEALTH,SENGINE_PLAY_ACTION);
   }
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
 
   if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
     b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -3966,9 +4016,10 @@ bullet_t* create_dirtball(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void dirtball_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
 
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if( b->timeout == 0 ){
     /* Blop !*/
     SDL_Surface* ground = (SDL_Surface*) userdata;  
@@ -3979,8 +4030,8 @@ void dirtball_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
     b->obj.remove_flag = 1;
     drow_colored_circle(ground,colx,coly,15);
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -4028,11 +4079,12 @@ bullet_t* create_kamikase(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 
 /* * * * * * * * * * * * * * * * * TRAP * * * * * * * * * * * * * * * * * * * */
 void trap_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   if(( b->timeout == 0 )
-    ||((((player_t*)p1)->worms_status & STATUS_SHOT)
-      ||(((player_t*)p2)->worms_status & STATUS_SHOT))){
+    ||((p[0]->worms_status & STATUS_SHOT)
+      ||(p[1]->worms_status & STATUS_SHOT))){
     /* Blop !*/
     SDL_Surface* ground = (SDL_Surface*) userdata;
     colx = (colx < 0)? 0 : colx ;
@@ -4050,8 +4102,8 @@ void trap_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int col
                                    , ((player_t*)b->p_origin)->r->grenade
                                    , ((player_t*)b->p_origin)));
 
-    ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-    ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+    p[0]->worms_status &= ~STATUS_SHOT;
+    p[1]->worms_status &= ~STATUS_SHOT;
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -(9*b->obj.acc_x/10);
@@ -4101,11 +4153,12 @@ bullet_t* create_blaster(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void blaster_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
    int i;
-   bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
+  player_t** p = (player_t **) p_arr; 
+   bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);
    for(i=0;i<10;i++)
-      weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+      weapon_add_bullet_to_list( p[0]->bullet_list_link
          , init_explos_pieces( colx + (rand() % 7) - 3
                               , coly + (rand() % 7) - 3 
                               , (rand() % 9) - 4
@@ -4125,6 +4178,7 @@ void laser_blit_cb(camera_t* c,void* bullet,void* userdata){
 
   bullet_t * b = (bullet_t *) bullet;
   player_t* p = ((player_t*)b->p_origin);
+
   obj_t* o = &(b->obj);  
   if( (p->weapon_slots[p->selected_weapon]->last_bullet != 0l)
     &&(bullet != p->weapon_slots[p->selected_weapon]->last_bullet))
@@ -4151,39 +4205,42 @@ bullet_t* create_laser(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void laser_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   ASSERT(userdata)
-  ASSERT(p1)
-  ASSERT(p2)
+  ASSERT(p_arr)
+  ASSERT(p_arr_sz)
   SDL_Surface* ground = (SDL_Surface*) userdata;
   bullet_t* b = (bullet_t*)bullet;
-  player_t* p = ((player_t*)b->p_origin);
+  //player_t* p = ((player_t*)b->p_origin);
+  //TODO loop on p to find origin
+  player_t** p = (player_t **) p_arr; 
   colx = (colx < 0)? 0 : colx ;
   coly = (coly < 0)? 0 : coly ;
   colx = (colx >= ground->w) ? ground->w-1 : colx ;
   coly = (coly >= ground->h) ? ground->h-1 : coly ;
   drow_circle(ground,colx,coly,4,transparent_r_value,transparent_g_value,transparent_b_value);
 
-  object_add_to_list( ((player_t*)p1)->dynamic_list_link
-                    , create_explosion(colx,coly,((player_t*)p1)->r,b->explo_size));
+  object_add_to_list( p[0]->dynamic_list_link
+                    , create_explosion(colx,coly,p[0]->r,b->explo_size));
 
-   if(((player_t*)p1)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+   if(p[0]->worms_status & STATUS_SHOT)
+      player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
 
-   if(((player_t*)p2)->worms_status & STATUS_SHOT)
-      player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
+   if(p[1]->worms_status & STATUS_SHOT)
+      player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata); 
 
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
   b->obj.pos_x=colx;
   b->obj.pos_y=coly;
   b->obj.remove_flag = 1;
-  if(p->weapon_slots[p->selected_weapon]->last_bullet == 0l)
-      p->weapon_slots[p->selected_weapon]->last_bullet = b;
+
+  if(p[0]->weapon_slots[p[0]->selected_weapon]->last_bullet == 0l)//p must be prigin
+      p[0]->weapon_slots[p[0]->selected_weapon]->last_bullet = b;//p must be origin
 }
 
-void laser_update(void* bullet,void *p1,void *p2, void* userdata){
+void laser_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t* b = (bullet_t*)bullet;
   player_t* p = ((player_t*)b->p_origin);
   p->weapon_slots[p->selected_weapon]->last_bullet = 0l;
@@ -4202,24 +4259,25 @@ bullet_t* create_crackler(weapon_id w_id,player_t *p,int acc_x,int acc_y){
                                    , p->r->crackler,p));
 }
 void crackler_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   SDL_Surface* ground = (SDL_Surface*) userdata;
   if ( b->timeout == 0 ){
     b->obj.remove_flag = 1;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value); 
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
   }
-  if((((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
-      if(((player_t*)p1)->worms_status & STATUS_SHOT)
-        player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
-      if(((player_t*)p2)->worms_status & STATUS_SHOT)
-        player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
-      ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-      ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  if((p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
+      if(p[0]->worms_status & STATUS_SHOT)
+        player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+      if(p[1]->worms_status & STATUS_SHOT)
+        player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+      p[0]->worms_status &= ~STATUS_SHOT;
+      p[1]->worms_status &= ~STATUS_SHOT;
   }
   if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
     b->obj.acc_x = -b->obj.acc_x;
@@ -4249,9 +4307,10 @@ void crackler_blit_cb(camera_t* c,void* bullet,void* userdata){
   camera_blit_surface_on(c,o->skin,&skin_offset,&camera_offset);
 }
 
-void crackler_update(void* bullet,void *p1,void *p2, void* userdata){
+void crackler_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   static Uint8 pos=0; 
   Uint8 d_x=0;
   Uint8 d_y=0;
@@ -4274,14 +4333,14 @@ void crackler_update(void* bullet,void *p1,void *p2, void* userdata){
   }
 
   pos = (pos + 2) % 40;
-  weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+  weapon_add_bullet_to_list( p[0]->bullet_list_link
                         , init_pieces( b->obj.pos_x + (d_x-1)*2
                                      , b->obj.pos_y + (d_y-1)*2
                                      , (d_x-1)*2 + (rand()%3-1) + b->obj.acc_x 
                                      , (d_y-1)*2 + (rand()%3-1) + b->obj.acc_y
                                      , 0xd5,0xd5,0xd5,0,2,b->p_origin));
   if(rand()%50 == 0)
-     crackler_on_collision_cb(bullet,b->obj.pos_x,b->obj.pos_y,b->obj.pos_x,b->obj.pos_y,p1,p2,userdata);
+     crackler_on_collision_cb(bullet,b->obj.pos_x,b->obj.pos_y,b->obj.pos_x,b->obj.pos_y,p_arr,p_arr_sz,userdata);
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -4299,10 +4358,11 @@ bullet_t* create_larpa(weapon_id w_id,player_t *p,int acc_x,int acc_y){
   return bullet; 
 }
 
-void larpa_update(void* bullet,void *p1,void *p2, void* userdata){
+void larpa_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   //if(rand()%2 == 0)
-  weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+  weapon_add_bullet_to_list( p[0]->bullet_list_link
                           , init_pieces( b->obj.pos_x + rand()%5-2
                                        , b->obj.pos_y + rand()%5-2
                                        , b->obj.acc_x /4
@@ -4312,23 +4372,24 @@ void larpa_update(void* bullet,void *p1,void *p2, void* userdata){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /* * * * * * * * * * * * * * * NUKE LARPA* * * * * * * * * * * * * * * * * * */
-void nuke_larpa_update(void* bullet,void *p1,void *p2, void* userdata){
+void nuke_larpa_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   //if(rand()%2 == 0)
-    weapon_add_bullet_to_list( ((player_t*)p1)->bullet_list_link
+    weapon_add_bullet_to_list( p[0]->bullet_list_link
                                , init_with_skin( WEAPON_NUKE_PIECE
                                                ,  b->obj.pos_x + rand()%5-2
                                                , b->obj.pos_y + rand()%5-2
                                                , b->obj.acc_x /4
                                                , b->obj.acc_y /4
-                                               , ((player_t*)p1)->r->nuke_piece
+                                               , p[0]->r->nuke_piece
                                                , b->p_origin)); 
 }
 /* * * * * * * * * * * * * * * CTRL NUKE LARPA* * * * * * * * * * * * * * * * */
-void cnuke_larpa_update(void* bullet,void *p1,void *p2, void* userdata){
+void cnuke_larpa_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   if(rand()%2 == 0)
-    nuke_larpa_update(bullet,p1,p2,userdata);
-  missile_update (bullet,p1,p2,userdata);
+    nuke_larpa_update(bullet,p_arr,p_arr_sz,userdata);
+  missile_update (bullet,p_arr,p_arr_sz,userdata);
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -4344,26 +4405,27 @@ bullet_t* create_bouncy_larpa(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void bouncy_larpa_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                             ,void* p1,void* p2, void* userdata){
+                             ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   ASSERT(bullet)
   bullet_t * b = (bullet_t *) bullet;
+  player_t** p = (player_t **) p_arr; 
   SDL_Surface* ground = (SDL_Surface*) userdata;
   if( ( b->timeout == 0 )
-    ||(((player_t*)p1)->worms_status & STATUS_SHOT)
-    ||(((player_t*)p2)->worms_status & STATUS_SHOT)){
+    ||(p[0]->worms_status & STATUS_SHOT)
+    ||(p[1]->worms_status & STATUS_SHOT)){
     b->obj.remove_flag = 1;
     drow_circle(ground,colx,coly,b->range+b->damages/15,transparent_r_value,transparent_g_value,transparent_b_value); 
-    bullet_explode( ((player_t*)p1)->dynamic_list_link,colx,coly
-                  , ((player_t*)p1)->r,b->explo_size);
+    bullet_explode( p[0]->dynamic_list_link,colx,coly
+                  , p[0]->r,b->explo_size);
 
-     if(((player_t*)p1)->worms_status & STATUS_SHOT)
-       player_shot(((player_t*)p1),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+     if(p[0]->worms_status & STATUS_SHOT)
+       player_shot((p[0]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-     if(((player_t*)p2)->worms_status & STATUS_SHOT)
-       player_shot(((player_t*)p2),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+     if(p[1]->worms_status & STATUS_SHOT)
+       player_shot((p[1]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
 
-     ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-     ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+     p[0]->worms_status &= ~STATUS_SHOT;
+     p[1]->worms_status &= ~STATUS_SHOT;
   }else{
     if(( lastx == b->obj.pos_x) && (lasty == b->obj.pos_y) )
       b->obj.acc_x = -b->obj.acc_x;
@@ -4474,7 +4536,7 @@ void shield_blit_cb(camera_t* c,void* bullet,void* userdata){
 
 
 /* * * * * * * * * * * * * * * * * NINJA * * * * * * * * * * * * * * * * * * * */
-void missile_update(void* bullet,void *p1,void *p2, void* userdata){
+void missile_update(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
   ASSERT(b)
   player_t* p = b->p_origin;  
@@ -4539,21 +4601,23 @@ void missile_update(void* bullet,void *p1,void *p2, void* userdata){
 }
 
 void missile_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                              , void* p1,void* p2, void* userdata){
+                              , void * p_arr, uint8_t p_arr_sz, void* userdata){
   int i=0;
-  player_t* p = (player_t*)(((bullet_t*)bullet)->p_origin);
-  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p1, p2,  userdata);
+  //player_t* p = (player_t*)(((bullet_t*)bullet)->p_origin);
+  player_t** p = (player_t **) p_arr; 
+  //TODO loop on player to get origin player
+  bullet_on_collision_cb(bullet, lastx, lasty, colx, coly,p_arr, p_arr_sz,  userdata);
   for(i=0;i<4;i++)
-   weapon_add_bullet_to_list(((player_t*)p1)->bullet_list_link
+   weapon_add_bullet_to_list(p[0]->bullet_list_link
                             ,init_explos_pieces( colx + (rand() % 7) - 3
                                                , coly + (rand() % 7) - 3 
                                                , (rand() % 9) - 4
                                                , (rand() % 7) - 4
                                                , 0x84,0x84,0x84,5,4
                                                ,p));
-  missile_update(bullet,p1,p2, userdata);
-  p->worms_status &= ~STATUS_FREEZED;
-  p->worms_status |= STATUS_RESET_FOCUS;
+  missile_update(bullet,p_arr,p_arr_sz, userdata);
+  p[0]->worms_status &= ~STATUS_FREEZED;//FIXME origin player
+  p[0]->worms_status |= STATUS_RESET_FOCUS;//FIXME origin player
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -4570,9 +4634,10 @@ bullet_t* create_ninja_hook(weapon_id w_id,player_t *p,int acc_x,int acc_y){
 }
 
 void ninja_hook_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
-                                 ,void* p1,void* p2, void* userdata){
+                                 ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   /* Bloc */
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   player_t* source = b->p_origin;
   player_t* dest = 0l;
   b->obj.pos_x = lastx;
@@ -4583,34 +4648,35 @@ void ninja_hook_collision_cb( void* bullet, int lastx, int lasty, int colx, int 
     b->obj.acc_y = (b->obj.acc_y<0) ? -1 : 1;
   b->obj.gravit = 0;
 /*
-  ((player_t*)p1)->worms_status &= ~STATUS_TRICKED;
-  ((player_t*)p2)->worms_status &= ~STATUS_TRICKED;*/
-  if( p1 != source){
-    if(((player_t*)p1)->worms_status & STATUS_SHOT){
+  p[0]->worms_status &= ~STATUS_TRICKED;
+  p[1]->worms_status &= ~STATUS_TRICKED;*/
+  //FIXME: only one player can be tricked at a time
+  if( p[0] != source){
+    if(p[0]->worms_status & STATUS_SHOT){
       // player 1 is tricked
-      dest = (player_t*)p1;
+      dest = p[0];
       dest->worms_status |= STATUS_TRICKED;
       b->obj.pos_x = dest->worms.pos_x;
       b->obj.pos_y = dest->worms.pos_y-2;
     }
   }else{
-    if(((player_t*)p2)->worms_status & STATUS_SHOT){
+    if(p[1]->worms_status & STATUS_SHOT){
       // player 2 is tricked
-      dest = (player_t*)p2;
+      dest = p[1];
       dest->worms_status |= STATUS_TRICKED;
       b->obj.pos_x = dest->worms.pos_x;
       b->obj.pos_y = dest->worms.pos_y-2;
     }
   }
-  ((player_t*)p1)->worms_status &= ~STATUS_SHOT;
-  ((player_t*)p2)->worms_status &= ~STATUS_SHOT;
+  p[0]->worms_status &= ~STATUS_SHOT;
+  p[1]->worms_status &= ~STATUS_SHOT;
   if(dest){
     dest->worms.pos_x += (source->worms.pos_x - b->obj.pos_x ) / 20 ;
     dest->worms.pos_y += (source->worms.pos_y - b->obj.pos_y ) / 20 ;
   }
   source->worms.acc_x -= (source->worms.pos_x - b->obj.pos_x ) / source->worms_rope_len;
   source->worms.acc_y -= (source->worms.pos_y - b->obj.pos_y ) / source->worms_rope_len;
-  ninja_hook_update_cb(bullet,p1,p2,0L);
+  ninja_hook_update_cb(bullet,p_arr,p_arr_sz,0L);
 }
 
 void ninja_hook_blit_cb(camera_t* c,void* bullet,void* userdata){
@@ -4639,15 +4705,17 @@ void ninja_hook_blit_cb(camera_t* c,void* bullet,void* userdata){
   
 }
 
-void ninja_hook_update_cb(void* bullet,void *p1,void *p2, void* userdata){
+void ninja_hook_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
  /* Bloc */
   bullet_t * b = (bullet_t *) bullet;
+  player_t ** p = (player_t **) p_arr;
   player_t* source = b->p_origin;
   player_t* dest = 0l;
-  if( p1 != source){
-    dest = (player_t*)p1;
+  //FIXME
+  if( p[0] != source){
+    dest = p[0];
   }else{
-    dest = (player_t*)p2;
+    dest = p[1];
   }
   if( dest->worms_status & STATUS_TRICKED ){
     dest->worms_status |= STATUS_TRICKED;
@@ -4656,15 +4724,16 @@ void ninja_hook_update_cb(void* bullet,void *p1,void *p2, void* userdata){
   }
 }
 
-void ninja_hook_disconnect(void* bullet,void *p1,void *p2, void* userdata){
+void ninja_hook_disconnect(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
  /* Bloc */
   bullet_t * b = (bullet_t *) bullet;
   player_t* source = b->p_origin;
+  player_t ** p = (player_t **) p_arr;
   player_t* dest = 0l;
-  if( p1 != source){
-    dest = (player_t*)p1;
+  if( p[0] != source){
+    dest = p[0];
   }else{
-    dest = (player_t*)p2;
+    dest = p[1];
   }
   if( dest->worms_status & STATUS_TRICKED ){
     dest->worms_status &= ~STATUS_TRICKED;
