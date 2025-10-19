@@ -347,8 +347,8 @@ void player_pix(player_t* p){
         , p->worms_camera->map_x,p->worms_camera->map_y);
 }
 
-
 static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
+  
   float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X)
                                          - target->worms.pos_x)
                                + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y)
@@ -368,10 +368,12 @@ static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
 }
 
 
+
+
 void player_is_aiming(player_id pid , player_t** targets){
+  targets[pid]->worms_status &= ~STATUS_AIMING; 
   for(int i=0;i<NB_PLAYERS;i++){
     if(i!=pid){
-      targets[pid]->worms_status &= ~STATUS_AIMING; 
       player_is_aiming_player( targets[pid] , targets[i]);
     }
   }
@@ -402,9 +404,9 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
   skin_offset.w = p->worms.skin->w / (MAX_SIDE_POSITIONS *  DEFAULT_PWSKIN_ANIM_STEPS); 
   skin_offset.h = p->worms.skin->h / MAX_LOOKING_HEIGHTS;  
   skin_offset.x = ( (p->worms.animation_pos) * skin_offset.w) 
-                   + (( p->worms.side == RIGHT_SIDE) 
-                        ? 0
-                        : skin_offset.w * DEFAULT_PWSKIN_ANIM_STEPS);
+                  + (( p->worms.side == RIGHT_SIDE) 
+                    ? 0
+                    : skin_offset.w * DEFAULT_PWSKIN_ANIM_STEPS);
 
   if(p->worms.angle <= MAX_PLAYER_ANGLE && p->worms.angle > 70)  
       looking_height = LOOKING_UP_FULL;
@@ -434,8 +436,7 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
     &&(camera_offset.y > -skin_offset.h) && (camera_offset.y <= camera->h)){
       camera_blit_surface_on(camera,p->worms.skin, &skin_offset, &camera_offset );
   }
-    
-    
+        
   /* RETICLE PART */
   if(!(p->worms_status & STATUS_FIREING))
   {

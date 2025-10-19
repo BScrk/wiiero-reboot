@@ -321,9 +321,9 @@ void wiiero_blit_world(game_t *g)
     camera_blit(g->worms[p]->worms_camera, g->wiiero_map->layers[STATICS_MAP_LAYER]);
 
   DBG(" - BLIT PLAYERS\n");
-  for(p = PLAYER_1; p < NB_PLAYERS; p++){
-    for(player_id c = PLAYER_1; c < NB_PLAYERS; c++){
-      player_show_on_cam(g->worms[p], g->wiiero_cameras[c], wiiero_player_warning(p, g));
+  for(camera_id_t cid = FIRST_PLAYERS_CAMERAS; cid < MAX_PLAYERS_CAMERAS; cid++){ // For each camera
+    for(player_id pid = PLAYER_1; pid < NB_PLAYERS; pid++){
+      player_show_on_cam(g->worms[pid], g->wiiero_cameras[cid], wiiero_player_warning(pid, g));
     }
   }
 
