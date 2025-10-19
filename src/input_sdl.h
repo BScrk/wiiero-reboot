@@ -35,6 +35,8 @@
 #include "game.h"
 #include "font.h"
 
+#define MAX_CONTROLS 4
+
 typedef enum
 {
   MODE_CMD,
@@ -58,14 +60,13 @@ typedef enum
 } lab_id_t;
 
 char *cmd_labels[MAX_CMD] = {
-    "PC controls", "", "fire:", "jump:", "Dig:", "show weapon:", "prev weapon:", "next weapon:", "ninja hook:", "up:", "down:", "left:", "right:", "pause:", "menu:", "ok:", "cancel:"};
+    "Controls", "", "fire:", "jump:", "Dig:", "show weapon:", "prev weapon:", "next weapon:", "ninja hook:", "up:", "down:", "left:", "right:", "pause:", "menu:", "ok:", "cancel:"};
 
-char *cmd_key[4][MAX_CMD] = {
-    {"", "Player 1", "[d]", "[a]", "[j+l]", "[z]", "[z+j]", "[z+l]", "[a+z]", "[i]", "[k]", "[j]", "[l]", "[space]", "[escape]", "[d]", "[a]"}
-  , {"", "Player 2", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
-  //TODO update keys for P3 and P4
-  , {"", "Player 3", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
-  , {"", "Player 4", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
+char *cmd_key[MAX_CONTROLS][MAX_CMD] = {
+    {"", "Keyboard P1", "[d]", "[a]", "[j+l]", "[z]", "[z+j]", "[z+l]", "[a+z]", "[i]", "[k]", "[j]", "[l]", "[space]", "[escape]", "[d]", "[a]"}
+  , {"", "Keyboard P2", "[page up]", "[insert]", "[4+6]", "[home]", "[home+4]", "[home+6]", "[insert+home]", "[8]", "[5]", "[4]", "[6]", "[space]", "[escape]", "[page up]", "[insert]"}
+  , {"", "2 Gamepads P1/P2", "B R2", "A L3", "X", "Y L1 R1", "Y+Left", "Y+Right", "L2 R3", "UP cross LS", "Down cross LS", "Left cross LS", "Right cross LS", "Start", "Select", "B", "A X"}
+  , {"", "4 Gamepads P1-4",  "B R2", "A L3", "X", "Y L1 R1", "Y+Left", "Y+Right", "L2 R3", "UP cross LS", "Down cross LS", "Left cross LS", "Right cross LS", "Start", "Select", "B", "A X"}
 };
 
 enum
@@ -80,8 +81,6 @@ enum
   P1_ACTION_KEY_CHANGE = SDL_SCANCODE_Z,
   P1_ACTION_KEY_CHANGE_BIS = SDL_SCANCODE_W,
   P1_ACTION_KEY_FIRE = SDL_SCANCODE_D,
-
-  //FIXME P2, P3, P4 use same keys to test nickname option menu
   P2_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
   P2_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
   P2_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
@@ -89,34 +88,16 @@ enum
   P2_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
   P2_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
   P2_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
-   
-  //FIXME P2, P3, P4 use same keys to test nickname option menu
-  P3_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
-  P3_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
-  P3_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
-  P3_ACTION_KEY_RIGTH = SDL_SCANCODE_KP_6,
-  P3_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
-  P3_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
-  P3_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
-
-  //FIXME P2, P3, P4 use same keys to test nickname option menu
-  P4_ACTION_KEY_UP = SDL_SCANCODE_KP_8,
-  P4_ACTION_KEY_DOWN = SDL_SCANCODE_KP_5,
-  P4_ACTION_KEY_LEFT = SDL_SCANCODE_KP_4,
-  P4_ACTION_KEY_RIGTH = SDL_SCANCODE_KP_6,
-  P4_ACTION_KEY_JUMP = SDL_SCANCODE_INSERT,
-  P4_ACTION_KEY_CHANGE = SDL_SCANCODE_HOME,
-  P4_ACTION_KEY_FIRE = SDL_SCANCODE_PAGEUP,
 
   GAME_ACTION_KEY_EXIT = SDL_SCANCODE_ESCAPE,
   GAME_ACTION_KEY_FLIP = SDL_SCANCODE_TAB,
   GAME_ACTION_KEY_PAUSE = SDL_SCANCODE_SPACE,
 }; /* - -- --- WIIERO EVENTS ---- --- -- */
+  
 
 /* SDL2 GameController support */
-// TODO 4P: Increase MAX_GAMEPADS to 4 for 4-player support
-#define MAX_GAMEPADS 2
-static SDL_GameController* gamepads[MAX_GAMEPADS] = {NULL, NULL};
+#define MAX_GAMEPADS 4
+static SDL_GameController* gamepads[MAX_GAMEPADS] = {NULL, NULL, NULL, NULL};
 static int gamepad_count = 0;
 
 static __inline__ void init_controllers()
@@ -125,6 +106,11 @@ static __inline__ void init_controllers()
   
   // Enable game controller events
   SDL_GameControllerEventState(SDL_ENABLE);
+  
+  // Pump events to detect controllers
+  SDL_Delay(100);
+  SDL_PumpEvents();
+  SDL_Delay(100);
   
   // Scan for connected controllers
   int num_joysticks = SDL_NumJoysticks();
@@ -158,6 +144,33 @@ static __inline__ void init_controllers()
 static __inline__ int are_controls_ready()
 {
   return 1;
+}
+
+static __inline__ void debug_gamepad_print_state(SDL_GameController* pad, player_id pid)
+{
+  char msg[256];
+  snprintf(msg, sizeof(msg),
+           "Gamepad %d state: A=%d B=%d X=%d Y=%d LB=%d RB=%d LT=%d RT=%d "
+           "DPAD_UP=%d DPAD_DOWN=%d DPAD_LEFT=%d DPAD_RIGHT=%d "
+           "LS_X=%d LS_Y=%d RS_X=%d RS_Y=%d\n",
+           pid,
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_A),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_B),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_X),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_Y),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER),
+           SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_TRIGGERLEFT),
+           SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_TRIGGERRIGHT),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_DOWN),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_LEFT),
+           SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT),
+           SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX),
+           SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY),
+           SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_RIGHTX),
+           SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_RIGHTY));
+  font_console_print_debug(msg, FONT_SMALL);
 }
 
 /* PC event control */
@@ -266,39 +279,7 @@ static __inline__ void game_check_event(game_t *g)
   if (keystate[P2_ACTION_KEY_FIRE])
     g->worms[PLAYER_2]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);
 
-  /* Player 3 keyboard */
-  if (keystate[P3_ACTION_KEY_UP])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_UP | ACTION_FROM_KEYBOARD);
-  if (keystate[P3_ACTION_KEY_DOWN])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_DOWN | ACTION_FROM_KEYBOARD);
-  if (keystate[P3_ACTION_KEY_LEFT])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_LEFT | ACTION_FROM_KEYBOARD);
-  if (keystate[P3_ACTION_KEY_RIGTH])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_RIGHT | ACTION_FROM_KEYBOARD);
-  if (keystate[P3_ACTION_KEY_JUMP])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_JUMP | ACTION_CANCEL | ACTION_FROM_KEYBOARD);
-  if (keystate[P3_ACTION_KEY_CHANGE])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_CHANGE | ACTION_FROM_KEYBOARD);
-  if (keystate[P3_ACTION_KEY_FIRE])
-    g->worms[PLAYER_3]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);    
-
-  /* Player 4 keyboard */
-  if (keystate[P4_ACTION_KEY_UP])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_UP | ACTION_FROM_KEYBOARD);
-  if (keystate[P4_ACTION_KEY_DOWN])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_DOWN | ACTION_FROM_KEYBOARD);
-  if (keystate[P4_ACTION_KEY_LEFT])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_LEFT | ACTION_FROM_KEYBOARD);
-  if (keystate[P4_ACTION_KEY_RIGTH])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_RIGHT | ACTION_FROM_KEYBOARD);
-  if (keystate[P4_ACTION_KEY_JUMP])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_JUMP | ACTION_CANCEL | ACTION_FROM_KEYBOARD);
-  if (keystate[P4_ACTION_KEY_CHANGE])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_CHANGE | ACTION_FROM_KEYBOARD);
-  if (keystate[P4_ACTION_KEY_FIRE])
-    g->worms[PLAYER_4]->worms_action |= (ACTION_FIRE | ACTION_OK | ACTION_FROM_KEYBOARD);
-
-  // TODO 4P: Add keyboard controls for PLAYER_3 and PLAYER_4
+  // No keyboard controls for PLAYER_3 and PLAYER_4 (controllers only)
 
   // [OTHER]
   if (keystate[GAME_ACTION_KEY_EXIT])
@@ -318,9 +299,20 @@ static __inline__ void game_check_event(game_t *g)
   /* === GAMEPAD INPUT === */
   // Iterate over all players and their corresponding gamepads
   for (int player_id = 0; player_id < NB_PLAYERS; player_id++) {
-    if (player_id < gamepad_count && gamepads[player_id]) {
-      SDL_GameController* pad = gamepads[player_id];
-      
+    uint8_t gamepad_idx = player_id;
+    if(gamepad_count < 3){
+      // Special case if only 2 gamepads: assign to PLAYER_3 and PLAYER_4 only
+      // Player 1 and 2 have no gamepads in this case, they use keyboard only
+      if (player_id < 2) {
+        continue; // No gamepads for PLAYER_1 and PLAYER_2
+      }else{
+        gamepad_idx = player_id - 2;
+      }
+    }
+    if (gamepad_count >= 2 && gamepads[gamepad_idx]) {
+      SDL_GameController* pad = gamepads[gamepad_idx];
+      //debug_gamepad_print_state(pad, player_id);
+
       // D-Pad and Left Stick for movement
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         g->worms[player_id]->worms_action |= ACTION_UP;

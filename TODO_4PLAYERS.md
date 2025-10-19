@@ -14,6 +14,12 @@
 - [x] Fonction helper `get_player_camera_id()` pour mapper joueur -> caméra
 - [x] Update de `player_is_aiming()` pour mode FFA
 - [x] Update de `wiiero_set_round_stats()` pour afficher stats des 4 joueurs
+- [x] Support de 4 controllers
+- [x] Améliorer la minimap pour mieux distinguer les 4 joueurs (couleurs différentes?)
+- [x] Ajuster la taille des caméras stats pour s'adapter à la grille 2x2
+- [x] Changer nicknames des joueurs 3 et 4 via le menu
+- [x] Sauver/Charger les nicknames des joueurs 3 et 4 dans le fichier de sauvegarde.
+- [x] Si moins de 4 gamepads, les gamepads sont reservés aux joueurs 3 et 4. P1 et P2 utiliseront le clavier.
 
 ## 🔨 À faire - Gameplay Core
 
@@ -31,39 +37,6 @@
   - `wiiero_cflag_game_mode()` (Capture the Flag)
   - ⚠️ Pour l'instant, ces modes restent 2 joueurs seulement
 
-## 🎮 À faire - Contrôles & Input
-
-### src/input_sdl.h
-- [ ] **Line 91**: `MAX_GAMEPADS` - Augmenter à 4 pour supporter 4 manettes
-  - Actuellement limité à 2 manettes
-  - Modifier aussi le tableau `gamepads[]`
-
-- [ ] **Line 243**: Ajouter les contrôles clavier pour PLAYER_3 et PLAYER_4
-  - Définir de nouvelles touches (P3_ACTION_KEY_*, P4_ACTION_KEY_*)
-  - Ajouter la gestion dans `player_event_update()`
-
-## 🎨 À faire - UI & Menus
-
-### src/game.c
-- [X] **Line 734**: Ajouter callbacks `option_change_p3_name_cb()` et `option_change_p4_name_cb()`
-  - Pour permettre le changement de noms des joueurs 3 et 4
-
-- [X] **Line 989**: Ajouter entrées de menu pour les noms PLAYER_3 et PLAYER_4
-  - Nécessite d'update l'enum `OPTION_MAX` dans `menu.h`
-
-### src/menu.h
-- [X] **Line 69**: Ajouter `OPTION_P3_NAME` et `OPTION_P4_NAME` dans l'enum
-  - Mettre à jour `OPTION_MAX` en conséquence
-
-## 💾 À faire - Configuration
-
-### src/game.c
-- [X] **Line 1279**: `wiiero_load_config()` - Charger les nicknames de PLAYER_3 et PLAYER_4 depuis le fichier config
-  - Format fichier config à étendre
-
-- [X] **Line 1322**: `wiiero_save_config()` - Sauvegarder les nicknames de PLAYER_3 et PLAYER_4
-  - Synchroniser avec le load
-
 ## 🔧 À faire - Armes & Collision
 
 ### src/weapons.c
@@ -75,14 +48,10 @@
 ## 📋 Améliorations futures (optionnel)
 
 - [ ] Ajouter mode Team (2v2) avec gestion d'équipes
-- [ ] Adapter le mode Capture the Flag pour 4 joueurs (4 drapeaux ou 2v2)
-- [ ] Améliorer la minimap pour mieux distinguer les 4 joueurs (couleurs différentes?)
+- [ ] Adapter le mode Capture the Flag pour 4 joueurs (2v2)
 - [ ] Ajouter des contrôles pour PLAYER_3 et PLAYER_4 dans les autres input modes (Wii, PSP, IOKit)
 - [ ] Tester et optimiser les performances avec 4 joueurs actifs
-- [ ] Ajuster la taille des caméras stats pour s'adapter à la grille 2x2
 
 ## 📝 Notes
 - Le code actuel fonctionne déjà avec 4 joueurs pour le gameplay de base (FFA)
 - Les modes de jeu spéciaux (Tag, Capture Flag) restent 2 joueurs pour l'instant
-- Seuls 2 joueurs peuvent utiliser des manettes actuellement
-- Les menus/options affichent toujours sur les caméras PLAYER_1 et PLAYER_2 uniquement

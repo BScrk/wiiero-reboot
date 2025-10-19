@@ -784,6 +784,13 @@ void player_fire(player_t* p){
   }
 }
 
+void player_game_over(player_t* p){
+  ASSERT(p);
+  p->worms_status &= ~STATUS_ALIVE;
+  p->worms_status |= STATUS_FREEZED;
+  p->worms_status |= STATUS_UNFOCUSED;
+  p->worms_status |= STATUS_GAME_OVER;
+}
 
 void player_clean(player_t* p){
   p->worms_action = ACTION_NONE;
@@ -823,6 +830,10 @@ void player_update(player_t* p,SDL_Surface* ground, SDL_Surface* statics){
   obj_list_t* olist = p->dynamic_list_link; 
   ASSERT(olist);      
 
+  if(p->worms_status & STATUS_GAME_OVER){
+    return;
+  }
+  
   if(p->worms_status & STATUS_RESETED){
     p->worms_status &= ~STATUS_RESETED;
   }

@@ -166,28 +166,30 @@ Wiiero on macOS supports both **keyboard** and **gamepads** (Xbox, PlayStation, 
 
 ##### Gamepad Controls
 
-Wiiero supports most HID-compliant gamepads (Xbox, PlayStation, Switch Pro) with automatic detection.
+Wiiero supports most HID-compliant gamepads (Xbox, PlayStation, Switch Pro) with automatic detection via SDL2 GameController API.
 
 | Action | Button |
 |--------|--------|
-| Move | Left Analog Stick |
-| Fire | `Y` button |
-| Jump | `B` button |
-| Dig (crop) | `A` button |
-| Show Weapon | `X` button (hold) |
-| Previous Weapon | `X` + Left Stick ← |
-| Next Weapon | `X` + Right Stick → |
-| Ninja Hook | `L` or `R` triggers |
-| Pause | `Select` / `Back` button |
-| Menu | `Start` button |
-| OK (menu) | `Y` or `B` |
-| Cancel (menu) | `A` or `X` |
+| Move | D-Pad or Left Analog Stick |
+| Aim | Right Analog Stick (360°) |
+| Fire | `B` (Circle) or `R2` Trigger |
+| Jump | `A` (Cross) or `L3` (Left Stick Click) |
+| Dig (crop) | `X` (Square) |
+| Show Weapon | `Y` (Triangle) or `L1`/`R1` |
+| Previous Weapon | `Y` + D-Pad ← or `L1` + D-Pad ← |
+| Next Weapon | `Y` + D-Pad → or `R1` + D-Pad → |
+| Ninja Hook | `L2` Trigger or `R3` (Right Stick Click) |
+| Pause | `Start` button |
+| Menu | `Back` / `Select` button |
+| OK (menu) | `B` (Circle) |
+| Cancel (menu) | `A` (Cross) or `X` (Square) |
 
 **Notes:**
-- Gamepads are auto-detected when connected
-- Player 1 uses first gamepad, Player 2 uses second gamepad
-- Keyboard fallback is always available
-- Both players can use keyboard + gamepad simultaneously
+- Gamepads are auto-detected when connected (hot-plug supported)
+- Supports up to 4 gamepads simultaneously (Player 1-4)
+- Right stick provides 360° analog aiming
+- Keyboard fallback is always available 
+- Players 1 and 2 can mix keyboard + gamepad input
 
 
 ### Wii Guide
@@ -288,8 +290,11 @@ TODO
 ## Credits
 
 Joosa Riekkinen - Original Liero Author
-BScrk - Wiiero Reboot Author
+BScrk - Wiiero Author
+BScrk & Kyfran- 4 Players Wiiero Reboot
+Sound Track - Binaerpilot www.binaerpilot.no
 Have Fun !
+
 
 ## Changelog 
 

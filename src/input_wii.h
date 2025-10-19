@@ -39,7 +39,7 @@
 #include <wiiuse/wpad.h>
 
 #define MAX_WIIMOTES 2
-#define MAX_WII_CONTROLS 4
+#define MAX_CONTROLS 4
 
 enum {
    WII_CONTROL_MODE_WIIMOTE
@@ -83,7 +83,7 @@ typedef enum {
 } lab_id_t;
 
 
-static char * cmd_key[MAX_WII_CONTROLS][MAX_CMD] = {
+static char * cmd_key[MAX_CONTROLS][MAX_CMD] = {
  { ""
   ,"wiimote"
   ,"2"
