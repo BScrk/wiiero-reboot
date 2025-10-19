@@ -986,5 +986,28 @@ void player_remove_hook(player_t* p,player_t** other_p){
   }
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;
+}
 
+
+void player_debug_actions(player_t* p){
+  ASSERT(p);
+  /* debug player worms_action (show action masks names) */
+  printf("Player %d Actions : ",p->id+1);
+  if(p->worms_action & ACTION_UP)          printf(" ACTION_UP ");
+  if(p->worms_action & ACTION_DOWN)        printf(" ACTION_DOWN ");
+  if(p->worms_action & ACTION_LEFT)        printf(" ACTION_LEFT ");
+  if(p->worms_action & ACTION_RIGHT)       printf(" ACTION_RIGHT ");
+  if(p->worms_action & ACTION_JUMP)        printf(" ACTION_JUMP ");
+  if(p->worms_action & ACTION_CHANGE)      printf(" ACTION_CHANGE ");
+  if(p->worms_action & ACTION_FIRE)        printf(" ACTION_FIRE ");
+  if(p->worms_action & ACTION_HOOK)        printf(" ACTION_HOOK ");
+  if(p->worms_action & ACTION_CROP)        printf(" ACTION_CROP ");
+  if(p->worms_action & ACTION_L_ACT)       printf(" ACTION_L_ACT ");
+  if(p->worms_action & ACTION_R_ACT)       printf(" ACTION_R_ACT ");
+  if(p->worms_action & ACTION_PAUSE)       printf(" ACTION_PAUSE ");
+  if(p->worms_action & ACTION_MENU)        printf(" ACTION_MENU ");
+  if(p->worms_action & ACTION_OK)          printf(" ACTION_OK ");
+  if(p->worms_action & ACTION_CANCEL)      printf(" ACTION_CANCEL ");
+  if(p->worms_action & ACTION_FROM_KEYBOARD) printf(" ACTION_FROM_KEYBOARD ");
+  printf("\n");
 }

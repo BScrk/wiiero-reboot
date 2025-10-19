@@ -1071,6 +1071,7 @@ static __inline__ void wiiero_set_message(game_t *g, char *message, fontsize_t f
   for(player_id i = 0; i < NB_PLAYERS; i++){
     g->worms[i]->worms_action = ACTION_NONE;
     g->worms[i]->worms_status |= STATUS_STATS_UPDATE;
+    //player_debug_actions(g->worms[i]);
   }
 } /*---------------------------------------------------------------------------*/
 /* Pause */
@@ -1079,18 +1080,22 @@ static __inline__ void wiiero_pause(game_t *g)
   SDL_Delay(100);
   uint8_t action = 0;
   for(player_id i = 0; i < NB_PLAYERS; i++){
-    if (g->worms[i]->worms_action != ACTION_NONE){
+    if (g->worms[i]->worms_action & ACTION_PAUSE){
+      // printf("Pause action detected from player %d %d\n", i, g->worms[i]->worms_action);
+      // player_debug_actions(g->worms[i]);
       action = 1;
       break;
     }
   }
+
   if (action){
-    g->wiiero_game_status = next_stat;
+    g->wiiero_game_status = next_stat; 
     for(player_id i = 0; i < NB_PLAYERS; i++){
       g->worms[i]->worms_action = ACTION_NONE;
     }
-    // camera_switch_off(g->wiiero_cameras[FULL_SCREEN_CAM]);
     CAMERA_OFF(g->wiiero_cameras[FULL_SCREEN_CAM]);
+    SDL_Delay(200);
+    SDL_PollEvent(NULL);
   }
 } /*---------------------------------------------------------------------------*/
 
@@ -1197,15 +1202,13 @@ static __inline__ void wiiero_play(game_t *g)
     wiiero_cflag_game_mode(g);
     break;
   }
-  if ((g->worms[PLAYER_1]->worms_action | g->worms[PLAYER_2]->worms_action) & ACTION_PAUSE)
-  {
-    g->wiiero_game_status = GAME_SET_PAUSE;
-    SDL_Delay(100);
-  }
-  if ((g->worms[PLAYER_1]->worms_action | g->worms[PLAYER_2]->worms_action) & ACTION_MENU)
-  {
-    g->wiiero_game_status = GAME_SET_MENU;
-    SDL_Delay(100);
+
+  for(player_id i = 0; i < NB_PLAYERS; i++){
+    if( g->worms[i]->worms_action & ACTION_PAUSE){
+      g->wiiero_game_status = GAME_SET_PAUSE;
+    }else if( g->worms[i]->worms_action & ACTION_MENU){
+      g->wiiero_game_status = GAME_SET_MENU;
+    }
   }
 } /*---------------------------------------------------------------------------*/
 
@@ -1501,6 +1504,11 @@ void wiiero_cycle(game_t *g)
     break;
   case GAME_SET_PAUSE:
     wiiero_set_message(g, wiiero_label[WIIERO_LANG_GAME_PAUSED], FONT_SELECTED, GAME_PLAYING, 230);
+    g->wiiero_game_status = GAME_WAIT_MINIMAL_DELAY;
+    break;
+  case GAME_WAIT_MINIMAL_DELAY:
+    SDL_Delay(1000);
+    g->wiiero_game_status = GAME_PAUSE;
     break;
   case GAME_PAUSE:
     wiiero_pause(g);

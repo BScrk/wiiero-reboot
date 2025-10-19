@@ -293,6 +293,7 @@ static __inline__ void game_check_event(game_t *g)
   if (keystate[GAME_ACTION_KEY_PAUSE])
   {
     g->worms[PLAYER_1]->worms_action |= ACTION_PAUSE;
+    // player_debug_actions(g->worms[PLAYER_1]);
   }
   
 
@@ -378,13 +379,14 @@ static __inline__ void game_check_event(game_t *g)
       // Start = Pause
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_START)) {
         g->worms[player_id]->worms_action |= ACTION_PAUSE;
-        //printf("Start button pressed [Player %d]\n", player_id);
+        // player_debug_actions(g->worms[player_id]);
+        // printf("Start button pressed [Player %d]\n", player_id);
       }
       
       // Back/Select = Menu
       if (SDL_GameControllerGetButton(pad, SDL_CONTROLLER_BUTTON_BACK)) {
         g->worms[player_id]->worms_action |= ACTION_MENU;
-        //printf("Back button pressed [Player %d]\n", player_id);
+        // printf("Back button pressed [Player %d]\n", player_id);
       }
 
       
