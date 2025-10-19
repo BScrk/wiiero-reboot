@@ -554,28 +554,27 @@ void player_show_stats(player_t* p,game_mode_t gm){
             , 1*step, camera->h/10 - 2 
             , 20*step, 3, 0x20, 0xff, 0x20);
     
- if(p->worms_health<100){
+  if(p->worms_health<100){
     camera_drow_hline(camera
               , 1*step + ((p->worms_health*20*step)/100), camera->h/10 - 2  
               , (20*step*(100-p->worms_health))/100 , 3, 0xff, 0x20, 0x20); 
-
-   camera_drow_hline( camera, 20*step, camera->h/10 - 2  
+    camera_drow_hline( camera, 20*step, camera->h/10 - 2  
                     , 1*step, 3, 0xff, 0x20, 0x20);
   }
   if(p->weapon_slots[p->selected_weapon]->ammo){
   camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2  
-                   , 20*step, 3, 0xCC, 0xCC, 0xCC);
+                    , 20*step, 3, 0xCC, 0xCC, 0xCC);
   camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2  
-                   , (20*step*(p->weapon_slots[p->selected_weapon]->ammo))
-                     / weapon_get_max_ammo(p->weapon_slots[p->selected_weapon])
-                   , 3, 0x20, 0x20, 0xFF);
+                    , (20*step*(p->weapon_slots[p->selected_weapon]->ammo))
+                      / weapon_get_max_ammo(p->weapon_slots[p->selected_weapon])
+                    , 3, 0x20, 0x20, 0xFF);
   }else{
     camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2 
-                     , 20*step, 3, 0xCC, 0xCC, 0xCC);
+                      , 20*step, 3, 0xCC, 0xCC, 0xCC);
     camera_drow_hline(camera, 1*step, 2*camera->h/10 - 2  
-           , (20*step*(p->weapon_slots[p->selected_weapon]->recharge_step))
-             / weapon_get_nb_recharge_steps(p->weapon_slots[p->selected_weapon])
-           , 3, 0x98, 0x00, 0x98);
+          , (20*step*(p->weapon_slots[p->selected_weapon]->recharge_step))
+            / weapon_get_nb_recharge_steps(p->weapon_slots[p->selected_weapon])
+          , 3, 0x98, 0x00, 0x98);
   }
   snprintf(tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FRAGS]
           , game_score[p->id].nb_frags);
@@ -588,21 +587,21 @@ void player_show_stats(player_t* p,game_mode_t gm){
   font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+21,FONT_SMALL);
   switch(gm){
     case GAME_DEATHMATCH_MODE:
-         snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
-                 , game_score[p->id].nb_lifes);
-         font_print_strict_pos( camera, tmp_string, 1*step
+        snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
+                , game_score[p->id].nb_lifes);
+        font_print_strict_pos( camera, tmp_string, 1*step
                               , 3*camera->h/10+30, FONT_SMALL);
-         break;
+        break;
     case GAME_OF_TAG_MODE:
-         snprintf(tmp_string,127," %s: %.2dm%.2ds",wiiero_label[WIIERO_LANG_TIME]
-                 , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
-         font_print_strict_pos( camera, tmp_string, 1*step
+        snprintf(tmp_string,127," %s: %.2dm%.2ds",wiiero_label[WIIERO_LANG_TIME]
+                , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
+        font_print_strict_pos( camera, tmp_string, 1*step
                               , 3*camera->h/10+30, FONT_SMALL);
-         break;
+        break;
     case GAME_CAPTURE_FLAG_MODE:
-         snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FLAGS]
-                 , game_score[p->id].nb_flags);
-         font_print_strict_pos(camera, tmp_string, 1*step
+        snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FLAGS]
+                , game_score[p->id].nb_flags);
+        font_print_strict_pos(camera, tmp_string, 1*step
                               , 3*camera->h/10+30, FONT_SMALL);
   }
 }
