@@ -611,15 +611,22 @@ static __inline__ void wiiero_wselect(game_t *g)
       // hack for dev
       // TODO : remove !
       ready++;
+      fprintf(stderr, "[DEBUG] HACK TO REMOVE file %s function %s line=%d\r\n",__FILE__,__FUNCTION__,__LINE__);
     }
   }
+  //hack direct game
+  // TODO : remove !
+  ready = NB_PLAYERS;
+  fprintf(stderr, "[DEBUG] HACK TO REMOVE file %s function %s line=%d\r\n",__FILE__,__FUNCTION__,__LINE__);
 
   if (ready == NB_PLAYERS){
+    fprintf(stderr, "[DEBUG] line=%d",__LINE__);
     /*FINISH*/
     for (int player_id = 0; player_id < NB_PLAYERS; player_id++) {
       selection_done[player_id] = 0;
       g->worms[player_id]->worms_action = ACTION_NONE;
     }
+    
     g->wiiero_game_status = GAME_SET_PLAYING;
   }
   SDL_Delay(50);

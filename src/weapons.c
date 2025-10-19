@@ -3225,7 +3225,7 @@ void gh_grenade_on_collision_cb( void* bullet, int lastx, int lasty, int colx, i
                     
     for(uint8_t pi = 0; pi < p_arr_sz;pi++){
       if(p[pi]->worms_status & STATUS_SHOT)
-        player_shot((pi]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
+        player_shot((p[pi]),((player_t*)b->p_origin)->id,b->damages,b->obj.acc_x/2,b->obj.acc_y/2,userdata);
     }  
     for(uint8_t pi=0;pi<p_arr_sz;pi++){
       p[pi]->worms_status &= ~STATUS_SHOT;
@@ -3525,7 +3525,7 @@ void spike_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int co
                                  ,void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
   player_t** p = (player_t **) p_arr; 
-  b_splash = 0;
+  uint8_t b_splash = 0;
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     if(p[pi]->worms_status & STATUS_SHOT){
       b_splash = 1;
@@ -4328,8 +4328,7 @@ void laser_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int co
 
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     if(p[pi]->worms_status & STATUS_SHOT)
-      player_shot((p[0
-    pi]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
+      player_shot((p[pi]),((player_t*)b->p_origin)->id,b->damages,0,0,userdata);
   }  
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     p[pi]->worms_status &= ~STATUS_SHOT;
@@ -4513,7 +4512,6 @@ void bouncy_larpa_on_collision_cb( void* bullet, int lastx, int lasty, int colx,
   player_t** p = (player_t **) p_arr; 
   SDL_Surface* ground = (SDL_Surface*) userdata;
   uint8_t b_end = 0;
-  uint8_t b_boom = 0;
   for(uint8_t pi = 0 ; pi < p_arr_sz ; pi++){
     if(p[pi]->worms_status & STATUS_SHOT){
       b_end = 1;
