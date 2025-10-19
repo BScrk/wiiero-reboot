@@ -626,7 +626,6 @@ static __inline__ void wiiero_wselect(game_t *g)
       selection_done[player_id] = 0;
       g->worms[player_id]->worms_action = ACTION_NONE;
     }
-    
     g->wiiero_game_status = GAME_SET_PLAYING;
   }
   SDL_Delay(50);

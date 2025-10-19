@@ -4762,26 +4762,22 @@ void ninja_hook_collision_cb( void* bullet, int lastx, int lasty, int colx, int 
 /*
   p[0]->worms_status &= ~STATUS_TRICKED;
   p[1]->worms_status &= ~STATUS_TRICKED;*/
-  //FIXME: only one player can be tricked at a time
-  if( p[0] != source){
-    if(p[0]->worms_status & STATUS_SHOT){
-      // player 1 is tricked
-      dest = p[0];
-      dest->worms_status |= STATUS_TRICKED;
-      b->obj.pos_x = dest->worms.pos_x;
-      b->obj.pos_y = dest->worms.pos_y-2;
-    }
-  }else{
-    if(p[1]->worms_status & STATUS_SHOT){
-      // player 2 is tricked
-      dest = p[1];
-      dest->worms_status |= STATUS_TRICKED;
-      b->obj.pos_x = dest->worms.pos_x;
-      b->obj.pos_y = dest->worms.pos_y-2;
+  for(uint8_t pi = 0; pi < p_arr_sz ; pi++){
+    if(p[pi] != source){
+      if(p[pi]->worms_status & STATUS_SHOT){
+        dest = p[pi];
+        source->tricked_worm = dest;
+        dest->worms_status |= STATUS_TRICKED;
+        b->obj.pos_x = dest->worms.pos_x;
+        b->obj.pos_y = dest->worms.pos_y-2;
+        break;
+      }
     }
   }
-  p[0]->worms_status &= ~STATUS_SHOT;
-  p[1]->worms_status &= ~STATUS_SHOT;
+  for(uint8_t pi = 0; pi < p_arr_sz ; pi++){
+    p[pi]->worms_status &= ~STATUS_SHOT;
+  }
+
   if(dest){
     dest->worms.pos_x += (source->worms.pos_x - b->obj.pos_x ) / 20 ;
     dest->worms.pos_y += (source->worms.pos_y - b->obj.pos_y ) / 20 ;
@@ -4820,19 +4816,18 @@ void ninja_hook_blit_cb(camera_t* c,void* bullet,void* userdata){
 void ninja_hook_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
  /* Bloc */
   bullet_t * b = (bullet_t *) bullet;
-  player_t ** p = (player_t **) p_arr;
+  //player_t ** p = (player_t **) p_arr;
   player_t* source = b->p_origin;
-  player_t* dest = 0l;
-  //FIXME
-  if( p[0] != source){
-    dest = p[0];
+  player_t* dest = source->tricked_worm;
+  if(!dest){
+    //fprintf(stderr,"ninja_hook_update_cb: dest is NULL\r\n");
   }else{
-    dest = p[1];
-  }
-  if( dest->worms_status & STATUS_TRICKED ){
-    dest->worms_status |= STATUS_TRICKED;
-    b->obj.pos_x = dest->worms.pos_x;
-    b->obj.pos_y = dest->worms.pos_y-2;
+    //fprintf(stderr,"ninja_hook_update_cb: dest is OK :D\r\n");
+    if( dest->worms_status & STATUS_TRICKED ){
+      dest->worms_status |= STATUS_TRICKED;
+      b->obj.pos_x = dest->worms.pos_x;
+      b->obj.pos_y = dest->worms.pos_y-2;
+    }
   }
 }
 
@@ -4840,15 +4835,17 @@ void ninja_hook_disconnect(void* bullet,void *p_arr,uint8_t p_arr_sz, void* user
  /* Bloc */
   bullet_t * b = (bullet_t *) bullet;
   player_t* source = b->p_origin;
-  player_t ** p = (player_t **) p_arr;
-  player_t* dest = 0l;
-  if( p[0] != source){
-    dest = p[0];
+  //player_t ** p = (player_t **) p_arr;
+  player_t* dest = source->tricked_worm;
+  if(!dest){
+    //fprintf(stderr,"ninja_hook_disconnect: dest is NULL\r\n");
   }else{
-    dest = p[1];
+    //fprintf(stderr,"ninja_hook_disconnect: dest is OK :D\r\n");
+    if( dest->worms_status & STATUS_TRICKED ){
+      dest->worms_status &= ~STATUS_TRICKED;
+      source->tricked_worm = NULL;
+    }
   }
-  if( dest->worms_status & STATUS_TRICKED ){
-    dest->worms_status &= ~STATUS_TRICKED;
-  }
+  
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
