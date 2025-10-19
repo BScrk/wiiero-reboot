@@ -269,16 +269,7 @@ void wiiero_update_world(game_t *g)
     }
 
   DBG(" - UPDATE BULLETS\n");
-  // TODO 4P: Refactor proceed_bullets() to accept array of all 4 players instead of just 2
-  /* For now, keep using 2 players until we refactor proceed_bullets */
-  {
-    player_t * p_arr[NB_PLAYERS];
-    for(uint8_t i = PLAYER_1 ; i < NB_PLAYERS; i++)
-      p_arr[i] = (g->worms[i]);
-    proceed_bullets(g->wiiero_bullets, g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER], p_arr, NB_PLAYERS, g->wiiero_map->layers[GROUND_MAP_LAYER]);
-  }
-  
-  
+  proceed_bullets(g->wiiero_bullets, g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER], g->worms, NB_PLAYERS, g->wiiero_map->layers[GROUND_MAP_LAYER]);
 
   wiiero_unlock_layers(g);
 } /*--------------------------------------------------------------------------*/
