@@ -320,19 +320,15 @@ void wiiero_blit_world(game_t *g)
   for(p = PLAYER_1; p < NB_PLAYERS; p++)
     camera_blit(g->worms[p]->worms_camera, g->wiiero_map->layers[STATICS_MAP_LAYER]);
 
-  DBG(" - BLIT CAM\n");
-  /* Show each player on other players' cameras - simplified cross-showing */
+  DBG(" - BLIT PLAYERS\n");
   for(p = PLAYER_1; p < NB_PLAYERS; p++){
-    for(player_id o = PLAYER_1; o < NB_PLAYERS; o++){
-      if (o != p){
-        player_show_on_cam(g->worms[p], g->wiiero_cameras[o], wiiero_player_warning(p, g));
-      }
+    for(player_id c = PLAYER_1; c < NB_PLAYERS; c++){
+      player_show_on_cam(g->worms[p], g->wiiero_cameras[c], wiiero_player_warning(p, g));
     }
   }
+
+
   
-  DBG(" - BLIT PLAY\n");
-  for(p = PLAYER_1; p < NB_PLAYERS; p++)
-    player_show(g->worms[p], wiiero_player_warning(p, g));
 
   if (g->wiiero_game_status == GAME_PLAYING){
     DBG(" - BLIT BULLETS\n");
@@ -387,6 +383,7 @@ static __inline__ void wiiero_restart_game(game_t *g)
       player_new_position(g->worms[i], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
       player_reset(g->worms[i], g->wiiero_map->layers[GROUND_MAP_LAYER], g->wiiero_map->layers[STATICS_MAP_LAYER]);
       g->worms[i]->worms_status &= ~STATUS_RESETED;
+      player_focus(g->worms[i]);
     }
   }
 
