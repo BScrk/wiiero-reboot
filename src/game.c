@@ -620,20 +620,10 @@ static __inline__ void wiiero_wselect(game_t *g)
 
     if(selection_done[player_id]){
       ready++;
-      // hack for dev
-      // TODO : remove !
-      ready++;
-      fprintf(stderr, "[DEBUG] HACK TO REMOVE file %s function %s line=%d\r\n",__FILE__,__FUNCTION__,__LINE__);
     }
   }
-  //hack direct game
-  // TODO : remove !
-  ready = NB_PLAYERS;
-  fprintf(stderr, "[DEBUG] HACK TO REMOVE file %s function %s line=%d\r\n",__FILE__,__FUNCTION__,__LINE__);
 
-  if (ready == NB_PLAYERS){
-    fprintf(stderr, "[DEBUG] line=%d",__LINE__);
-    /*FINISH*/
+  if ((ready == NB_PLAYERS) || (ready >= 2)) { // At least 2 players ready, Remove later
     for (int player_id = 0; player_id < NB_PLAYERS; player_id++) {
       selection_done[player_id] = 0;
       g->worms[player_id]->worms_action = ACTION_NONE;
@@ -1235,33 +1225,44 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
 
   for (id = PLAYER_1; id < NB_PLAYERS; id++)
   {
+    int x = g->wiiero_cameras[FIRST_PLAYERS_CAMERAS + id]->screen_x + 35 * g->wiiero_cameras[FIRST_PLAYERS_CAMERAS + id]->w / 100;
+    int y = g->wiiero_cameras[FIRST_PLAYERS_CAMERAS + id]->screen_y + 35 * g->wiiero_cameras[FIRST_PLAYERS_CAMERAS + id]->h / 100;
     snprintf(msg, 511, ".:%s %s:.", game_nicknames[id], wiiero_label[WIIERO_LANG_SCORE]);
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6, FONT_STANDARD);
-
+    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+    y+=10;
     snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_FRAGS], game_score[id].nb_frags);
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 10, FONT_STANDARD);
+    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+    y+=10;
     snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_DEATH], game_score[id].nb_death);
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 20, FONT_STANDARD);
+    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+    y+=10;
     snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_SUICID], game_score[id].nb_suicides);
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 30, FONT_STANDARD);
+    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+    y+=10;
     snprintf(msg, 511, "  %s: %.2f", wiiero_label[WIIERO_LANG_RATIO], (game_score[id].nb_death == 0) ? (game_score[id].nb_frags * 1.0) / 1 : (game_score[id].nb_frags * 1.0) / game_score[PLAYER_1].nb_death);
-    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 40, FONT_STANDARD);
+    font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+    y+=10;
+
     switch (g->wiiero_opt_game_mode)
     {
     case GAME_DEATHMATCH_MODE:
       snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_LIFES], game_score[id].nb_lifes);
-      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 50, FONT_STANDARD);
+      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+      y+=10;
       break;
     case GAME_OF_TAG_MODE:
       snprintf(msg, 511, "  %s: %dm%ds", wiiero_label[WIIERO_LANG_TIME], game_score[id].tag_time / 60, game_score[id].tag_time % 60);
-      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 50, FONT_STANDARD);
+      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+      y+=10;
       break;
     case GAME_CAPTURE_FLAG_MODE:
       snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_FLAGS], game_score[id].nb_flags);
-      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, (1 + 4 * id) * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 8, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 50, FONT_STANDARD);
+      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+      y+=10;
       break;
     }
   }
+  /* SHOW WINNER */
   id = winner_id;
   if (id < GAME_DRAW)
     snprintf(msg, 511, "%s %s.", game_nicknames[id], wiiero_label[WIIERO_LANG_WIN]);
