@@ -48,13 +48,13 @@ Macro todo list :
 * Mac gamepads supports via IOKit ✅
 * **SDL2 upgrade ✅** (branch: migration/sdl2)
 * Mac builds (SDL2) ✅
-* Windows port & builds ⏳
-* Linux port & builds ⏳
-* Linux gamepads supports (via SDL 2) ⏳
+* Linux port & builds ✅
+* Linux gamepads supports (via SDL 2) ✅
 * Mac gamepads supports (SDL2 + IOKit) ✅
+* 4 players Version ⏳
+* Windows port & builds ⏳
 * Win gamepads supports (via SDL 2) ⏳
 * Gamepads config option ⏳
-
 
 ## Installation / Build Guides
 

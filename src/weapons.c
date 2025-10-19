@@ -4631,7 +4631,7 @@ void bouncy_larpa_on_collision_cb( void* bullet, int lastx, int lasty, int colx,
   bullet_t * b = (bullet_t *) bullet;
   player_t** p = (player_t **) p_arr;
   player_t* owner = ((bullet_t*)bullet)->p_origin ? ((bullet_t*)bullet)->p_origin : (p[0]);
- 
+
   SDL_Surface* ground = (SDL_Surface*) userdata;
   uint8_t b_end = 0;
   for(uint8_t pi = 0 ; pi < p_arr_sz ; pi++){
@@ -4692,8 +4692,8 @@ void bouncy_larpa_blit_cb(camera_t* c,void* bullet,void* userdata){
 bullet_t* create_medikit(weapon_id w_id,player_t *p,int acc_x,int acc_y){
   obj_t* o = 0l;
   bullet_t* b = weapon_add_bullet_to_list( p->bullet_list_link
-                   , init_with_skin( w_id, 0, 0, 0, 0
-                                   , p->r->teleport,p));
+                    , init_with_skin( w_id, 0, 0, 0, 0
+                                    , p->r->teleport,p));
   player_regen(p,b->damages);
   o = &(b->obj); 
   o->pos_x = p->worms.pos_x;
@@ -4731,7 +4731,7 @@ bullet_t* create_shield(weapon_id w_id,player_t *p,int acc_x,int acc_y){
   obj_t* o = 0l;
   bullet_t* b = weapon_add_bullet_to_list( p->bullet_list_link
                           , init_with_skin( w_id, 0 , 0, 0, 0
-                                   , p->worms.skin,p));
+                                  , p->worms.skin,p));
   b->damages = p->worms_health;
   p->worms.skin = p->r->worms_iron;
   o = &(b->obj); 
@@ -4921,11 +4921,11 @@ void ninja_hook_blit_cb(camera_t* c,void* bullet,void* userdata){
   //SDL_BlitSurface(o->skin, &skin_offset ,c->cam_surface, &camera_offset); 
   camera_blit_surface_on(c,o->skin,&skin_offset,&camera_offset);
   camera_drow_line(c
-           , ((player_t*)(b->p_origin))->worms.pos_x-c->map_x
-           , (((player_t*)(b->p_origin))->worms.pos_y-2)-c->map_y
-           , o->pos_x-c->map_x
-           , o->pos_y-c->map_y
-           , 0xa8,0x4b,0x0d);
+                  , ((player_t*)(b->p_origin))->worms.pos_x-c->map_x
+                  , (((player_t*)(b->p_origin))->worms.pos_y-2)-c->map_y
+                  , o->pos_x-c->map_x
+                  , o->pos_y-c->map_y
+                  , 0xa8,0x4b,0x0d);
   
 }
 

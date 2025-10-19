@@ -20,38 +20,13 @@
 - [x] Changer nicknames des joueurs 3 et 4 via le menu
 - [x] Sauver/Charger les nicknames des joueurs 3 et 4 dans le fichier de sauvegarde.
 - [x] Si moins de 4 gamepads, les gamepads sont reservés aux joueurs 3 et 4. P1 et P2 utiliseront le clavier.
+- [x] `proceed_bullets()` Refactoriser pour 4 joueurs
+- [x] Deathmatch pour 4 joueurs
 
-## 🔨 À faire - Gameplay Core
-
-### src/game.c
-- [X] **Line 272**: `proceed_bullets()` - Refactoriser pour accepter un tableau de tous les 4 joueurs au lieu de juste 2
-  - Actuellement passe seulement PLAYER_1 et PLAYER_2
-  - Besoin de gérer collisions pour tous les joueurs
-
-- [ ] **Line 1248**: `wiiero_round_stats()` - Vérifier les actions des 4 joueurs, pas seulement PLAYER_1 et PLAYER_2
-  - Actuellement vérifie seulement 2 joueurs pour sortir des stats
-
-- [ ] **Line 402, 474, 497**: Modes de jeu - Refactoriser pour plus de 2 joueurs
-  - `wiiero_got_game_mode()` (Game of Tag)
-  - `wiiero_deathm_game_mode()` (Deathmatch)
-  - `wiiero_cflag_game_mode()` (Capture the Flag)
-  - ⚠️ Pour l'instant, ces modes restent 2 joueurs seulement
-
-## 🔧 À faire - Armes & Collision
-
-### src/weapons.c
-- [X] **Line 844**: `proceed_bullets()` - Accepter un tableau de 4 joueurs
-  - Actuellement signature: `void* p1, void* p2`
-  - Proposé: `player_t** players` ou `void** players`
-  - Impact sur toutes les fonctions de collision
+## 🔨 À faire
+- [ ] Game of Tag pour 4 joueurs (2v2)
+- [ ] Capture the Flag pour 4 joueurs (2v2)
 
 ## 📋 Améliorations futures (optionnel)
-
-- [ ] Ajouter mode Team (2v2) avec gestion d'équipes
-- [ ] Adapter le mode Capture the Flag pour 4 joueurs (2v2)
 - [ ] Ajouter des contrôles pour PLAYER_3 et PLAYER_4 dans les autres input modes (Wii, PSP, IOKit)
 - [ ] Tester et optimiser les performances avec 4 joueurs actifs
-
-## 📝 Notes
-- Le code actuel fonctionne déjà avec 4 joueurs pour le gameplay de base (FFA)
-- Les modes de jeu spéciaux (Tag, Capture Flag) restent 2 joueurs pour l'instant
