@@ -117,9 +117,10 @@ enum{
   STATUS_PROTECTED      = 0x00020000,
   STATUS_UNFOCUSED      = 0x00040000,
   STATUS_RESET_FOCUS    = 0x00080000,
-  STATUS_CLASSIC_ON     = 0x10000000,  
-  STATUS_NUNCHUCK_ON    = 0x20000000,
-  STATUS_GAMECUBE_ON    = 0x40000000
+  STATUS_GAME_OVER      = 0x10000000,  
+  STATUS_CLASSIC_ON     = 0x20000000,  
+  STATUS_NUNCHUCK_ON    = 0x40000000,
+  STATUS_GAMECUBE_ON    = 0x80000000
 };
 
 
@@ -179,6 +180,7 @@ void player_move_left(player_t* p);
 void player_move_right(player_t* p);
 void player_show(player_t* p,int warding_flag);
 void player_clean(player_t* p);
+void player_game_over(player_t* p);
 void player_change_rope_len(player_t* p,int len_modif);
 void player_crop(player_t* p,map_t* m);
 void player_launch_hook(player_t* p);

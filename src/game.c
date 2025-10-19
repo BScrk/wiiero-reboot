@@ -322,11 +322,13 @@ void wiiero_blit_world(game_t *g)
 
   DBG(" - BLIT CAM\n");
   /* Show each player on other players' cameras - simplified cross-showing */
-  for(p = PLAYER_1; p < NB_PLAYERS; p++)
-    for(player_id o = PLAYER_1; o < NB_PLAYERS; o++)
-      if (o != p)
+  for(p = PLAYER_1; p < NB_PLAYERS; p++){
+    for(player_id o = PLAYER_1; o < NB_PLAYERS; o++){
+      if (o != p){
         player_show_on_cam(g->worms[p], g->wiiero_cameras[o], wiiero_player_warning(p, g));
-
+      }
+    }
+  }
   
   DBG(" - BLIT PLAY\n");
   for(p = PLAYER_1; p < NB_PLAYERS; p++)
@@ -353,6 +355,7 @@ void wiiero_blit_world(game_t *g)
                   );
   for(p = PLAYER_1; p < NB_PLAYERS; p++)
     player_show_stats(g->worms[p], g->wiiero_opt_game_mode);
+
 
 } /*--------------------------------------------------------------------------*/
 
@@ -472,23 +475,35 @@ static __inline__ void wiiero_got_game_mode(game_t *g)
 
 static __inline__ void wiiero_deathm_game_mode(game_t *g)
 {
-  // TODO 4P:: refactor for more than 2 players
-  if (((game_score[PLAYER_1].nb_lifes == 0) && (g->worms[PLAYER_1]->worms_status & STATUS_ALIVE)) && ((game_score[PLAYER_2].nb_lifes == 0) && (g->worms[PLAYER_2]->worms_status & STATUS_ALIVE)))
-  {
-    /* draw */
+  int alive_players = 0;
+  player_id last_alive = GAME_DRAW;
+  
+  /* Count alive players and find last one standing */
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    player_t *pl = g->worms[p];
+
+    if(pl->worms_status & STATUS_GAME_OVER){
+      int cam_id = get_player_camera_id(p);
+      font_print_center(g->wiiero_cameras[cam_id], "GAME OVER", 
+                        g->wiiero_cameras[cam_id]->w / 2, 
+                        g->wiiero_cameras[cam_id]->h / 2, 
+                        FONT_BIG);
+    } else if (game_score[p].nb_lifes > 0) {
+      alive_players++;
+      last_alive = p;
+    }else{
+      player_game_over(pl);
+    }
+  }
+  
+  /* Check win conditions */
+  if (alive_players == 0) {
+    /* All players dead at the same time -> draw */
     winner_id = GAME_DRAW;
     g->wiiero_game_status = GAME_SET_ROUND_STATS;
-  }
-  else if ((game_score[PLAYER_1].nb_lifes == 0) && (g->worms[PLAYER_1]->worms_status & STATUS_ALIVE))
-  {
-    /* p2 win */
-    winner_id = PLAYER_2;
-    g->wiiero_game_status = GAME_SET_ROUND_STATS;
-  }
-  if ((game_score[PLAYER_2].nb_lifes == 0) && (g->worms[PLAYER_2]->worms_status & STATUS_ALIVE))
-  {
-    /* p1 win */
-    winner_id = PLAYER_1;
+  } else if (alive_players == 1) {
+    /* Only one player left with lives -> they win */
+    winner_id = last_alive;
     g->wiiero_game_status = GAME_SET_ROUND_STATS;
   }
 } /*--------------------------------------------------------------------------*/
@@ -685,6 +700,8 @@ static __inline__ void wiiero_menu(game_t *g)
     }
     g->worms[PLAYER_1]->worms_action = ACTION_NONE;
     g->worms[PLAYER_2]->worms_action = ACTION_NONE;
+    g->worms[PLAYER_3]->worms_action = ACTION_NONE;
+    g->worms[PLAYER_4]->worms_action = ACTION_NONE;
     SDL_Delay(60);
   }
 } /*---------------------------------------------------------------------------*/
@@ -976,6 +993,8 @@ static __inline__ void wiiero_set_option(game_t *g)
   framer_off();
   g->worms[PLAYER_1]->worms_status |= STATUS_STATS_UPDATE;
   g->worms[PLAYER_2]->worms_status |= STATUS_STATS_UPDATE;
+  g->worms[PLAYER_3]->worms_status |= STATUS_STATS_UPDATE;
+  g->worms[PLAYER_4]->worms_status |= STATUS_STATS_UPDATE;
 } /*--------------------------------------------------------------------------*/
 static __inline__ void wiiero_option(game_t *g)
 {
@@ -1058,21 +1077,27 @@ static __inline__ void wiiero_set_message(game_t *g, char *message, fontsize_t f
   font_print_center(g->wiiero_cameras[FULL_SCREEN_CAM], wiiero_label[WIIERO_LANG_WARNING_PRESSKEY], 3 * g->wiiero_cameras[FULL_SCREEN_CAM]->w / 4, 5 * g->wiiero_cameras[FULL_SCREEN_CAM]->h / 8, FONT_STANDARD);
   next_stat = next_status;
   g->wiiero_game_status = GAME_PAUSE;
-  g->worms[PLAYER_1]->worms_action = ACTION_NONE;
-  g->worms[PLAYER_2]->worms_action = ACTION_NONE;
-  g->worms[PLAYER_1]->worms_status |= STATUS_STATS_UPDATE;
-  g->worms[PLAYER_2]->worms_status |= STATUS_STATS_UPDATE;
+  for(player_id i = 0; i < NB_PLAYERS; i++){
+    g->worms[i]->worms_action = ACTION_NONE;
+    g->worms[i]->worms_status |= STATUS_STATS_UPDATE;
+  }
 } /*---------------------------------------------------------------------------*/
 /* Pause */
 static __inline__ void wiiero_pause(game_t *g)
 {
   SDL_Delay(100);
-  if ((g->worms[PLAYER_1]->worms_action != ACTION_NONE) ||
-      (g->worms[PLAYER_2]->worms_action != ACTION_NONE))
-  {
+  uint8_t action = 0;
+  for(player_id i = 0; i < NB_PLAYERS; i++){
+    if (g->worms[i]->worms_action != ACTION_NONE){
+      action = 1;
+      break;
+    }
+  }
+  if (action){
     g->wiiero_game_status = next_stat;
-    g->worms[PLAYER_1]->worms_action = ACTION_NONE;
-    g->worms[PLAYER_2]->worms_action = ACTION_NONE;
+    for(player_id i = 0; i < NB_PLAYERS; i++){
+      g->worms[i]->worms_action = ACTION_NONE;
+    }
     // camera_switch_off(g->wiiero_cameras[FULL_SCREEN_CAM]);
     CAMERA_OFF(g->wiiero_cameras[FULL_SCREEN_CAM]);
   }
@@ -1162,6 +1187,8 @@ static __inline__ void wiiero_play(game_t *g)
   /* CAM FOCUS */
   player_focus(g->worms[PLAYER_1]);
   player_focus(g->worms[PLAYER_2]);
+  player_focus(g->worms[PLAYER_3]);
+  player_focus(g->worms[PLAYER_4]);
   /* BLIT */
   wiiero_blit_world(g);
   /* game uptade */
@@ -1402,36 +1429,28 @@ static __inline__ void wiiero_about(game_t *g)
 /* ----------- Simulate Simple pressure or hold events -----------  */
 static __inline__ void wiiero_simple_or_hold_events_transformer(game_t *g)
 {
-  static uint8_t pressure_detected = 0;
-  static Uint16 p1_actions = ACTION_NONE;
-  static Uint16 p2_actions = ACTION_NONE;
+  static uint8_t players_pressure[NB_PLAYERS] = {0};
+  static Uint16 players_actions[NB_PLAYERS] = {ACTION_NONE};
 
-  if((g->worms[PLAYER_1]->worms_action != ACTION_NONE) ||
-     (g->worms[PLAYER_2]->worms_action != ACTION_NONE))
-  {
-    // New event detected
-    p1_actions = g->worms[PLAYER_1]->worms_action;
-    p2_actions = g->worms[PLAYER_2]->worms_action;
-    pressure_detected = MIN(pressure_detected + 1, 200);
-    if(pressure_detected == 1){
-      //printf("Event detected P1: %04X P2: %04X\n", p1_actions, p2_actions);
-      // First event detected
-      g->worms[PLAYER_1]->worms_action = p1_actions;
-      g->worms[PLAYER_2]->worms_action = p2_actions;
-    } else if(pressure_detected < 10){
-      // Short Holding event
-      g->worms[PLAYER_1]->worms_action = ACTION_NONE;
-      g->worms[PLAYER_2]->worms_action = ACTION_NONE;
-    } else if(pressure_detected > 10){
-      //printf("Long Holding event P1: %04X P2: %04X (%d)\n", p1_actions, p2_actions, pressure_detected);
-      // Long press detected
-      g->worms[PLAYER_1]->worms_action = p1_actions;
-      g->worms[PLAYER_2]->worms_action = p2_actions;
+  for(player_id i = 0; i < NB_PLAYERS; i++){
+    if(g->worms[i]->worms_action != ACTION_NONE){
+      // New event detected
+      players_actions[i] = g->worms[i]->worms_action;
+      players_pressure[i] = MIN(players_pressure[i] + 1, 200);
+      if(players_pressure[i] == 1){
+        // First event detected
+        g->worms[i]->worms_action = players_actions[i];
+      } else if(players_pressure[i] < 10){
+        // Short Holding event
+        g->worms[i]->worms_action = ACTION_NONE;
+      } else if(players_pressure[i] > 10){
+        // Long press detected
+        g->worms[i]->worms_action = players_actions[i];
+      }
+    } else {
+      players_pressure[i] = 0;
+      players_actions[i] = ACTION_NONE;
     }
-  } else {
-    pressure_detected = 0;
-    p1_actions = ACTION_NONE;
-    p2_actions = ACTION_NONE;
   }
 }
 /*--------------------------------------------------------------------------*/
