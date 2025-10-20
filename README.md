@@ -8,7 +8,7 @@
      \__/\_/ \__ \\__ \ \___  >|__|   \____/    '--===--[_)~  \__/\
                 \/   \/     \/  by BScrk                   \______/
 
-Release 1.4                                                REBOOT
+Release 1.6 (4 players)                                       REBOOT
 ```
 
 Wiiero is under GPL licence.
@@ -290,15 +290,39 @@ TODO
 ## Credits
 
 Joosa Riekkinen - Original Liero Author
+
 BScrk - Wiiero Author
+
 BScrk & Kyfran- 4 Players Wiiero Reboot
+
 Sound Track - Binaerpilot www.binaerpilot.no
+
 Have Fun !
 
 
 ## Changelog 
 
-2025-01-17 BScrk (Luca Benevolo) <wiiero@free.fr>
+2025-10-20 BScrk & Kyfran
+
+ * Wiiero version: Release 1.6 (4 Players Edition)
+ * **4 Players Local Multiplayer**
+   - Complete refactoring for 4 simultaneous players support
+   - Split-screen rendering with 4 independent cameras
+   - Individual player HUD and status display
+   - Support for up to 4 gamepads simultaneously
+ * **Gamepad Support**
+   - SDL2 GameController API integration
+   - Auto-detection and hot-plug support for all gamepads
+   - Xbox, PlayStation, Switch Pro controllers compatibility
+   - 360° analog aiming with right stick
+   - Dual analog controls (movement + aim)
+ * **Audio System Improvements**
+   - SDL2_mixer integration
+   - Music playback support
+   - In-game sound effects
+   - Improved audio performance
+
+2025-01-17 BScrk
 
  * Wiiero version: Release 1.5 (SDL2 Migration)
  * **Complete SDL2 migration**
@@ -311,7 +335,7 @@ Have Fun !
  * Maintained backward compatibility with existing code structure
  * IOKit gamepad support preserved
 
-2025-10-16 BScrk (Luca Benevolo) <wiiero@free.fr>
+2025-10-16 BScrk
 
  * Wiiero version: Release 1.4
  * Project Reboot

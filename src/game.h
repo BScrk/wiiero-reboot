@@ -40,7 +40,7 @@
 #include "sound_engine.h"
 
 #ifdef DESKTOP_MODE
-#define WIIERO_VERSION "wiiero v1.5    [Desktop Edition]"
+#define WIIERO_VERSION "wiiero v1.6    [Desktop Edition]"
 #endif
 
 
