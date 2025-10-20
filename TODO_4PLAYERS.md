@@ -22,9 +22,9 @@
 - [x] Si moins de 4 gamepads, les gamepads sont reservés aux joueurs 3 et 4. P1 et P2 utiliseront le clavier.
 - [x] `proceed_bullets()` Refactoriser pour 4 joueurs
 - [x] Deathmatch pour 4 joueurs
+- [x] Game of Tag pour 4 joueurs FFA
 
 ## 🔨 À faire
-- [ ] Game of Tag pour 4 joueurs (2v2)
 - [ ] Capture the Flag pour 4 joueurs (2v2)
 
 ## 📋 Améliorations futures (optionnel)

@@ -441,7 +441,9 @@ static __inline__ void wiiero_got_game_mode(game_t *g)
   {
     for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
       /* check if any player just respawned */
-      if (!(g->worms[p]->worms_status & STATUS_GAME_OVER) && (g->worms[p]->worms_status & STATUS_RESETED) && (!(g->worms[p]->worms_status & STATUS_TAGGED))){
+      if (!(g->worms[p]->worms_status & STATUS_GAME_OVER) 
+        && (g->worms[p]->worms_status & STATUS_RESETED) 
+        && (!(g->worms[p]->worms_status & STATUS_TAGGED))){
         /* Remove tag from all players */
         for (player_id op = PLAYER_1; op < NB_PLAYERS; op++) {
           g->worms[op]->worms_status &= ~STATUS_TAGGED;
@@ -454,7 +456,9 @@ static __inline__ void wiiero_got_game_mode(game_t *g)
   }
 
   for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
-    if(!(g->worms[p]->worms_status & STATUS_GAME_OVER) && (g->worms[p]->worms_status & STATUS_TAGGED) && (g->worms[p]->worms_status & STATUS_ALIVE))
+    if(!(g->worms[p]->worms_status & STATUS_GAME_OVER) 
+      && (g->worms[p]->worms_status & STATUS_TAGGED) 
+      && (g->worms[p]->worms_status & STATUS_ALIVE))
     {
       if (SDL_GetTicks() - wiiero_time_tag > 1000)
       {
