@@ -400,71 +400,83 @@ static __inline__ void wiiero_got_game_mode(game_t *g)
 {
   // TODO 4P: refactor for more than 2 players 
   static int wiiero_time_tag = 0;
+  uint8_t alive_players = 0;
+  uint8_t disqualified = 0;
 
-  if ((g->worms[PLAYER_1]->worms_status & STATUS_RESETED) && (g->worms[PLAYER_2]->worms_status & STATUS_RESETED))
-  {
-    /* random tag */
+  player_id last_alive = GAME_DRAW;
+
+  /* Count alive players */
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    if (g->worms[p]->worms_status & STATUS_GAME_OVER) {
+      // GAME OVER
+      int cam_id = get_player_camera_id(p);
+      font_print_center(g->wiiero_cameras[cam_id], "GAME OVER", 
+                        g->wiiero_cameras[cam_id]->w / 2, 
+                        g->wiiero_cameras[cam_id]->h / 2, 
+                        FONT_BIG);      
+      disqualified++;
+    } else if (g->worms[p]->worms_status & STATUS_RESETED) {
+      // DEAD
+    } else {
+      alive_players++;
+      last_alive = p;
+    }
+  }
+
+
+  if (alive_players == 0){
+    /* Random tag */
+    for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+      g->worms[p]->worms_status &= ~STATUS_TAGGED;
+    }
     player_id tagged_player_id = rand() % NB_PLAYERS;
+    while (!(g->worms[tagged_player_id]->worms_status & STATUS_GAME_OVER)){
+      // find a valid player
+      tagged_player_id = (tagged_player_id + 1) % NB_PLAYERS;
+    }
     g->worms[tagged_player_id]->worms_status |= STATUS_TAGGED;
-    tagged_player_id = (tagged_player_id == PLAYER_1) ? PLAYER_2 : PLAYER_1;
-    g->worms[tagged_player_id]->worms_status &= ~STATUS_TAGGED;
     wiiero_time_tag = SDL_GetTicks();
   }
   else
   {
-    if ((g->worms[PLAYER_1]->worms_status & STATUS_RESETED) && (!(g->worms[PLAYER_1]->worms_status & STATUS_TAGGED)))
-    {
-      /* tag player 1 */
-      g->worms[PLAYER_1]->worms_status |= STATUS_TAGGED;
-      g->worms[PLAYER_2]->worms_status &= ~STATUS_TAGGED;
-      wiiero_time_tag = SDL_GetTicks();
-    }
-    if ((g->worms[PLAYER_2]->worms_status & STATUS_RESETED) && (!(g->worms[PLAYER_2]->worms_status & STATUS_TAGGED)))
-    {
-      /* tag player 2 */
-      g->worms[PLAYER_2]->worms_status |= STATUS_TAGGED;
-      g->worms[PLAYER_1]->worms_status &= ~STATUS_TAGGED;
-      wiiero_time_tag = SDL_GetTicks();
+    for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+      /* check if any player just respawned */
+      if (!(g->worms[p]->worms_status & STATUS_GAME_OVER) && (g->worms[p]->worms_status & STATUS_RESETED) && (!(g->worms[p]->worms_status & STATUS_TAGGED))){
+        /* Remove tag from all players */
+        for (player_id op = PLAYER_1; op < NB_PLAYERS; op++) {
+          g->worms[op]->worms_status &= ~STATUS_TAGGED;
+        }
+        /* Tag this player */
+        g->worms[p]->worms_status |= STATUS_TAGGED;
+        wiiero_time_tag = SDL_GetTicks();
+      }
     }
   }
 
-  if ((g->worms[PLAYER_1]->worms_status & STATUS_TAGGED) && (g->worms[PLAYER_1]->worms_status & STATUS_ALIVE))
-  {
-    if (SDL_GetTicks() - wiiero_time_tag > 1000)
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    if(!(g->worms[p]->worms_status & STATUS_GAME_OVER) && (g->worms[p]->worms_status & STATUS_TAGGED) && (g->worms[p]->worms_status & STATUS_ALIVE))
     {
-      game_score[PLAYER_1].tag_time--;
-      wiiero_time_tag = SDL_GetTicks();
+      if (SDL_GetTicks() - wiiero_time_tag > 1000)
+      {
+        game_score[p].tag_time--;
+        wiiero_time_tag = SDL_GetTicks();
+      }
     }
-  }
-  if ((g->worms[PLAYER_2]->worms_status & STATUS_TAGGED) && (g->worms[PLAYER_2]->worms_status & STATUS_ALIVE))
-  {
-    if (SDL_GetTicks() - wiiero_time_tag > 1000)
-    {
-      game_score[PLAYER_2].tag_time--;
-      wiiero_time_tag = SDL_GetTicks();
+
+    if(game_score[p].tag_time == 0) {
+      player_game_over(g->worms[p]);
     }
   }
 
-  if ((game_score[PLAYER_1].tag_time == 0) && (game_score[PLAYER_2].tag_time == 0))
-  {
+
+  if (disqualified == NB_PLAYERS){
     /* equal */
     winner_id = GAME_DRAW;
     g->wiiero_game_status = GAME_SET_ROUND_STATS;
-  }
-  else
-  {
-    if (game_score[PLAYER_1].tag_time == 0)
-    {
-      /* p2 win */
-      winner_id = PLAYER_2;
-      g->wiiero_game_status = GAME_SET_ROUND_STATS;
-    }
-    if (game_score[PLAYER_2].tag_time == 0)
-    {
-      /* p1 win */
-      winner_id = PLAYER_1;
-      g->wiiero_game_status = GAME_SET_ROUND_STATS;
-    }
+  } if (disqualified == NB_PLAYERS - 1){
+    // Only one player left -> Winner
+    winner_id = last_alive;
+    g->wiiero_game_status = GAME_SET_ROUND_STATS;
   }
 } /*--------------------------------------------------------------------------*/
 
