@@ -4951,19 +4951,18 @@ void ninja_hook_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userd
 
 void ninja_hook_disconnect(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata){
  /* Bloc */
-  bullet_t * b = (bullet_t *) bullet;
-  player_t* source = b->p_origin;
-  //player_t** p = (player_t **) p_arr;
-  //player_t* owner = ((bullet_t*)bullet)->p_origin ? ((bullet_t*)bullet)->p_origin : (p[0]);
-
-  player_t* dest = source->tricked_worm;
-  if(!dest){
-    //fprintf(stderr,"ninja_hook_disconnect: dest is NULL\r\n");
-  }else{
-    //fprintf(stderr,"ninja_hook_disconnect: dest is OK :D\r\n");
-    if( dest->worms_status & STATUS_TRICKED ){
-      dest->worms_status &= ~STATUS_TRICKED;
-      source->tricked_worm = NULL;
+  player_t* owner = ((bullet_t*)bullet)->p_origin ? ((bullet_t*)bullet)->p_origin : 0l;
+  
+  if(owner){
+    player_t* dest = owner->tricked_worm;
+    if(!dest){
+      //fprintf(stderr,"ninja_hook_disconnect: dest is NULL\r\n");
+    }else{
+      //fprintf(stderr,"ninja_hook_disconnect: dest is OK :D\r\n");
+      if( dest->worms_status & STATUS_TRICKED ){
+        dest->worms_status &= ~STATUS_TRICKED;
+        owner->tricked_worm = NULL;
+      }
     }
   }
   

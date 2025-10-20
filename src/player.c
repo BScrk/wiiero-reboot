@@ -256,11 +256,13 @@ void player_reset( player_t* p, SDL_Surface* ground
   p->worms_status &= ~STATUS_SUICIDE;
   p->worms_status |= STATUS_RESETED;
   p->worms_status &= ~(STATUS_FREEZED | STATUS_UNFOCUSED);
-                     
   p->reticle_pitch = ANGLE_PITCH;
   p->last_stats_update =0;
   /*p->worms_shockwave = 0;*/
   p->worms.skin = p->r->worms_skins[p->id];
+  p->tricked_worm = NULL;
+  secure_free(p->ninja_hook);
+  p->ninja_hook = weapon_init(WEAPON_NINJA);
 }
 
 void player_init_weapons(player_t* p,int xtra_on){

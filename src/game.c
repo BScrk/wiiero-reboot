@@ -363,8 +363,7 @@ static __inline__ void wiiero_restart_game(game_t *g)
 {
   player_id i;
   static int first = 0;
-  for (i = PLAYER_1; i < NB_PLAYERS; i++)
-  {
+  for (i = PLAYER_1; i < NB_PLAYERS; i++){
     game_score[i].nb_lifes = g->wiiero_opt_nb_lifes;
     game_score[i].nb_frags = 0;
     game_score[i].nb_suicides = 0;
@@ -372,8 +371,7 @@ static __inline__ void wiiero_restart_game(game_t *g)
     game_score[i].nb_flags = 0;
     game_score[i].tag_time = g->wiiero_opt_got_time;
   }
-  if (first != 0)
-  {
+  if (first != 0){
     /* RESET MAP */
     if (g->wiiero_opt_map_regen)
       map_reset(g->wiiero_map, g->wiiero_ressources, g->wiiero_opt_nb_rocks);
