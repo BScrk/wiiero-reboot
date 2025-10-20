@@ -127,6 +127,7 @@ enum{
 typedef enum{
     GAME_DEATHMATCH_MODE,
     GAME_OF_TAG_MODE,
+    GAME_OF_TAG_TEAM_MODE,
     GAME_CAPTURE_FLAG_MODE,
 }game_mode_t;
 
@@ -156,12 +157,12 @@ typedef struct player_s{
 }player_t;
 
 typedef struct{
-  Uint16 nb_lifes;
-  Uint16 nb_frags;
-  Uint16 nb_suicides;
-  Uint16 nb_death;
-  Uint16 nb_flags;
-  Uint16 tag_time;
+  Uint16  nb_lifes;
+  Uint16  nb_frags;
+  Uint16  nb_suicides;
+  Uint16  nb_death;
+  Uint16  nb_flags;
+  int32_t tag_time; // Can be negative for team mode
 }player_score_t;
 
 

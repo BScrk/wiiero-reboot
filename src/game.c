@@ -285,6 +285,9 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
   case GAME_OF_TAG_MODE:
     return (game_score[player].tag_time < g->wiiero_opt_got_time / 5);
     break;
+  case GAME_OF_TAG_TEAM_MODE:
+    return (game_score[player].tag_time < g->wiiero_opt_got_time / 5);
+    break;
   case GAME_CAPTURE_FLAG_MODE:
     // TODO 4P: improve flag warning (distance from flag ?)
     return (player == PLAYER_1)
@@ -394,11 +397,78 @@ static __inline__ void wiiero_restart_game(game_t *g)
   }
   first = 1;
   bullet_time_effect_delay = 0;
-} /*--------------------------------------------------------------------------*/
+}
+/*--------------------------------------------------------------------------*/
+static __inline__ void wiiero_team_got_game_mode(game_t *g)
+{
+  static int wiiero_time_tag = 0;
+  int32_t team_time[NB_PLAYERS/2] = {0};
 
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    uint8_t team_id = p / (NB_PLAYERS / 2);
+    team_time[team_id] += game_score[p].tag_time;
+  }
+
+  uint8_t alive_players = 0;
+
+  /* Count alive players */
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    if (!(g->worms[p]->worms_status & STATUS_RESETED)) {
+      alive_players++;
+    }
+  }
+
+  if (alive_players == 0){
+    /* Random tag */
+    for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+      g->worms[p]->worms_status &= ~STATUS_TAGGED;
+    }
+    player_id tagged_player_id = rand() % NB_PLAYERS;
+    g->worms[tagged_player_id]->worms_status |= STATUS_TAGGED;
+    wiiero_time_tag = SDL_GetTicks();
+  }
+  else
+  {
+    for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+      /* check if any player just respawned */
+      if ((g->worms[p]->worms_status & STATUS_RESETED) 
+        && (!(g->worms[p]->worms_status & STATUS_TAGGED))){
+        /* Remove tag from all players */
+        for (player_id op = PLAYER_1; op < NB_PLAYERS; op++) {
+          g->worms[op]->worms_status &= ~STATUS_TAGGED;
+        }
+        /* Tag this player */
+        g->worms[p]->worms_status |= STATUS_TAGGED;
+        wiiero_time_tag = SDL_GetTicks();
+      }
+    }
+  }
+
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    if(  (g->worms[p]->worms_status & STATUS_TAGGED) 
+      && (g->worms[p]->worms_status & STATUS_ALIVE))
+    {
+      if (SDL_GetTicks() - wiiero_time_tag > 1000)
+      {
+        game_score[p].tag_time--;
+        wiiero_time_tag = SDL_GetTicks();
+      }
+    }
+  }
+
+  if(( team_time[0] <= 0 || team_time[1] <= 0) ){
+    winner_id = ( (team_time[0] <= 0) && (team_time[1] <= 0))
+                ? GAME_DRAW 
+                : (team_time[0] <= 0) 
+                  ? PLAYER_3
+                  : PLAYER_1;
+    printf("Team GOT over: team_time[0]=%d team_time[1]=%d winner_id=%d\n", team_time[0], team_time[1], winner_id);
+    g->wiiero_game_status = GAME_SET_ROUND_STATS;
+  }
+}
+/*--------------------------------------------------------------------------*/
 static __inline__ void wiiero_got_game_mode(game_t *g)
 {
-  // TODO 4P: refactor for more than 2 players 
   static int wiiero_time_tag = 0;
   uint8_t alive_players = 0;
   uint8_t disqualified = 0;
@@ -688,8 +758,8 @@ static __inline__ void wiiero_menu(game_t *g)
   if (g->wiiero_game_status == GAME_MENU)
   {
     if (g->worms[PLAYER_1]->worms_action & ACTION_UP || g->worms[PLAYER_2]->worms_action & ACTION_UP)
-      selected_menu_entry = (selected_menu_entry == 0) ? MENU_MAX - 1
-                                                       : (selected_menu_entry - 1);
+      selected_menu_entry = (selected_menu_entry == 0)  ? MENU_MAX - 1
+                                                        : (selected_menu_entry - 1);
     if (g->worms[PLAYER_1]->worms_action & ACTION_DOWN || g->worms[PLAYER_2]->worms_action & ACTION_DOWN)
       selected_menu_entry = (selected_menu_entry + 1) % MENU_MAX;
 
@@ -790,6 +860,9 @@ char *option_format_gamemode_cb(char *label, void *data)
     break;
   case GAME_OF_TAG_MODE:
     snprintf(string, 127, "%s %s", label, wiiero_label[WIIERO_LANG_GOT]);
+    break;
+  case GAME_OF_TAG_TEAM_MODE:
+    snprintf(string, 127, "%s %s", label, wiiero_label[WIIERO_LANG_GOT_TEAM]);
     break;
   case GAME_CAPTURE_FLAG_MODE:
     snprintf(string, 127, "%s %s", label, wiiero_label[WIIERO_LANG_CTF]);
@@ -1214,6 +1287,9 @@ static __inline__ void wiiero_play(game_t *g)
   case GAME_OF_TAG_MODE:
     wiiero_got_game_mode(g);
     break;
+  case GAME_OF_TAG_TEAM_MODE:
+    wiiero_team_got_game_mode(g);
+    break;
   case GAME_CAPTURE_FLAG_MODE:
     wiiero_cflag_game_mode(g);
     break;
@@ -1240,7 +1316,6 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
   camera_clean(g->wiiero_cameras[FULL_SCREEN_CAM]);
   camera_switch_on(g->wiiero_cameras[FULL_SCREEN_CAM]);
   camera_set_alpha(g->wiiero_cameras[FULL_SCREEN_CAM], 170);
-  /* SHOW Player 1 stats */
 
   for (id = PLAYER_1; id < NB_PLAYERS; id++)
   {
@@ -1262,32 +1337,47 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
     font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
     y+=10;
 
-    switch (g->wiiero_opt_game_mode)
-    {
-    case GAME_DEATHMATCH_MODE:
-      snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_LIFES], game_score[id].nb_lifes);
-      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
-      y+=10;
-      break;
-    case GAME_OF_TAG_MODE:
-      snprintf(msg, 511, "  %s: %dm%ds", wiiero_label[WIIERO_LANG_TIME], game_score[id].tag_time / 60, game_score[id].tag_time % 60);
-      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
-      y+=10;
-      break;
-    case GAME_CAPTURE_FLAG_MODE:
-      snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_FLAGS], game_score[id].nb_flags);
-      font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
-      y+=10;
-      break;
+    switch (g->wiiero_opt_game_mode){
+      case GAME_DEATHMATCH_MODE:
+        snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_LIFES], game_score[id].nb_lifes);
+        font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+        y+=10;
+        break;
+      case GAME_OF_TAG_TEAM_MODE: {
+          uint8_t team_id = id / (NB_PLAYERS / 2);
+          int32_t team_time = 0;
+          for(player_id j = team_id * (NB_PLAYERS / 2); j < (team_id + 1) * (NB_PLAYERS / 2); j++){
+            team_time += game_score[j].tag_time;
+          }
+          snprintf(msg, 511, "TEAM  %s: %02dm%02ds", wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
+          font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+          y+=10;
+        }
+        break;
+      case GAME_OF_TAG_MODE:
+        snprintf(msg, 511, "  %s: %02dm%02ds", wiiero_label[WIIERO_LANG_TIME], game_score[id].tag_time / 60, game_score[id].tag_time % 60);
+        font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+        y+=10;
+        break;
+      case GAME_CAPTURE_FLAG_MODE:
+        snprintf(msg, 511, "  %s: %d", wiiero_label[WIIERO_LANG_FLAGS], game_score[id].nb_flags);
+        font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
+        y+=10;
+        break;
     }
   }
   /* SHOW WINNER */
   id = winner_id;
-  if (id < GAME_DRAW)
-    snprintf(msg, 511, "%s %s.", game_nicknames[id], wiiero_label[WIIERO_LANG_WIN]);
-  else
+  if (id < GAME_DRAW){
+    if(g->wiiero_opt_game_mode == GAME_OF_TAG_TEAM_MODE){
+      snprintf(msg, 511, "TEAM %d %s.", (id / 2) + 1, wiiero_label[WIIERO_LANG_WIN]);
+    } else{
+      snprintf(msg, 511, "%s %s.", game_nicknames[id], wiiero_label[WIIERO_LANG_WIN]);
+    }
+  }else{
     snprintf(msg, 511, "%s.", wiiero_label[WIIERO_LANG_DRAW]);
-  font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, g->wiiero_cameras[FULL_SCREEN_CAM]->w / 2 - strlen(msg) * 4, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 70, FONT_SELECTED);
+  }
+  font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg, g->wiiero_cameras[FULL_SCREEN_CAM]->w / 2 - strlen(msg) * 4, g->wiiero_cameras[FULL_SCREEN_CAM]->h / 6 + 90, FONT_SELECTED);
 
   /* Blit and wait a moment ... */
   screen_display(g->wiiero_screen);

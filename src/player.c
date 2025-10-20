@@ -587,22 +587,35 @@ void player_show_stats(player_t* p,game_mode_t gm){
   font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+21,FONT_SMALL);
   switch(gm){
     case GAME_DEATHMATCH_MODE:
-        snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
-                , game_score[p->id].nb_lifes);
-        font_print_strict_pos( camera, tmp_string, 1*step
-                              , 3*camera->h/10+30, FONT_SMALL);
-        break;
+      snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
+              , game_score[p->id].nb_lifes);
+      font_print_strict_pos( camera, tmp_string, 1*step
+                            , 3*camera->h/10+30, FONT_SMALL);
+      break;
+    case GAME_OF_TAG_TEAM_MODE:
+      if(p->id % (NB_PLAYERS / 2) == 0){
+        uint8_t team_id = p->id / (NB_PLAYERS / 2);
+        int32_t team_time = 0;
+        for(player_id j = team_id * (NB_PLAYERS / 2); j < (team_id + 1) * (NB_PLAYERS / 2); j++){
+          team_time += game_score[j].tag_time;
+        }
+        snprintf(tmp_string,127, "     TEAM %s: %02dm%02ds", wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
+        font_print_strict_pos( camera, tmp_string
+                              , 1*step
+                              , 3*camera->h/10+50, FONT_SMALL);
+      }
+      break;
     case GAME_OF_TAG_MODE:
-        snprintf(tmp_string,127," %s: %.2dm%.2ds",wiiero_label[WIIERO_LANG_TIME]
-                , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
-        font_print_strict_pos( camera, tmp_string, 1*step
-                              , 3*camera->h/10+30, FONT_SMALL);
-        break;
+      snprintf(tmp_string,127," %s: %02dm%02ds",wiiero_label[WIIERO_LANG_TIME]
+              , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
+      font_print_strict_pos( camera, tmp_string, 1*step
+                            , 3*camera->h/10+30, FONT_SMALL);
+      break;
     case GAME_CAPTURE_FLAG_MODE:
-        snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FLAGS]
-                , game_score[p->id].nb_flags);
-        font_print_strict_pos(camera, tmp_string, 1*step
-                              , 3*camera->h/10+30, FONT_SMALL);
+      snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FLAGS]
+              , game_score[p->id].nb_flags);
+      font_print_strict_pos(camera, tmp_string, 1*step
+                            , 3*camera->h/10+30, FONT_SMALL);
   }
 }
 
@@ -981,9 +994,7 @@ void player_change_rope_len(player_t* p,int len_modif){
 void player_remove_hook(player_t* p,player_t** other_p){
   /* Remove Hook */
   ASSERT(p->ninja_hook->last_bullet)
-  for(player_id i=PLAYER_1;i<NB_PLAYERS;i++){
-    ninja_hook_disconnect(p->ninja_hook->last_bullet,p,NB_PLAYERS,0l);//FIXME NB_PLAYERS was other player any pb ?
-  }
+  ninja_hook_disconnect(p->ninja_hook->last_bullet,other_p,NB_PLAYERS,0l);
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;
 }

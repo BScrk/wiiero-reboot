@@ -80,11 +80,13 @@ LDFLAGS = -L$(LOCALBASE)/lib $(PLATFORM_LIBS)
 
 compil: createbin $(EXES)
 
-dev: CFLAGS += -DDEBUG_ON -g
-dev: profile 
+dev_log: CFLAGS += -DDEBUG_ON
+dev_log: dev 
 
-profile: CFLAGS  = $(MYPROFILECFLAGS) -I$(LOCALBASE)/include $(PLATFORM_DEF) -g -pg
-profile: LDFLAGS = -L$(LOCALBASE)/lib $(PLATFORM_LIBS) -pg
+dev: CFLAGS += -g -O0
+dev: compil 
+
+profile: CFLAGS += -DDEBUG_ON -g -pg
 profile: compil
 
 
