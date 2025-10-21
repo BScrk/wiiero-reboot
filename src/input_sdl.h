@@ -229,7 +229,7 @@ static __inline__ void game_check_event(game_t *g)
               // New controller, add it and send message
               char msg[128];
               const char* name = SDL_GameControllerName(new_controller);
-              snprintf(msg, sizeof(msg), "Gamepad %d: %s\n", gamepad_count, name ? name : "Unknown");
+              snprintf(msg, sizeof(msg), "Gamepad %d added: %s\n", gamepad_count, name ? name : "Unknown");
               font_console_print_debug(msg, FONT_SMALL);
               gamepads[gamepad_count] = new_controller;
               gamepad_count++;
@@ -622,11 +622,13 @@ static __inline__ void player_gp_event_update(player_t *p, map_t *m, player_t **
   }
 
   /* CROP (A button) */
-  if (p->worms_action & ACTION_CROP)
-    player_crop(p, m);
-  else
+  if (p->worms_action & ACTION_CROP){
+    if (!(p->worms_status & STATUS_CROPING)){
+      player_crop(p, m);
+    }
+  } else{
     p->worms_status &= ~STATUS_CROPING;
-
+  } 
 
 
   /* Weapon change with X button + direction */
