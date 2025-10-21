@@ -103,7 +103,16 @@ static int gamepad_count = 0;
 static __inline__ void init_controllers()
 {
   font_console_print_debug("Initializing SDL2 GameController support...\n", FONT_SMALL);
-  
+  // Load gamecontrollerdb.txt mappings if available
+  int mappings = SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
+  if (mappings < 0) {
+    font_console_print_debug("  No gamecontrollerdb.txt found or error loading it.\n", FONT_SMALL);
+  } else {
+    char msg[128];
+    snprintf(msg, sizeof(msg), "  Loaded %d gamecontrollerdb.txt mappings.\n", mappings);
+    font_console_print_debug(msg, FONT_SMALL);
+  }
+
   // Enable game controller events
   SDL_GameControllerEventState(SDL_ENABLE);
   
@@ -217,7 +226,11 @@ static __inline__ void game_check_event(game_t *g)
               // Already have this one, close the duplicate
               SDL_GameControllerClose(new_controller);
             } else {
-              // New controller, add it
+              // New controller, add it and send message
+              char msg[128];
+              const char* name = SDL_GameControllerName(new_controller);
+              snprintf(msg, sizeof(msg), "Gamepad %d: %s\n", gamepad_count, name ? name : "Unknown");
+              font_console_print_debug(msg, FONT_SMALL);
               gamepads[gamepad_count] = new_controller;
               gamepad_count++;
             }
@@ -230,6 +243,9 @@ static __inline__ void game_check_event(game_t *g)
       // Hot-plug support: remove disconnected controller
       for (int i = 0; i < gamepad_count; i++) {
         if (gamepads[i] && SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(gamepads[i])) == event.cdevice.which) {
+          char msg[128];
+          snprintf(msg, sizeof(msg), "Gamepad %d disconnected\n", i);
+          font_console_print_debug(msg, FONT_SMALL);
           SDL_GameControllerClose(gamepads[i]);
           gamepads[i] = NULL;
           // Shift remaining gamepads
