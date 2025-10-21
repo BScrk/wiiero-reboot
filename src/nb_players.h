@@ -40,7 +40,8 @@ typedef enum{
 
 typedef enum{
   TEAM_1 = PLAYER_1,
-  TEAM_2 = PLAYER_2
+  TEAM_2 = PLAYER_2,
+  NB_TEAMS = 2
 }team_id;
 
 

@@ -23,9 +23,10 @@
 - [x] `proceed_bullets()` Refactoriser pour 4 joueurs
 - [x] Deathmatch pour 4 joueurs
 - [x] Game of Tag pour 4 joueurs FFA
+- [x] Game of Tag pour 4 joueurs 2 vs 2
+- [x] Game of Tag pour 4 joueurs FFA
+- [x] Capture the Flag pour 4 joueurs (2v2)
 
-## 🔨 À faire
-- [ ] Capture the Flag pour 4 joueurs (2v2)
 
 ## 📋 Améliorations futures (optionnel)
 - [ ] Ajouter des contrôles pour PLAYER_3 et PLAYER_4 dans les autres input modes (Wii, PSP, IOKit)

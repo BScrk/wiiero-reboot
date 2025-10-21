@@ -380,18 +380,18 @@ void medikit_blit_cb(camera_t* c,void* bullet,void* userdata);
 bullet_t* create_shield(weapon_id w_id,player_t *p,int acc_x,int acc_y);
 void shield_blit_cb(camera_t* c,void* bullet,void* userdata);
 
-/* *** PLAYERS HOUSES *** */
-void house_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+/* *** TEAMS HOUSES *** */
+void house_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata);
-void house_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+void house_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void house_blit_cb(camera_t* c,void* bullet,void* userdata);
 
 
-/* *** PLAYERS FLAGS *** */
-void flag_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+/* *** TEAMS FLAGS *** */
+void flag_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata);
-void flag_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+void flag_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata);
 void flag_blit_cb(camera_t* c,void* bullet,void* userdata);
 
@@ -511,10 +511,10 @@ weapon_data_t std_weap_info[MAX_REAL_WEAPONS]= {
 /* -WEAPON_SPORE_PARTICULE*/ { 2, 4, 300, 0,  1,  1, 1,1.2,   0,0,create_spore,bullet_collision_cb,gaz_on_collision_cb,spore_blit_cb,gaz_update,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
 /* -WEAPON_BOOBY_BONUS    */ {15,10,3000,17,  1,  1, 4,0.3,25*2,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,booby_trap_on_collision_cb ,bonus_gift_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_LITTLE_EXPLO},
 /* -WEAPON_BOOBY_HEALTH   */ {15,10,3000,17,  1,  1, 4,0.3,25*2,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,booby_trap_on_collision_cb,health_gift_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_LITTLE_EXPLO},
-/* -WEAPON_P1_HOUSE       */ { 0, 6,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,house_p1_on_collision_cb,house_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
-/* -WEAPON_P2_HOUSE       */ { 0, 6,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,house_p2_on_collision_cb,house_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
-/* -WEAPON_P1_FLAG        */ { 0, 5,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,flag_p1_on_collision_cb,flag_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
-/* -WEAPON_P2_FLAG        */ { 0, 5,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,flag_p2_on_collision_cb,flag_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE}
+/* -WEAPON_T1_HOUSE       */ { 0, 6,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,house_t1_on_collision_cb,house_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
+/* -WEAPON_T2_HOUSE       */ { 0, 6,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,house_t2_on_collision_cb,house_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
+/* -WEAPON_T1_FLAG        */ { 0, 5,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,flag_t1_on_collision_cb,flag_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE},
+/* -WEAPON_T2_FLAG        */ { 0, 5,   0, 0,  0,  0, 4,0.3,   0,NO_KICK|NO_SHELL|NO_GUNFIRE,0l,bullet_collision_cb,flag_t2_on_collision_cb,flag_blit_cb,0l,WIIERO_SOUND_NONE,WIIERO_SOUND_NONE}
 }; 
 
 /*
@@ -946,41 +946,40 @@ void create_gift(bullet_list_t* l,ressources_t* r,int x,int y,int xtra_weap){
   }
 }
 
-void set_player_house(bullet_list_t* l,ressources_t* r,int playerid,void* layer){
+void set_player_house(bullet_list_t* l,ressources_t* r,int teamid,void* layer){
   ASSERT(layer)
   ASSERT(layer)
   ASSERT(r)
   int x=0, y=0;
   get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO 4P: P3/P4 support
-                                             ? WEAPON_P1_HOUSE: WEAPON_P2_HOUSE)
+  weapon_add_bullet_to_list(l,init_with_skin(((teamid == TEAM_1) ? WEAPON_T1_HOUSE: WEAPON_T2_HOUSE)
                                             ,x, y, 0, 0
-                                            ,r->houses[playerid]
+                                            ,r->houses[teamid]
                                             ,0l));
 }
 
-void set_player_flag(bullet_list_t* l,ressources_t* r,int playerid,void* layer){
+void set_player_flag(bullet_list_t* l,ressources_t* r,int teamid,void* layer){
   ASSERT(l)
   ASSERT(layer)
   ASSERT(r)
   int x=0, y=0;
   get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO 4P: P3/P4 support
-                                             ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
+  weapon_add_bullet_to_list(l,init_with_skin(((teamid == TEAM_1) ? WEAPON_T1_FLAG: WEAPON_T2_FLAG)
                                             ,x, y, 0, 0
-                                            ,r->flags[playerid]
+                                            ,r->flags[teamid]
                                             ,0l));
 }
 
-void drop_player_flag(bullet_list_t* l,ressources_t* r,int playerid,int x,int y){
+void drop_player_flag(bullet_list_t* l,ressources_t* r,int teamid,int x,int y){
   ASSERT(r)
   int acc_x= rand()%7-3;
   int acc_y= - rand()%3 - 1;
-  weapon_add_bullet_to_list(l,init_with_skin(((playerid == PLAYER_1)  // TODO 4P: P3/P4 support
-                                            ? WEAPON_P1_FLAG: WEAPON_P2_FLAG)
-                                            ,x, y, acc_x, acc_y
-                                            ,r->flags[playerid]
-                                            ,0l));
+  printf("DROP FLAG at %d,%d with acc %d,%d %d %p\n",x,y,acc_x,acc_y,teamid,r->flags[teamid]);
+  
+  weapon_add_bullet_to_list(l, init_with_skin(((teamid == TEAM_1) ? WEAPON_T1_FLAG: WEAPON_T2_FLAG)
+                                             ,x, y, acc_x, acc_y
+                                             ,r->flags[teamid]
+                                             ,0l));
 }
 
 /* * * * * * * * * * * * * BULLET SPRITE GET POSITION * * * * * * * * * * * * */
@@ -2969,8 +2968,9 @@ void gauss_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int co
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-/* * * * * * * * * * * * * * * PLAYERS HOUSES * * * * * * * * * * * * * * * * */
-void house_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+/* * * * * * * * * * * * * * * TEAMS HOUSES * * * * * * * * * * * * * * * * */
+//CTF Team mode: house collision for TEAM_1 (P1 or P3)
+void house_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
   player_t** p = (player_t **) p_arr;
@@ -2980,20 +2980,25 @@ void house_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  // TODO P1 or P3  <--- This needs to be addressed
-  if((p[0]->worms_status & STATUS_SHOT )
-     &&(p[0]->worms_status & STATUS_HAVE_FLAG)){
-      p[0]->worms_status &= ~STATUS_HAVE_FLAG;
-      game_score[PLAYER_1].nb_flags++;
-      set_player_flag( owner->bullet_list_link,owner->r,PLAYER_1, (SDL_Surface*)userdata);
+  
+  // Check if any TEAM_1 player (P1 or P3) has the flag
+  for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
+    if (player_get_team_id(pi) == TEAM_1 
+        && (p[pi]->worms_status & STATUS_SHOT)
+        && (p[pi]->worms_status & STATUS_HAVE_FLAG)) {
+      p[pi]->worms_status &= ~STATUS_HAVE_FLAG;
+      game_score[pi].nb_flags++;
+      set_player_flag(owner->bullet_list_link, owner->r, TEAM_2, (SDL_Surface*)userdata);
+    }
   }
+  
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     p[pi]->worms_status &= ~STATUS_SHOT;
   }
 }
 
-//TODO manage teams and players house
-void house_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+//CTF Team mode: house collision for TEAM_2 (P2 or P4)
+void house_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
   player_t** p = (player_t **) p_arr;
@@ -3003,13 +3008,18 @@ void house_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  // TODO P2 or P4  <--- This needs to be addressed
-  if((p[1]->worms_status & STATUS_SHOT )
-     &&(p[1]->worms_status & STATUS_HAVE_FLAG)){
-      p[1]->worms_status &= ~STATUS_HAVE_FLAG;
-      game_score[PLAYER_2].nb_flags++;
-      set_player_flag( owner->bullet_list_link,owner->r,PLAYER_2, (SDL_Surface*)userdata);
+  
+  // Check if any TEAM_2 player (P2 or P4) has the flag
+  for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
+    if (player_get_team_id(pi) == TEAM_2
+        && (p[pi]->worms_status & STATUS_SHOT)
+        && (p[pi]->worms_status & STATUS_HAVE_FLAG)) {
+      p[pi]->worms_status &= ~STATUS_HAVE_FLAG;
+      game_score[pi].nb_flags++;
+      set_player_flag(owner->bullet_list_link, owner->r, TEAM_1, (SDL_Surface*)userdata);
+    }
   }
+  
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     p[pi]->worms_status &= ~STATUS_SHOT;
   }
@@ -3035,43 +3045,55 @@ void house_blit_cb(camera_t* c,void* bullet,void* userdata){
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /* * * * * * * * * * * * * * * PLAYERS FLAGS * * * * * * * * * * * * * * * * */
-void flag_p1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+//CTF Team mode: TEAM_1 flag collision (can be taken by TEAM_2 players)
+void flag_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
   player_t** p = (player_t **) p_arr;
-  //player_t* owner = ((bullet_t*)bullet)->p_origin ? ((bullet_t*)bullet)->p_origin : (p[0]);
    
   b->obj.acc_x = 0;
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  // P1 ou P3  <--- This needs to be addressed
-  if((p[0]->worms_status & STATUS_SHOT )
-    && !(p[1]->worms_status & STATUS_HAVE_FLAG)){
-      p[0]->worms_status |= STATUS_HAVE_FLAG;
+  
+  // Check if any TEAM_2 player (P2 or P4) touches the flag
+  for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
+    if (player_get_team_id(pi) == TEAM_2 
+        && (p[pi]->worms_status & STATUS_SHOT)
+        && !(p[pi]->worms_status & STATUS_HAVE_FLAG)) {
+      p[pi]->worms_status |= STATUS_HAVE_FLAG;
       b->obj.remove_flag = 1;
+      break;
+    }
   }
+  
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     p[pi]->worms_status &= ~STATUS_SHOT;
   }
 }
 
-void flag_p2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
+//CTF Team mode: TEAM_2 flag collision (can be taken by TEAM_1 players)
+void flag_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int coly
                            , void * p_arr, uint8_t p_arr_sz, void* userdata){
   bullet_t * b = (bullet_t *) bullet;
   player_t** p = (player_t **) p_arr;
-  //player_t* owner = ((bullet_t*)bullet)->p_origin ? ((bullet_t*)bullet)->p_origin : (p[0]);
 
   b->obj.acc_x = 0;
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  // P2 ou P4  <--- This needs to be addressed
-  if((p[1]->worms_status & STATUS_SHOT )
-    && !(p[0]->worms_status & STATUS_HAVE_FLAG)){
-      p[1]->worms_status |= STATUS_HAVE_FLAG;
+  
+  // Check if any TEAM_1 player (P1 or P3) touches the flag
+  for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
+    if (player_get_team_id(pi) == TEAM_1
+        && (p[pi]->worms_status & STATUS_SHOT)
+        && !(p[pi]->worms_status & STATUS_HAVE_FLAG)) {
+      p[pi]->worms_status |= STATUS_HAVE_FLAG;
       b->obj.remove_flag = 1;
+      break;
+    }
   }
+  
   for(uint8_t pi=0;pi<p_arr_sz;pi++){
     p[pi]->worms_status &= ~STATUS_SHOT;
   }
