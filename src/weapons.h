@@ -190,9 +190,9 @@ bullet_list_t* weapon_init_bullet_list();
 
 bullet_t* weapon_add_bullet_to_list(bullet_list_t* l,bullet_t* bullet);
 
-void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
-                     , void* p_arr, uint8_t p_arr_sz
-                     ,void* coll_cb_userdata);
+void proceed_bullets( bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
+                    , void* p_arr, uint8_t p_arr_sz
+                    , void* coll_cb_userdata);
 
 void blit_bullets(bullet_list_t* l,camera_t** cams);
 

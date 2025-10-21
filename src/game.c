@@ -84,6 +84,7 @@ extern int debug_flag;
 extern int is_framerate_on;
 static int skeep_current_frame = 0;
 static __inline__ void wiiero_set_message(game_t *g, char *message, fontsize_t font, game_status_t next_status, Uint8 alpha);
+int32_t* wiiero_get_teams_time();
 
 player_score_t game_score[NB_PLAYERS];
 static player_id winner_id;
@@ -189,10 +190,16 @@ void wiiero_load(game_t *g)
 
   HARD_DBG("%dx%d\n", (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32);
 
+  // g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                        , 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  // g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 20, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  // g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  // g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 80, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+
   g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                        , 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
-  g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 20, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
-  g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+  g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 20, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
   g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 80, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
+
 
   font_console_print_debug("init ressources...\n", FONT_SMALL);
   g->wiiero_ressources = load_ressource();
@@ -285,14 +292,18 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
   case GAME_OF_TAG_MODE:
     return (game_score[player].tag_time < g->wiiero_opt_got_time / 5);
     break;
-  case GAME_OF_TAG_TEAM_MODE:
-    return (game_score[player].tag_time < g->wiiero_opt_got_time / 5);
+  case GAME_OF_TAG_TEAM_MODE:{
+        // Compute time for the team
+        team_id tid = player_get_team_id(player);
+        int32_t* team_time = wiiero_get_teams_time();
+        return (team_time[tid] < g->wiiero_opt_got_time / 5);
+    }
     break;
   case GAME_CAPTURE_FLAG_MODE:
     // TODO 4P: improve flag warning (distance from flag ?)
     return (player == PLAYER_1)
-               ? (g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG)
-               : (g->worms[PLAYER_1]->worms_status & STATUS_HAVE_FLAG);
+            ? (g->worms[PLAYER_2]->worms_status & STATUS_HAVE_FLAG)
+            : (g->worms[PLAYER_1]->worms_status & STATUS_HAVE_FLAG);
     break;
   }
   return 0;
@@ -327,9 +338,6 @@ void wiiero_blit_world(game_t *g)
       player_show_on_cam(g->worms[pid], g->wiiero_cameras[cid], wiiero_player_warning(pid, g));
     }
   }
-
-
-  
 
   if (g->wiiero_game_status == GAME_PLAYING){
     DBG(" - BLIT BULLETS\n");
@@ -397,17 +405,22 @@ static __inline__ void wiiero_restart_game(game_t *g)
   bullet_time_effect_delay = 0;
 }
 /*--------------------------------------------------------------------------*/
+int32_t* wiiero_get_teams_time(){
+  static int32_t team_time[NB_PLAYERS/2] = {0};
+  memset(team_time, 0, sizeof(team_time));
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+    team_id tid = player_get_team_id(p);
+    team_time[tid] += game_score[p].tag_time;
+  }
+  return team_time;
+}
+/*--------------------------------------------------------------------------*/
 static __inline__ void wiiero_team_got_game_mode(game_t *g)
 {
   static int wiiero_time_tag = 0;
-  int32_t team_time[NB_PLAYERS/2] = {0};
-
-  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
-    uint8_t team_id = p / (NB_PLAYERS / 2);
-    team_time[team_id] += game_score[p].tag_time;
-  }
-
+  int32_t* team_time = wiiero_get_teams_time();
   uint8_t alive_players = 0;
+
 
   /* Count alive players */
   for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
@@ -454,13 +467,13 @@ static __inline__ void wiiero_team_got_game_mode(game_t *g)
     }
   }
 
-  if(( team_time[0] <= 0 || team_time[1] <= 0) ){
-    winner_id = ( (team_time[0] <= 0) && (team_time[1] <= 0))
+  if(( team_time[TEAM_1] <= 0 || team_time[TEAM_2] <= 0) ){
+    winner_id = (player_id)(( (team_time[TEAM_1] <= 0) && (team_time[TEAM_2] <= 0))
                 ? GAME_DRAW 
-                : (team_time[0] <= 0) 
-                  ? PLAYER_3
-                  : PLAYER_1;
-    printf("Team GOT over: team_time[0]=%d team_time[1]=%d winner_id=%d\n", team_time[0], team_time[1], winner_id);
+                : (team_time[TEAM_1] <= 0) 
+                  ? TEAM_2
+                  : TEAM_1);
+    printf("Team GOT over: team_time[TEAM_1]=%d team_time[TEAM_2]=%d winner_id=%d\n", team_time[TEAM_1], team_time[TEAM_2], winner_id);
     g->wiiero_game_status = GAME_SET_ROUND_STATS;
   }
 }
@@ -490,7 +503,6 @@ static __inline__ void wiiero_got_game_mode(game_t *g)
       last_alive = p;
     }
   }
-
 
   if (alive_players == 0){
     /* Random tag */
@@ -1342,11 +1354,8 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
         y+=10;
         break;
       case GAME_OF_TAG_TEAM_MODE: {
-          uint8_t team_id = id / (NB_PLAYERS / 2);
-          int32_t team_time = 0;
-          for(player_id j = team_id * (NB_PLAYERS / 2); j < (team_id + 1) * (NB_PLAYERS / 2); j++){
-            team_time += game_score[j].tag_time;
-          }
+          team_id teamid = player_get_team_id(id);
+          int32_t team_time = wiiero_get_teams_time()[teamid];
           snprintf(msg, 511, "TEAM  %s: %02dm%02ds", wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
           font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
           y+=10;

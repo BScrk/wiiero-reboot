@@ -207,5 +207,6 @@ void player_shot(player_t* p,player_id origin,Uint8 damage,int acc_x,int acc_y,v
 void player_regen(player_t* p,Uint8 health);
 void player_new_position(player_t * p,SDL_Surface* ground, SDL_Surface* statics);
 
+team_id player_get_team_id(player_id pid);
 void player_debug_actions(player_t* p);
 #endif

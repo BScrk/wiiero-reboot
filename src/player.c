@@ -54,6 +54,9 @@ enum{
 
 extern int bullet_time_effect_delay;
 extern player_score_t game_score[NB_PLAYERS];
+extern int32_t* wiiero_get_teams_time();
+
+
 extern Uint8 transparent_r_value;
 extern Uint8 transparent_g_value;
 extern Uint8 transparent_b_value;
@@ -354,10 +357,8 @@ void player_pix(player_t* p){
 
 static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
   
-  float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X)
-                                         - target->worms.pos_x)
-                               + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y)
-                                         - (target->worms.pos_y-2)));
+  float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X) - target->worms.pos_x)
+                        + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y) - (target->worms.pos_y-2)));
   
   int y =0;
   int x = (p->worms.side == LEFT_SIDE) 
@@ -372,9 +373,6 @@ static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
   }
 }
 
-
-
-
 void player_is_aiming(player_id pid , player_t** targets){
   targets[pid]->worms_status &= ~STATUS_AIMING; 
   for(int i=0;i<NB_PLAYERS;i++){
@@ -384,11 +382,9 @@ void player_is_aiming(player_id pid , player_t** targets){
   }
 }
 
-
-
 void player_show(player_t* p,int warding_flag){
- ASSERT(p);
- player_show_on_cam(p,p->worms_camera,warding_flag);
+  ASSERT(p);
+  player_show_on_cam(p,p->worms_camera,warding_flag);
 }
 
 void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
@@ -595,13 +591,10 @@ void player_show_stats(player_t* p,game_mode_t gm){
                             , 3*camera->h/10+30, FONT_SMALL);
       break;
     case GAME_OF_TAG_TEAM_MODE:
-      if(p->id % (NB_PLAYERS / 2) == 0){
-        uint8_t team_id = p->id / (NB_PLAYERS / 2);
-        int32_t team_time = 0;
-        for(player_id j = team_id * (NB_PLAYERS / 2); j < (team_id + 1) * (NB_PLAYERS / 2); j++){
-          team_time += game_score[j].tag_time;
-        }
-        snprintf(tmp_string,127, "     TEAM %s: %02dm%02ds", wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
+      if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
+        team_id tid = player_get_team_id(p->id);
+        int32_t team_time = wiiero_get_teams_time()[tid];
+        snprintf(tmp_string,127, "     TEAM %d %s: %02dm%02ds", tid + 1,  wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
         font_print_strict_pos( camera, tmp_string
                               , 1*step
                               , 3*camera->h/10+50, FONT_SMALL);
@@ -1023,4 +1016,10 @@ void player_debug_actions(player_t* p){
   if(p->worms_action & ACTION_CANCEL)      printf(" ACTION_CANCEL ");
   if(p->worms_action & ACTION_FROM_KEYBOARD) printf(" ACTION_FROM_KEYBOARD ");
   printf("\n");
+}
+
+
+
+team_id player_get_team_id(player_id pid){
+  return (pid == PLAYER_1 || pid == PLAYER_3) ? TEAM_1 : TEAM_2;
 }

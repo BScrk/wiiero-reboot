@@ -54,7 +54,7 @@ typedef enum { RES_320_240
 #define SHOW_FPS
 
 /* Disable sound */
-// #define NO_SOUND
+#define NO_SOUND
 
 //#define DEBUG_ON
 
