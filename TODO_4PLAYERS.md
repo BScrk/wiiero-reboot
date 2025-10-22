@@ -38,3 +38,7 @@
 - [ ] Déplacement pad/stick gauche + visée stick droit
 - [ ] Bugfix collision rocher (disparition de magic Mike et les 50 capotes)
 - [ ] Amélioration de l'interface 4 joueurs
+- [ ] Modifier/vérifier les couleurs des vers en mode TAG pour mieux distinguer les équipes
+- [ ] Modifier/vérifier les couleurs des vers, drapeaux, maisons en mode CTF pour mieux distinguer les équipes
+- [ ] Tester d'afficher des fleches pointant sur les vers ennemis (maisons + drapeaux CTF ?) au lieu de la carte
+- [ ] Si carte toujours d'actualité, ajouter drapeaux + maisons en CTF sur la carte
