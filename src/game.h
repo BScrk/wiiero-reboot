@@ -40,7 +40,7 @@
 #include "sound_engine.h"
 
 #ifdef DESKTOP_MODE
-#define WIIERO_VERSION "wiiero v1.5    [Desktop Edition]"
+#define WIIERO_VERSION "wiiero v1.6    [Desktop Edition]"
 #endif
 
 
@@ -74,10 +74,12 @@
 
 typedef enum{
     FULL_SCREEN_CAM = 0,
+    FIRST_PLAYERS_CAMERAS = 1,
     PLAYER_1_GAME_ZONE_CAM = 1,
     PLAYER_2_GAME_ZONE_CAM = 2,
     PLAYER_3_GAME_ZONE_CAM = 3,
     PLAYER_4_GAME_ZONE_CAM = 4,
+    MAX_PLAYERS_CAMERAS = 5,
     GLOBAL_MINI_MAP_CAM = 5,
     PLAYER_1_STATS_ZONE_CAM = 6,
     PLAYER_2_STATS_ZONE_CAM = 7,
@@ -106,6 +108,7 @@ typedef enum{
     GAME_SET_WEAPON_SELECT,
     GAME_WEAPON_SELECT,
     GAME_SET_PAUSE,
+    GAME_WAIT_MINIMAL_DELAY,
     GAME_PAUSE,
     GAME_SET_PLAYING,
     GAME_PLAYING,

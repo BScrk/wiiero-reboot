@@ -117,19 +117,21 @@ enum{
   STATUS_PROTECTED      = 0x00020000,
   STATUS_UNFOCUSED      = 0x00040000,
   STATUS_RESET_FOCUS    = 0x00080000,
-  STATUS_CLASSIC_ON     = 0x10000000,  
-  STATUS_NUNCHUCK_ON    = 0x20000000,
-  STATUS_GAMECUBE_ON    = 0x40000000
+  STATUS_GAME_OVER      = 0x10000000,  
+  STATUS_CLASSIC_ON     = 0x20000000,  
+  STATUS_NUNCHUCK_ON    = 0x40000000,
+  STATUS_GAMECUBE_ON    = 0x80000000
 };
 
 
 typedef enum{
     GAME_DEATHMATCH_MODE,
     GAME_OF_TAG_MODE,
+    GAME_OF_TAG_TEAM_MODE,
     GAME_CAPTURE_FLAG_MODE,
 }game_mode_t;
 
-typedef struct{
+typedef struct player_s{
   player_id      id;
   Uint32         worms_status;
   Uint16         worms_action;
@@ -150,16 +152,17 @@ typedef struct{
   camera_t*      worms_camera;
   camera_t*      worms_stats_camera;
   ressources_t*  r;
-  Uint16         worms_rope_len;  
+  Uint16         worms_rope_len;
+  struct player_s * tricked_worm;
 }player_t;
 
 typedef struct{
-  Uint16 nb_lifes;
-  Uint16 nb_frags;
-  Uint16 nb_suicides;
-  Uint16 nb_death;
-  Uint16 nb_flags;
-  Uint16 tag_time;
+  Uint16  nb_lifes;
+  Uint16  nb_frags;
+  Uint16  nb_suicides;
+  Uint16  nb_death;
+  Uint16  nb_flags;
+  int32_t tag_time; // Can be negative for team mode
 }player_score_t;
 
 
@@ -179,6 +182,7 @@ void player_move_left(player_t* p);
 void player_move_right(player_t* p);
 void player_show(player_t* p,int warding_flag);
 void player_clean(player_t* p);
+void player_game_over(player_t* p);
 void player_change_rope_len(player_t* p,int len_modif);
 void player_crop(player_t* p,map_t* m);
 void player_launch_hook(player_t* p);
@@ -203,4 +207,6 @@ void player_shot(player_t* p,player_id origin,Uint8 damage,int acc_x,int acc_y,v
 void player_regen(player_t* p,Uint8 health);
 void player_new_position(player_t * p,SDL_Surface* ground, SDL_Surface* statics);
 
+team_id player_get_team_id(player_id pid);
+void player_debug_actions(player_t* p);
 #endif

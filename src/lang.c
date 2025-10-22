@@ -57,6 +57,7 @@ char *wiiero_label[WIIERO_LANG_NB_LABELS] = {
   /* OPT labels */
   , "Killem all"
   , "Game of tag"
+  , "GoT 2 vs 2"
   , "CTF"
   , "On"
   , "Off"

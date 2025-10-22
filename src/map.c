@@ -133,10 +133,10 @@ void update_minimap( map_t* m,camera_t *cam
     }
   }
   /* Update players position */
-  update_player_position(p1_x, p1_y, x_step , y_step, cam,  0,  0,255);
-  update_player_position(p2_x, p2_y, x_step , y_step, cam,  0,255,  0);
-  update_player_position(p3_x, p3_y, x_step , y_step, cam,200,100,200);
-  update_player_position(p4_x, p4_y, x_step , y_step, cam,255,  0,  0);
+  update_player_position(p1_x, p1_y, x_step , y_step, cam,  0,  0,255); // Blue
+  update_player_position(p2_x, p2_y, x_step , y_step, cam,  0,255,  0); // Green
+  update_player_position(p3_x, p3_y, x_step , y_step, cam,240,215, 25); // Orange
+  update_player_position(p4_x, p4_y, x_step , y_step, cam,240, 25,220); // Purple
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void fill_background(map_t* m,ressources_t* r){
   ASSERT(m);

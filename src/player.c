@@ -54,6 +54,10 @@ enum{
 
 extern int bullet_time_effect_delay;
 extern player_score_t game_score[NB_PLAYERS];
+extern int32_t* wiiero_get_teams_time();
+extern int32_t* wiiero_get_teams_flags();
+
+
 extern Uint8 transparent_r_value;
 extern Uint8 transparent_g_value;
 extern Uint8 transparent_b_value;
@@ -167,7 +171,10 @@ int worms_check_collision_cb(SDL_Surface* ground,int pos_x,int pos_y,int acc_x,i
 
 void worms_on_collision_cb( void* o , int lastx, int lasty
                           , int colx,  int coly
-                          , void* null, void* null2, void* userdata){
+                          //, void* null, void* null2
+                          , void* p_arr
+                          , uint8_t p_arr_sz
+                          , void* userdata){
   obj_t* obj = (obj_t*)o;
   player_t* player = (player_t*)userdata;
 
@@ -253,11 +260,13 @@ void player_reset( player_t* p, SDL_Surface* ground
   p->worms_status &= ~STATUS_SUICIDE;
   p->worms_status |= STATUS_RESETED;
   p->worms_status &= ~(STATUS_FREEZED | STATUS_UNFOCUSED);
-                     
   p->reticle_pitch = ANGLE_PITCH;
   p->last_stats_update =0;
   /*p->worms_shockwave = 0;*/
   p->worms.skin = p->r->worms_skins[p->id];
+  p->tricked_worm = NULL;
+  secure_free(p->ninja_hook);
+  p->ninja_hook = weapon_init(WEAPON_NINJA);
 }
 
 void player_init_weapons(player_t* p,int xtra_on){
@@ -347,12 +356,10 @@ void player_pix(player_t* p){
         , p->worms_camera->map_x,p->worms_camera->map_y);
 }
 
-
 static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
-  float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X)
-                                         - target->worms.pos_x)
-                               + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y)
-                                         - (target->worms.pos_y-2)));
+  
+  float dist = fast_sqrt( fast_sqr( (p->worms.pos_x-WEAPON_POS_X) - target->worms.pos_x)
+                        + fast_sqr( (p->worms.pos_y-WEAPON_POS_Y) - (target->worms.pos_y-2)));
   
   int y =0;
   int x = (p->worms.side == LEFT_SIDE) 
@@ -367,21 +374,18 @@ static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
   }
 }
 
-
 void player_is_aiming(player_id pid , player_t** targets){
+  targets[pid]->worms_status &= ~STATUS_AIMING; 
   for(int i=0;i<NB_PLAYERS;i++){
     if(i!=pid){
-      targets[pid]->worms_status &= ~STATUS_AIMING; 
       player_is_aiming_player( targets[pid] , targets[i]);
     }
   }
 }
 
-
-
 void player_show(player_t* p,int warding_flag){
- ASSERT(p);
- player_show_on_cam(p,p->worms_camera,warding_flag);
+  ASSERT(p);
+  player_show_on_cam(p,p->worms_camera,warding_flag);
 }
 
 void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
@@ -402,9 +406,9 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
   skin_offset.w = p->worms.skin->w / (MAX_SIDE_POSITIONS *  DEFAULT_PWSKIN_ANIM_STEPS); 
   skin_offset.h = p->worms.skin->h / MAX_LOOKING_HEIGHTS;  
   skin_offset.x = ( (p->worms.animation_pos) * skin_offset.w) 
-                   + (( p->worms.side == RIGHT_SIDE) 
-                        ? 0
-                        : skin_offset.w * DEFAULT_PWSKIN_ANIM_STEPS);
+                  + (( p->worms.side == RIGHT_SIDE) 
+                    ? 0
+                    : skin_offset.w * DEFAULT_PWSKIN_ANIM_STEPS);
 
   if(p->worms.angle <= MAX_PLAYER_ANGLE && p->worms.angle > 70)  
       looking_height = LOOKING_UP_FULL;
@@ -434,8 +438,7 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
     &&(camera_offset.y > -skin_offset.h) && (camera_offset.y <= camera->h)){
       camera_blit_surface_on(camera,p->worms.skin, &skin_offset, &camera_offset );
   }
-    
-    
+        
   /* RETICLE PART */
   if(!(p->worms_status & STATUS_FIREING))
   {
@@ -507,7 +510,7 @@ void player_show_gunfire_on_cam(player_t* p,camera_t* camera,int looking_height)
   skin_offset.w = p->r->gunfire_skin->w / (MAX_SIDE_POSITIONS *  DEFAULT_GUNFIRE_ANIM_STEPS); 
   skin_offset.h = p->r->gunfire_skin->h / MAX_LOOKING_HEIGHTS;  
   skin_offset.x = ( (p->gunfire_anim_pos/DEFAULT_GUNFIRE_ANIM_SLEEP) * skin_offset.w) 
-                   + (( p->worms.side == RIGHT_SIDE) 
+                  + (( p->worms.side == RIGHT_SIDE) 
                         ? 0  
                         : skin_offset.w * DEFAULT_GUNFIRE_ANIM_STEPS);
     
@@ -522,7 +525,7 @@ void player_show_gunfire_on_cam(player_t* p,camera_t* camera,int looking_height)
                     - skin_offset.h / 2;
   /* Blit gunfire */
   if((camera_offset.x > -skin_offset.w) && (camera_offset.x <= camera->w)
-     && (camera_offset.y > -skin_offset.h) && (camera_offset.y <= camera->h)){
+    && (camera_offset.y > -skin_offset.h) && (camera_offset.y <= camera->h)){
         camera_blit_surface_on( camera,p->r->gunfire_skin, &skin_offset
                               , &camera_offset );
   }
@@ -550,28 +553,27 @@ void player_show_stats(player_t* p,game_mode_t gm){
             , 1*step, camera->h/10 - 2 
             , 20*step, 3, 0x20, 0xff, 0x20);
     
- if(p->worms_health<100){
+  if(p->worms_health<100){
     camera_drow_hline(camera
               , 1*step + ((p->worms_health*20*step)/100), camera->h/10 - 2  
               , (20*step*(100-p->worms_health))/100 , 3, 0xff, 0x20, 0x20); 
-
-   camera_drow_hline( camera, 20*step, camera->h/10 - 2  
+    camera_drow_hline( camera, 20*step, camera->h/10 - 2  
                     , 1*step, 3, 0xff, 0x20, 0x20);
   }
   if(p->weapon_slots[p->selected_weapon]->ammo){
   camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2  
-                   , 20*step, 3, 0xCC, 0xCC, 0xCC);
+                    , 20*step, 3, 0xCC, 0xCC, 0xCC);
   camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2  
-                   , (20*step*(p->weapon_slots[p->selected_weapon]->ammo))
-                     / weapon_get_max_ammo(p->weapon_slots[p->selected_weapon])
-                   , 3, 0x20, 0x20, 0xFF);
+                    , (20*step*(p->weapon_slots[p->selected_weapon]->ammo))
+                      / weapon_get_max_ammo(p->weapon_slots[p->selected_weapon])
+                    , 3, 0x20, 0x20, 0xFF);
   }else{
     camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2 
-                     , 20*step, 3, 0xCC, 0xCC, 0xCC);
+                      , 20*step, 3, 0xCC, 0xCC, 0xCC);
     camera_drow_hline(camera, 1*step, 2*camera->h/10 - 2  
-           , (20*step*(p->weapon_slots[p->selected_weapon]->recharge_step))
-             / weapon_get_nb_recharge_steps(p->weapon_slots[p->selected_weapon])
-           , 3, 0x98, 0x00, 0x98);
+          , (20*step*(p->weapon_slots[p->selected_weapon]->recharge_step))
+            / weapon_get_nb_recharge_steps(p->weapon_slots[p->selected_weapon])
+          , 3, 0x98, 0x00, 0x98);
   }
   snprintf(tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FRAGS]
           , game_score[p->id].nb_frags);
@@ -584,22 +586,36 @@ void player_show_stats(player_t* p,game_mode_t gm){
   font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+21,FONT_SMALL);
   switch(gm){
     case GAME_DEATHMATCH_MODE:
-         snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
-                 , game_score[p->id].nb_lifes);
-         font_print_strict_pos( camera, tmp_string, 1*step
-                              , 3*camera->h/10+30, FONT_SMALL);
-         break;
+      snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
+              , game_score[p->id].nb_lifes);
+      font_print_strict_pos( camera, tmp_string, 1*step
+                            , 3*camera->h/10+30, FONT_SMALL);
+      break;
+    case GAME_OF_TAG_TEAM_MODE:
+      if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
+        team_id tid = player_get_team_id(p->id);
+        int32_t team_time = wiiero_get_teams_time()[tid];
+        snprintf(tmp_string,127, "     TEAM %d %s: %02dm%02ds", tid + 1,  wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
+        font_print_strict_pos( camera, tmp_string
+                              , 1*step
+                              , 3*camera->h/10+50, FONT_SMALL);
+      }
+      break;
     case GAME_OF_TAG_MODE:
-         snprintf(tmp_string,127," %s: %.2dm%.2ds",wiiero_label[WIIERO_LANG_TIME]
-                 , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
-         font_print_strict_pos( camera, tmp_string, 1*step
-                              , 3*camera->h/10+30, FONT_SMALL);
-         break;
+      snprintf(tmp_string,127," %s: %02dm%02ds",wiiero_label[WIIERO_LANG_TIME]
+              , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
+      font_print_strict_pos( camera, tmp_string, 1*step
+                            , 3*camera->h/10+30, FONT_SMALL);
+      break;
     case GAME_CAPTURE_FLAG_MODE:
-         snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FLAGS]
-                 , game_score[p->id].nb_flags);
-         font_print_strict_pos(camera, tmp_string, 1*step
-                              , 3*camera->h/10+30, FONT_SMALL);
+      if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
+        team_id tid = player_get_team_id(p->id);
+        int32_t team_flags = wiiero_get_teams_flags()[tid];
+        snprintf( tmp_string,127,"     TEAM %d %s: %d",tid +1, wiiero_label[WIIERO_LANG_FLAGS]
+                , team_flags);
+        font_print_strict_pos(camera, tmp_string, 1*step
+                              , 3*camera->h/10+50, FONT_SMALL);
+      }
   }
 }
 
@@ -781,6 +797,13 @@ void player_fire(player_t* p){
   }
 }
 
+void player_game_over(player_t* p){
+  ASSERT(p);
+  p->worms_status &= ~STATUS_ALIVE;
+  p->worms_status |= STATUS_FREEZED;
+  p->worms_status |= STATUS_UNFOCUSED;
+  p->worms_status |= STATUS_GAME_OVER;
+}
 
 void player_clean(player_t* p){
   p->worms_action = ACTION_NONE;
@@ -810,7 +833,7 @@ void player_bleeds(player_t* p){
 void player_new_position(player_t * p,SDL_Surface* ground, SDL_Surface* statics){
   get_empty_layer_position(&(p->worms.pos_x),&(p->worms.pos_y),statics);
   drow_circle( ground,p->worms.pos_x,p->worms.pos_y,8
-             , transparent_r_value,transparent_g_value,transparent_b_value);
+              , transparent_r_value,transparent_g_value,transparent_b_value);
 }
 
 
@@ -820,6 +843,10 @@ void player_update(player_t* p,SDL_Surface* ground, SDL_Surface* statics){
   obj_list_t* olist = p->dynamic_list_link; 
   ASSERT(olist);      
 
+  if(p->worms_status & STATUS_GAME_OVER){
+    return;
+  }
+  
   if(p->worms_status & STATUS_RESETED){
     p->worms_status &= ~STATUS_RESETED;
   }
@@ -878,9 +905,9 @@ void player_update(player_t* p,SDL_Surface* ground, SDL_Surface* statics){
   /* health critical */
   if((p->worms_health < 20)&&(p->worms_health!=0))
     if(rand()%(p->worms_health) <= 1 )
-     object_add_to_list(olist,create_blood_drop(p->worms.pos_x,p->worms.pos_y-2));
-     
-  /* clean collision matrix*/
+      object_add_to_list(olist,create_blood_drop(p->worms.pos_x,p->worms.pos_y-2));
+
+    /* clean collision matrix*/
   DBG(" - PHYSICS \n");
   memset(&coll_matrix,0,sizeof(int)*COLL_WIDTH*COLL_HEIGHT);
   p->worms_status &= ~STATUS_JUMPABLE;
@@ -913,8 +940,10 @@ void player_shot(player_t* p,player_id origin,Uint8 damage,int acc_x,int acc_y,v
       p->worms_status |= STATUS_STATS_UPDATE;
       game_score[p->id].nb_lifes   -= 1;
       game_score[p->id].nb_death   += 1;
-      if(p->worms_status & STATUS_HAVE_FLAG)
-        drop_player_flag(p->bullet_list_link,p->r,p->id, p->worms.pos_x , p->worms.pos_y);
+      if(p->worms_status & STATUS_HAVE_FLAG){
+        team_id tid = player_get_team_id(p->id);
+        drop_player_flag(p->bullet_list_link,p->r,tid, p->worms.pos_x , p->worms.pos_y);
+      }
 
       p->worms_status &= ~STATUS_HAVE_FLAG;
       if(p->id == origin){
@@ -967,10 +996,37 @@ void player_change_rope_len(player_t* p,int len_modif){
 void player_remove_hook(player_t* p,player_t** other_p){
   /* Remove Hook */
   ASSERT(p->ninja_hook->last_bullet)
-  for(player_id i=PLAYER_1;i<NB_PLAYERS;i++){
-    ninja_hook_disconnect(p->ninja_hook->last_bullet,p,other_p[i],0l);
-  }
+  ninja_hook_disconnect(p->ninja_hook->last_bullet,other_p,NB_PLAYERS,0l);
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;
+}
 
+
+void player_debug_actions(player_t* p){
+  ASSERT(p);
+  /* debug player worms_action (show action masks names) */
+  printf("Player %d Actions : ",p->id+1);
+  if(p->worms_action & ACTION_UP)          printf(" ACTION_UP ");
+  if(p->worms_action & ACTION_DOWN)        printf(" ACTION_DOWN ");
+  if(p->worms_action & ACTION_LEFT)        printf(" ACTION_LEFT ");
+  if(p->worms_action & ACTION_RIGHT)       printf(" ACTION_RIGHT ");
+  if(p->worms_action & ACTION_JUMP)        printf(" ACTION_JUMP ");
+  if(p->worms_action & ACTION_CHANGE)      printf(" ACTION_CHANGE ");
+  if(p->worms_action & ACTION_FIRE)        printf(" ACTION_FIRE ");
+  if(p->worms_action & ACTION_HOOK)        printf(" ACTION_HOOK ");
+  if(p->worms_action & ACTION_CROP)        printf(" ACTION_CROP ");
+  if(p->worms_action & ACTION_L_ACT)       printf(" ACTION_L_ACT ");
+  if(p->worms_action & ACTION_R_ACT)       printf(" ACTION_R_ACT ");
+  if(p->worms_action & ACTION_PAUSE)       printf(" ACTION_PAUSE ");
+  if(p->worms_action & ACTION_MENU)        printf(" ACTION_MENU ");
+  if(p->worms_action & ACTION_OK)          printf(" ACTION_OK ");
+  if(p->worms_action & ACTION_CANCEL)      printf(" ACTION_CANCEL ");
+  if(p->worms_action & ACTION_FROM_KEYBOARD) printf(" ACTION_FROM_KEYBOARD ");
+  printf("\n");
+}
+
+
+
+team_id player_get_team_id(player_id pid){
+  return (pid == PLAYER_1 || pid == PLAYER_3) ? TEAM_1 : TEAM_2;
 }

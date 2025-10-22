@@ -30,12 +30,19 @@
 #define NB_PLAYERS_H
 
 typedef enum{
-  PLAYER_1,
-  PLAYER_2,
-  PLAYER_3,
-  PLAYER_4,
-  NB_PLAYERS,
-  GAME_DRAW = NB_PLAYERS
+  PLAYER_1   = 0 ,
+  PLAYER_2   = 1 ,
+  PLAYER_3   = 2 ,
+  PLAYER_4   = 3 ,
+  NB_PLAYERS = 4 ,
+  GAME_DRAW  = NB_PLAYERS
 }player_id;
+
+typedef enum{
+  TEAM_1 = PLAYER_1,
+  TEAM_2 = PLAYER_2,
+  NB_TEAMS = 2
+}team_id;
+
 
 #endif

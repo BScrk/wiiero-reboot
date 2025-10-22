@@ -8,7 +8,7 @@
      \__/\_/ \__ \\__ \ \___  >|__|   \____/    '--===--[_)~  \__/\
                 \/   \/     \/  by BScrk                   \______/
 
-Release 1.4                                                REBOOT
+Release 1.6 (4 players)                                       REBOOT
 ```
 
 Wiiero is under GPL licence.
@@ -32,15 +32,87 @@ Liero is a fight game between two worms armed with heavy weapons of all kinds ba
 
 You play Wiiero exactly the same way as you played Liero: same game modes, same original weapons, coming with new ones like vermifuge, holy grenade, or even plasma canon! Wiiero is a two player game, using the wiimote alone or both wiimote and nunchuk on the Wii and keyboard on PC.
 
-## Game Modes
+## 4 Players Game Modes
 
-In Wiiero game you can fight your opponent in 3 different game modes: Deathmatch, Capture the flag and Game of tag.
+Wiiero offers multiple competitive game modes for 4 players locally with both **Free-For-All (FFA)** and **Team-based (2v2)** gameplay:
 
-* **Deathmatch**: The goal of the "deathmatch" mode is simply killing the enemy by hurting him the most possible. Lives are limited and the player with no more lives will be the loser. You can define the number of lives for both players in the "option" menu.
+### Deathmatch (FFA - 4 Players)
 
-* **Game of Tag**: The goal of the "game of tag" is to kill the enemy for him to become the "tag". When a player is the "tag", his time counter decreases. When your counter reaches 0, the game is over and you lost. However, you can kill your enemy before that time and he becomes the "tag", his counter will therefor begin decreasing. The time limit can be modified in the "option" menu.
+The classic elimination mode where every player fights for themselves. Aggressive combat, weapon mastery, and survival skills are key. Use the terrain to your advantage and watch out for splash damage!
 
-* **Capture the Flag**: Finally, in the "capture the flag" mode, you will need to get your opponent's flag somewhere on the map and take it back to your home, giving you 1 point. However, to pick up your opponent's flag, he must not be in possession of your own flag. Otherwise you will need to kill him! The first player accumulating the defined number of flags wins. You can modify the limit of flags in the "option" menu.
+**Objective:** Be the last worm standing by eliminating all opponents.
+
+**Rules:**
+- Each player starts with a limited number of lives (configurable in options)
+- Every death costs one life
+- When a player runs out of lives, they're eliminated
+- Last player with lives remaining wins
+- Suicide penalties apply!
+
+---
+
+### Game of Tag (FFA - 4 Players)
+
+A frantic elimination mode where time is your enemy. Stay aggressive when tagged, evasive when safe. Time management is critical, don't let the clock run out on you!
+
+**Objective:** Avoid being "IT" when the timer runs out.
+
+**Rules:**
+- One random player starts as "IT" (tagged)
+- The tagged player's time counter continuously decreases
+- Kill another player to transfer the tag to them
+- When a player's timer reaches 0, they're **eliminated** (Game Over)
+- Last player alive wins!
+
+---
+
+### Game of Tag: Team Battle (2v2 - 4 Players)
+
+Cooperative tag gameplay with team dynamics! Time is pooled: if P1 has 30s and P3 has 60s, the team has 90s total
+Protect your teammate, killing enemies transfers the tag. Communication is key!
+
+**Teams:**
+- **Team 1:** Player 1 (P1) + Player 3 (P3)
+- **Team 2:** Player 2 (P2) + Player 4 (P4)
+
+**Objective:** Prevent your team from running out of time.
+
+**Rules:**
+- Team time is **shared** between teammates
+- When a team member is tagged, the **team's collective time** decreases
+- Tag transfers between any players (even teammates can accidentally tag each other!)
+- When a team's total time reaches 0, that team loses
+- **Respawning:** Dead players respawn but automatically become tagged
+
+---
+
+### Capture the Flag: Team Battle (2v2)
+
+Classic CTF with intense team-based flag stealing action. In Capture the Flag, teamwork is everything, one player strikes fast to steal the enemy flag while their teammate lays down cover fire and clears the path. Defend your own base, intercept enemy carriers, and control key chokepoints to dominate the map. Every move counts, every second matters... communicate, coordinate, and crush the opposition. 
+Victory belongs to the team that moves as one.
+
+**Teams:**
+- **Team 1:** Player 1 (P1) + Player 3 (P3)
+- **Team 2:** Player 2 (P2) + Player 4 (P4)
+
+**Objective:** Capture the enemy flag and return it to your base!
+
+**Map Setup:**
+- 2 Team Bases (houses) - one per team
+- 2 Flags - one per team
+
+**Rules:**
+- **Capture:** Touch the enemy flag to pick it up
+- **Score:** Return the enemy flag to YOUR team's base while carrying it
+- **Defense:** Only one player can carry a flag at a time
+- **Drop mechanic:** If a flag carrier dies, the flag drops at their location
+- First team to reach the flag limit wins (configurable in options)
+- **Team scoring:** Flags captured by P1 or P3 count for Team 1, P2 or P4 for Team 2
+
+
+---
+
+**Note:** All game modes support customizable options including time limits, lives, flag counts, weapon loadouts, and map settings. Configure these in the Options menu before starting a match!
 
 ## Todo
 Macro todo list :
@@ -48,13 +120,13 @@ Macro todo list :
 * Mac gamepads supports via IOKit ✅
 * **SDL2 upgrade ✅** (branch: migration/sdl2)
 * Mac builds (SDL2) ✅
-* Windows port & builds ⏳
-* Linux port & builds ⏳
-* Linux gamepads supports (via SDL 2) ⏳
+* Linux port & builds ✅
+* Linux gamepads supports (via SDL 2) ✅
 * Mac gamepads supports (SDL2 + IOKit) ✅
+* 4 players Version ✅
+* Windows port & builds ⏳
 * Win gamepads supports (via SDL 2) ⏳
 * Gamepads config option ⏳
-
 
 ## Installation / Build Guides
 
@@ -166,28 +238,30 @@ Wiiero on macOS supports both **keyboard** and **gamepads** (Xbox, PlayStation, 
 
 ##### Gamepad Controls
 
-Wiiero supports most HID-compliant gamepads (Xbox, PlayStation, Switch Pro) with automatic detection.
+Wiiero supports most HID-compliant gamepads (Xbox, PlayStation, Switch Pro) with automatic detection via SDL2 GameController API.
 
 | Action | Button |
 |--------|--------|
-| Move | Left Analog Stick |
-| Fire | `Y` button |
-| Jump | `B` button |
-| Dig (crop) | `A` button |
-| Show Weapon | `X` button (hold) |
-| Previous Weapon | `X` + Left Stick ← |
-| Next Weapon | `X` + Right Stick → |
-| Ninja Hook | `L` or `R` triggers |
-| Pause | `Select` / `Back` button |
-| Menu | `Start` button |
-| OK (menu) | `Y` or `B` |
-| Cancel (menu) | `A` or `X` |
+| Move | D-Pad or Left Analog Stick |
+| Aim | Right Analog Stick (360°) |
+| Fire | `B` (Circle) or `R2` Trigger |
+| Jump | `A` (Cross) or `L3` (Left Stick Click) |
+| Dig (crop) | `X` (Square) |
+| Show Weapon | `Y` (Triangle) or `L1`/`R1` |
+| Previous Weapon | `Y` + D-Pad ← or `L1` + D-Pad ← |
+| Next Weapon | `Y` + D-Pad → or `R1` + D-Pad → |
+| Ninja Hook | `L2` Trigger or `R3` (Right Stick Click) |
+| Pause | `Start` button |
+| Menu | `Back` / `Select` button |
+| OK (menu) | `B` (Circle) |
+| Cancel (menu) | `A` (Cross) or `X` (Square) |
 
 **Notes:**
-- Gamepads are auto-detected when connected
-- Player 1 uses first gamepad, Player 2 uses second gamepad
-- Keyboard fallback is always available
-- Both players can use keyboard + gamepad simultaneously
+- Gamepads are auto-detected when connected (hot-plug supported)
+- Supports up to 4 gamepads simultaneously (Player 1-4)
+- Right stick provides 360° analog aiming
+- Keyboard fallback is always available 
+- Players 1 and 2 can mix keyboard + gamepad input
 
 
 ### Wii Guide
@@ -288,12 +362,61 @@ TODO
 ## Credits
 
 Joosa Riekkinen - Original Liero Author
-BScrk - Wiiero Reboot Author
+
+BScrk - Wiiero Author
+
+BScrk & Kyfran- 4 Players Wiiero Reboot
+
+Sound Track - Binaerpilot www.binaerpilot.no
+
 Have Fun !
+
 
 ## Changelog 
 
-2025-01-17 BScrk (Luca Benevolo) <wiiero@free.fr>
+
+2025-10-20 BScrk & Kyfran <wiiero@free.fr>
+
+ * Wiiero version: Release 1.6 (4 Players Edition)
+ * **4 Players Local Multiplayer**
+   - Complete refactoring for 4 simultaneous players support
+   - Split-screen rendering with 4 independent cameras
+   - Individual player HUD and status display
+   - Support for up to 4 gamepads simultaneously
+ * **Enhanced Game Modes**
+   - Deathmatch: 4-player Free-For-All battle royale
+   - Game of Tag: 4-player elimination mode with time pressure
+   - Game of Tag Team (2v2): Cooperative team-based tag gameplay
+   - Capture the Flag Team (2v2): Classic CTF with team dynamics
+   - Team composition: Team 1 (P1+P3) vs Team 2 (P2+P4)
+ * **Enhanced Gamepad Support**
+   - SDL2 GameController API integration
+   - Auto-detection and hot-plug support for all gamepads
+   - Xbox, PlayStation, Switch Pro controllers compatibility
+   - 360° analog aiming with right stick
+   - Dual analog controls (movement + aim)
+ * **Audio System Improvements**
+   - SDL2_mixer integration
+   - Music playback support
+   - In-game sound effects
+   - Improved audio performance
+ * **Bug Fixes**
+   - Fixed player visibility issues after game restart
+   - Fixed camera focus synchronization for multiplayer
+   - Fixed pointer conversion warnings in weapons system
+   - Improved rendering performance for 4 viewports
+ * **Gameplay Enhancements**
+   - Enhanced weapon selection interface for 4 players
+   - Optimized collision detection for multiplayer
+   - Improved player spawning system
+   - Better game mode support (Deathmatch, CTF, Tag) for 4 players
+ * **Code Quality**
+   - Modernized codebase architecture
+   - Better memory management
+   - Enhanced cross-platform compatibility
+   - Improved debug and profiling tools
+
+2025-01-17 BScrk
 
  * Wiiero version: Release 1.5 (SDL2 Migration)
  * **Complete SDL2 migration**
@@ -306,7 +429,7 @@ Have Fun !
  * Maintained backward compatibility with existing code structure
  * IOKit gamepad support preserved
 
-2025-10-16 BScrk (Luca Benevolo) <wiiero@free.fr>
+2025-10-16 BScrk
 
  * Wiiero version: Release 1.4
  * Project Reboot

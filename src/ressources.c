@@ -37,9 +37,12 @@ ressources_t* load_ressource(){
   DBG("- loading ressources\n");
   
   /* Player */
-  for(int i=0;i<NB_PLAYERS;i++){
+  for(player_id i=0;i<NB_PLAYERS;i++){
     r->worms_skins[i] = image_load(DEFAULT_PWSKIN);
     r->worms_flesh[i] = image_load(DEFAULT_PWFLESH);
+  }
+
+  for(team_id i=0;i<NB_TEAMS;i++){
     r->houses[i]      = image_load(DEFAULT_HOUSE);
     r->flags[i]       = image_load(DEFAULT_FLAG);
   }
@@ -101,25 +104,20 @@ ressources_t* load_ressource(){
   r->health         = image_load(DEFAULT_HEALTH);
   r->bonus          = image_load(DEFAULT_BONUS);
 
-  shift_ressource_colors(r->worms_skins[PLAYER_1],-50,-50, 50);
-  shift_ressource_colors(r->worms_skins[PLAYER_2],-50, -0,-50);
-  shift_ressource_colors(r->worms_skins[PLAYER_3], -0,  0, 50);
-  shift_ressource_colors(r->worms_skins[PLAYER_4],100,  0, 0);
+  shift_ressource_colors(r->worms_skins[PLAYER_1],-50,-50, 50); // Blue 
+  shift_ressource_colors(r->worms_skins[PLAYER_2],-50, -0,-50); // Green
+  shift_ressource_colors(r->worms_skins[PLAYER_3], 75, 25,-50); // Orange
+  shift_ressource_colors(r->worms_skins[PLAYER_4], 50,-70, 50); // Purple
 
   shift_ressource_colors(r->worms_flesh[PLAYER_1],-50,-50, 50);
   shift_ressource_colors(r->worms_flesh[PLAYER_2],-50, -0,-50);
-  shift_ressource_colors(r->worms_flesh[PLAYER_3],  0,  0, 50);
-  shift_ressource_colors(r->worms_flesh[PLAYER_4],100,  0, 0);
+  shift_ressource_colors(r->worms_flesh[PLAYER_3], 75, 25,-50);
+  shift_ressource_colors(r->worms_flesh[PLAYER_4], 50,-70, 50);
 
-  shift_ressource_colors(r->houses[PLAYER_1],-50,-50, 50);
-  shift_ressource_colors(r->houses[PLAYER_2],-50, -0,-50);
-  shift_ressource_colors(r->houses[PLAYER_3],  0,  0, 50);
-  shift_ressource_colors(r->houses[PLAYER_4],100,  0, 0);
-
-  shift_ressource_colors(r->flags[PLAYER_1],-50,-50, 50);
-  shift_ressource_colors(r->flags[PLAYER_2],-50, -0,-50);
-  shift_ressource_colors(r->flags[PLAYER_3],  0,  0, 50);
-  shift_ressource_colors(r->flags[PLAYER_4],100,  0, 0);
+  shift_ressource_colors(r->houses[TEAM_1],-50,-50, 50);
+  shift_ressource_colors(r->houses[TEAM_2],-50, -0,-50);
+  shift_ressource_colors(r->flags[TEAM_1] ,-50,-50, 50);
+  shift_ressource_colors(r->flags[TEAM_2] ,-50, -0,-50);
 
   return r;
 }
