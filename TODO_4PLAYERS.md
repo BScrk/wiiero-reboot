@@ -31,3 +31,10 @@
 ## 📋 Améliorations futures (optionnel)
 - [ ] Ajouter des contrôles pour PLAYER_3 et PLAYER_4 dans les autres input modes (Wii, PSP, IOKit)
 - [ ] Tester et optimiser les performances avec 4 joueurs actifs
+- [ ] Pouvoir passer de 2 à 3 ou 4 joueurs dans les options
+- [ ] Modifier l'affichage en fonction du nombre de joueurs
+- [ ] Bugfix manette se déconnecte -> crash (sous mac)
+- [ ] Bugfix manette se déconnecte -> les manettes changent de vers :D
+- [ ] Déplacement pad/stick gauche + visée stick droit
+- [ ] Bugfix collision rocher (disparition de magic Mike et les 50 capotes)
+- [ ] Amélioration de l'interface 4 joueurs
