@@ -122,6 +122,7 @@ void wiiero_init(game_t *g)
     SDL_JoystickOpen(0);
 #endif
   HARD_DBG("- init config\n");
+  g->wiiero_magic_number = WIIERO_OPT_FILE_MAGIC_NUMBER;
   g->wiiero_game_status = GAME_SET_MENU;
   g->wiiero_opt_game_mode = GAME_DEATHMATCH_MODE;
   g->wiiero_opt_nb_lifes = WIIERO_STD_LIFES;
@@ -135,6 +136,7 @@ void wiiero_init(game_t *g)
   g->wiiero_opt_shadow = WIIERO_STD_SHADOW;
   g->wiiero_opt_xtra_weap = WIIERO_STD_XTRA_W;
   selected_amb = WIIERO_STD_AMBIENCE;
+  g->wiiero_nb_players = WIIERO_STD_PLAYER_NB;
   g->wiiero_opt_nb_rocks = WIIERO_STD_NB_ROCKS;
   g->wiiero_opt_screen_resolution = WIIERO_STD_SCREEN_RESOLUTION;
   round_running = 0;
@@ -870,6 +872,20 @@ void option_raction_value_cb(void *val)
   (*((Uint8 *)val)) += (*((Uint8 *)val) == 255) ? 0 : 1;
 }
 
+void option_laction_nb_player_cb(void *val)
+{
+  if(*((Uint8 *)val) > 2){
+    *((Uint8 *)val) -= 1;
+  }
+}
+
+void option_raction_nb_player_cb(void *val)
+{
+  if(*((Uint8 *)val) < 4){
+    *((Uint8 *)val) += 1;
+  }
+}
+
 void option_laction_time_cb(void *val)
 {
   (*((Uint16 *)val)) -= ((*((Uint16 *)val)) > 30) ? 30 : 0;
@@ -994,6 +1010,7 @@ static __inline__ void wiiero_option(game_t *g)
       {OPTION_LEV_ROCKS, wiiero_label[WIIERO_LANG_OPT_MENU_ROCKS], &(g->wiiero_opt_nb_rocks), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, option_regen_new_map},
       {OPTION_LEV_AMBI, wiiero_label[WIIERO_LANG_OPT_MENU_AMBIE], &selected_amb, option_format_ambi_value_cb, option_laction_ambi_value_cb, option_raction_ambi_value_cb, option_regen_new_map},
       {OPTION_SHADOWS, wiiero_label[WIIERO_LANG_OPT_MENU_SHADO], &(g->wiiero_opt_shadow), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
+      {OPTION_PLAYER_NB, wiiero_label[WIIERO_LANG_OPT_MENU_PL_NB], &(g->wiiero_nb_players), option_format_value_cb, option_laction_nb_player_cb, option_raction_nb_player_cb, 0L},
       {OPTION_P1_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P1NAM], game_nicknames[PLAYER_1], option_format_string_cb, 0L, 0L, option_change_p1_name_cb},
       {OPTION_P2_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P2NAM], game_nicknames[PLAYER_2], option_format_string_cb, 0L, 0L, option_change_p2_name_cb},
       {OPTION_P3_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P3NAM], game_nicknames[PLAYER_3], option_format_string_cb, 0L, 0L, option_change_p3_name_cb},
@@ -1272,6 +1289,8 @@ int wiiero_load_config(game_t *g)
     snprintf(str_errno, 127, "Error: %s.\n", strerror(errno));
     return 0;
   }
+  if(!fread(&(g->wiiero_magic_number), sizeof(Uint32), 1, conf_file)){return 0;}
+  if(g->wiiero_magic_number != WIIERO_OPT_FILE_MAGIC_NUMBER){return 0;}
   if(!fread(&(g->wiiero_opt_game_mode), sizeof(game_mode_t), 1, conf_file)){return 0;}
   if(!fread(&(g->wiiero_opt_nb_lifes), sizeof(Uint16), 1, conf_file)){return 0;}
   if(!fread(&(g->wiiero_opt_nb_flags), sizeof(Uint16), 1, conf_file)){return 0;}
@@ -1285,6 +1304,7 @@ int wiiero_load_config(game_t *g)
   if(!fread(&(g->wiiero_opt_xtra_weap), sizeof(Uint8), 1, conf_file)){return 0;}
   if(!fread(&(g->wiiero_opt_nb_rocks), sizeof(Uint8), 1, conf_file)){return 0;}
   if(!fread(&selected_amb, sizeof(Uint8), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_nb_players), sizeof(Uint8), 1, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file)){return 0;}
   if(!fread(game_nicknames[PLAYER_3], sizeof(char), 10, conf_file)){return 0;}
@@ -1315,6 +1335,7 @@ int wiiero_save_config(game_t *g)
   Uint16 langlen = 0;
   if (!conf_file)
     return 0;
+  fwrite(&(g->wiiero_magic_number), sizeof(Uint32), 1, conf_file);
   fwrite(&(g->wiiero_opt_game_mode), sizeof(game_mode_t), 1, conf_file);
   fwrite(&(g->wiiero_opt_nb_lifes), sizeof(Uint16), 1, conf_file);
   fwrite(&(g->wiiero_opt_nb_flags), sizeof(Uint16), 1, conf_file);
@@ -1328,6 +1349,7 @@ int wiiero_save_config(game_t *g)
   fwrite(&(g->wiiero_opt_xtra_weap), sizeof(Uint8), 1, conf_file);
   fwrite(&(g->wiiero_opt_nb_rocks), sizeof(Uint8), 1, conf_file);
   fwrite(&selected_amb, sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_nb_players), sizeof(Uint8), 1, conf_file);
   fwrite(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file);
   fwrite(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file);
   fwrite(game_nicknames[PLAYER_3], sizeof(char), 10, conf_file);

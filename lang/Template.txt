@@ -64,6 +64,7 @@
   nb rocks:
   ambience:
   shadow fx:
+  player number:
   player1 name:
   player2 name:
   player3 name:

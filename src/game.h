@@ -52,7 +52,7 @@
 #define WIIERO_VERSION "wiiero v1.3    [Wii Edition]"
 #endif
 
-
+#define WIIERO_OPT_FILE_MAGIC_NUMBER 0x5749524F /* "WIRO" */
 #define WIIERO_STD_LIFES              10
 #define WIIERO_STD_FLAGS               5
 #define WIIERO_STD_TIME              300
@@ -69,6 +69,7 @@
 #define WIIERO_STD_OPT_FILE           "config.wro"
 #define WIIERO_STD_MUB                 0
 #define WIIERO_STD_LANG                0
+#define WIIERO_STD_PLAYER_NB           4
 
 
 typedef enum{
@@ -123,6 +124,7 @@ typedef enum{
 typedef struct{
   int            wiiero_frame_delay;
   /* options */
+  Uint32         wiiero_magic_number;
   game_mode_t    wiiero_opt_game_mode;
   Uint16         wiiero_opt_nb_lifes;
   Uint16         wiiero_opt_nb_flags;
@@ -141,6 +143,7 @@ typedef struct{
   screen_t*      wiiero_screen;
   camera_t*      wiiero_cameras[NB_MAX_CAMS];
   map_t*         wiiero_map;
+  Uint8          wiiero_nb_players;
   player_t*      worms[NB_PLAYERS];
   obj_list_t*    wiiero_dynamic_objects;
   bullet_list_t* wiiero_bullets;

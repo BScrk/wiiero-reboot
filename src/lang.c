@@ -76,6 +76,7 @@ char *wiiero_label[WIIERO_LANG_NB_LABELS] = {
   , "nb rocks:"
   , "ambience:"
   , "shadow fx:"
+  , "player number:"
   , "player1 name:"
   , "player2 name:"
   , "player3 name:"
