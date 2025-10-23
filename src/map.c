@@ -95,12 +95,24 @@ void static update_player_position(int p_x, int p_y, float x_step , float y_step
   p_y = (p_y/y_step == 0) ? 1 : p_y/y_step;
   p_x = (p_x >= cam->w) ? cam->w-1 : p_x;
   p_y = (p_y >= cam->h) ? cam->h-1 : p_y;
-  
-  camera_put_pix_color(cam,p_x-1, p_y-1, r, g, b);
-  camera_put_pix_color(cam,p_x-1, p_y+1, r, g, b);
-  camera_put_pix_color(cam,p_x  , p_y  , r, g, b);
+
+
+  camera_put_pix_color(cam,p_x+2, p_y+2, r, g, b);
+  camera_put_pix_color(cam,p_x+2, p_y-2, r, g, b);
+  camera_put_pix_color(cam,p_x-2, p_y+2, r, g, b);
+  camera_put_pix_color(cam,p_x-2, p_y-2, r, g, b);
+
+
   camera_put_pix_color(cam,p_x+1, p_y-1, r, g, b);
+  camera_put_pix_color(cam,p_x+1, p_y, r, g, b);
   camera_put_pix_color(cam,p_x+1, p_y+1, r, g, b);
+  camera_put_pix_color(cam,p_x, p_y-1, r, g, b);
+  camera_put_pix_color(cam,p_x, p_y, r, g, b);
+  camera_put_pix_color(cam,p_x, p_y+1, r, g, b);
+  camera_put_pix_color(cam,p_x-1, p_y-1, r, g, b);
+  camera_put_pix_color(cam,p_x-1, p_y, r, g, b);
+  camera_put_pix_color(cam,p_x-1, p_y+1, r, g, b);
+
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void update_minimap( map_t* m,camera_t *cam 
                    , int p1_x, int p1_y
@@ -133,7 +145,7 @@ void update_minimap( map_t* m,camera_t *cam
     }
   }
   /* Update players position */
-  update_player_position(p1_x, p1_y, x_step , y_step, cam,  0,  0,255); // Blue
+  update_player_position(p1_x, p1_y, x_step , y_step, cam, 80, 80,255); // Blue
   update_player_position(p2_x, p2_y, x_step , y_step, cam,  0,255,  0); // Green
   update_player_position(p3_x, p3_y, x_step , y_step, cam,240,215, 25); // Orange
   update_player_position(p4_x, p4_y, x_step , y_step, cam,240, 25,220); // Purple

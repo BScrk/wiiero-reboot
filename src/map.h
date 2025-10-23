@@ -35,8 +35,8 @@
 
 #include "ressources.h"
 
-#define MAP_WIDTH  800
-#define MAP_HEIGHT 500
+#define MAP_WIDTH  1200
+#define MAP_HEIGHT  600
 
 #define MINI_MAP_UPDATE_IDLE 1000
 
