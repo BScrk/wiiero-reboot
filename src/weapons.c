@@ -975,8 +975,8 @@ void drop_player_flag(bullet_list_t* l,ressources_t* r,int teamid,int x,int y){
   int acc_x= rand()%7-3;
   int acc_y= - rand()%3 - 1;
   printf("DROP FLAG at %d,%d with acc %d,%d %d %p\n",x,y,acc_x,acc_y,teamid,r->flags[teamid]);
-  
-  weapon_add_bullet_to_list(l, init_with_skin(((teamid == TEAM_1) ? WEAPON_T1_FLAG: WEAPON_T2_FLAG)
+
+  weapon_add_bullet_to_list(l, init_with_skin(((teamid == TEAM_1) ? WEAPON_T2_FLAG: WEAPON_T1_FLAG)
                                              ,x, y, acc_x, acc_y
                                              ,r->flags[teamid]
                                              ,0l));
@@ -1115,9 +1115,8 @@ void explosive_piece_on_collision_cb( void* bullet, int lastx, int lasty, int co
   player_t* owner = ((bullet_t*)bullet)->p_origin ? ((bullet_t*)bullet)->p_origin : (p[0]);
 
   for(i=0;i<4;i++){
-    //FIXME p[0] only ?
     weapon_add_bullet_to_list( owner->bullet_list_link
-                   , init_pieces( colx + (rand() % 7) - 3
+                  , init_pieces( colx + (rand() % 7) - 3
                                 , coly + (rand() % 7) - 3 
                                 , (rand() % 9) - 4
                                 , (rand() % 7) - 4
@@ -4876,6 +4875,12 @@ void missile_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int 
 
 /* * * * * * * * * * * * * * * * * NINJA * * * * * * * * * * * * * * * * * * * */
 bullet_t* create_ninja_hook(weapon_id w_id,player_t *p,int acc_x,int acc_y){
+  if(p->tricked_worm){
+    p->tricked_worm->worms_status &= ~STATUS_TRICKED;
+    p->tricked_worm = 0l;
+    return 0l;
+  }
+
   return weapon_add_bullet_to_list( p->bullet_list_link
                                   ,init_with_skin(w_id
                                           , p->reticle_x
@@ -4963,11 +4968,10 @@ void ninja_hook_update_cb(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userd
     //fprintf(stderr,"ninja_hook_update_cb: dest is NULL\r\n");
   }else{
     //fprintf(stderr,"ninja_hook_update_cb: dest is OK :D\r\n");
-    if( dest->worms_status & STATUS_TRICKED ){
-      dest->worms_status |= STATUS_TRICKED;
-      b->obj.pos_x = dest->worms.pos_x;
-      b->obj.pos_y = dest->worms.pos_y-2;
-    }
+    // reset flag & update position
+    dest->worms_status |= STATUS_TRICKED;
+    b->obj.pos_x = dest->worms.pos_x;
+    b->obj.pos_y = dest->worms.pos_y-2;
   }
 }
 
