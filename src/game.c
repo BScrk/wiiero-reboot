@@ -433,7 +433,7 @@ void wiiero_blit_world(game_t *g)
   DBG(" - BLIT PLAYERS\n");
   DEBUG_FUNC
   //for(camera_id_t cid = FIRST_PLAYERS_CAMERAS; cid < MAX_PLAYERS_CAMERAS; cid++){ // For each camera
-  for(camera_id_t cid = FIRST_PLAYERS_CAMERAS; cid < (g->wiiero_nb_players); cid++){ // For each camera
+  for(camera_id_t cid = FIRST_PLAYERS_CAMERAS; cid < (g->wiiero_nb_players + 1); cid++){ // For each camera
     for(player_id pid = PLAYER_1; pid < g->wiiero_nb_players; pid++){
       player_show_on_cam(g->worms[pid], g->wiiero_cameras[cid], wiiero_player_warning(pid, g));
     }
