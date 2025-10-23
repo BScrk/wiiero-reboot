@@ -57,7 +57,7 @@ typedef enum { RES_320_240
 //#define NO_SOUND
 
 //#define DEBUG_ON
-
+#define DEBUG_FUNC fprintf(stdout,"file=%s func=%s line=%d \r\n",__FILE__, __FUNCTION__,__LINE__);
 
 
 #endif

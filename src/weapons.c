@@ -882,7 +882,7 @@ void proceed_bullets(bullet_list_t* l,SDL_Surface* ground,SDL_Surface* statics
   }
 }
 
-void blit_bullets(bullet_list_t* l,camera_t** cams){
+void blit_bullets(bullet_list_t* l,camera_t** cams, Uint8 nb_players ){
   ASSERT(l);
   ASSERT(cams);
   bullet_cell_t* cell = l->head;
@@ -890,28 +890,34 @@ void blit_bullets(bullet_list_t* l,camera_t** cams){
     return;
   }
   while(cell){
+    
     if(cell->bullet->obj.blit_cb){
-
+      
       switch(cell->bullet->w_id){
       case WEAPON_LASER:
         {
+          
           player_t* p = ((player_t*)cell->bullet->p_origin);
+          
           if(p->weapon_slots[p->selected_weapon]->id == WEAPON_LASER ){
             // laser in use 
             // blit last
-            for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+            for(int i=PLAYER_1_GAME_ZONE_CAM;i<(PLAYER_1_GAME_ZONE_CAM+nb_players);i++){
               cell->bullet->obj.blit_cb(cams[i],cell->bullet,l);
             }
           }
           break;
         }
         case WEAPON_NINJA:
-          for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+          
+          for(int i=PLAYER_1_GAME_ZONE_CAM;i<(PLAYER_1_GAME_ZONE_CAM+nb_players);i++){
             cell->bullet->obj.blit_cb(cams[i],cell->bullet,l);
           }
           break;
         default:
-          for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+          
+          for(int i=PLAYER_1_GAME_ZONE_CAM;i<(PLAYER_1_GAME_ZONE_CAM+nb_players);i++){
+            
             camera_t* cam = cams[i];
             if((cell->bullet->obj.pos_x >= cam->map_x)
             &&(cell->bullet->obj.pos_x < (cam->map_x + cam->w))
@@ -922,7 +928,9 @@ void blit_bullets(bullet_list_t* l,camera_t** cams){
           break;
       }
     }
+    
     cell = cell->next;
+    
   }
 } 
 

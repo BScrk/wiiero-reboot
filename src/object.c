@@ -162,15 +162,18 @@ extern void clean_dynamic_obj_list(obj_list_t* l){
   l->head = 0l;
 }
 
-void blit_dynamics_objs(obj_list_t* l,camera_t** cams){
+void blit_dynamics_objs(obj_list_t* l,camera_t** cams, Uint8 nb_players){
   ASSERT(l);
   ASSERT(cams);
   obj_cell_t* cell = l->head;
   if(!cell)
     return;
   while(cell){
+    DEBUG_FUNC
     if(cell->object->blit_cb){
-      for(int i=PLAYER_1_GAME_ZONE_CAM;i<=PLAYER_4_GAME_ZONE_CAM;i++){
+      DEBUG_FUNC
+      for(int i=PLAYER_1_GAME_ZONE_CAM;i < (PLAYER_1_GAME_ZONE_CAM+nb_players) ;i++){
+        DEBUG_FUNC
         camera_t* cam = cams[i];
         if((cell->object->pos_x >= cam->map_x)
          &&(cell->object->pos_x < (cam->map_x + cam->w))
@@ -178,9 +181,11 @@ void blit_dynamics_objs(obj_list_t* l,camera_t** cams){
          &&(cell->object->pos_y < (cam->map_y + cam->h)))
             cell->object->blit_cb(cam,cell->object,l);
       }
+      DEBUG_FUNC
     }
     if(cell->object->update_cb)
       cell->object->update_cb(cell->object,0L,0L,0L);
+    DEBUG_FUNC
     cell = cell->next;
   }
 }

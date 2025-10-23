@@ -158,6 +158,7 @@ typedef struct{
 
 extern void wiiero_init(game_t* g);
 extern void wiiero_load(game_t* g);
+extern void wiiero_update_player_nb(game_t* g);
 extern int  wiiero_alive(game_t* g);
 extern void wiiero_cycle(game_t* g);
 extern void wiiero_quit(game_t* g);

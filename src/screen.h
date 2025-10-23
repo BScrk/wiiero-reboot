@@ -81,6 +81,7 @@ void      screen_loading_splash(screen_t* s);
 void      screen_clean(screen_t* s);
 screen_t* screen_custom_init(int w,int h,int bpp);
 camera_t* screen_add_camera(screen_t* s,int cx,int cy);
+void      screen_remove_camera(screen_t* s,camera_t* c);
 camera_t* screen_add_custom_camera(screen_t* s,int cx,int cy,int cw,int ch,int cbpp);
 void      screen_display(screen_t* s);
 void      screen_flip_mode(screen_t* s);

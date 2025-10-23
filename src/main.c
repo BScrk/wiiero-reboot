@@ -82,6 +82,7 @@ int main(int argc, char * argv[]) {
  
   //printf("Memory usage: %f\n", (1.0*get_process_used_memory() / 1024) / 1024);
   HARD_DBG("Running game...\n");
+    DEBUF_FUNC
   while(wiiero_alive(&game)){
     wiiero_cycle(&game);
   }

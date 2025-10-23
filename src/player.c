@@ -376,9 +376,10 @@ static __inline__ void player_is_aiming_player(player_t* p , player_t* target){
 
 void player_is_aiming(player_id pid , player_t** targets){
   targets[pid]->worms_status &= ~STATUS_AIMING; 
-  for(int i=0;i<NB_PLAYERS;i++){
+  for(int i=0;i<NB_PLAYERS;i++){//FIXME use nb player from game struct instead of test targets[i]
     if(i!=pid){
-      player_is_aiming_player( targets[pid] , targets[i]);
+      if(targets[i] != 0L)
+        player_is_aiming_player( targets[pid] , targets[i]);
     }
   }
 }
@@ -996,7 +997,7 @@ void player_change_rope_len(player_t* p,int len_modif){
 void player_remove_hook(player_t* p,player_t** other_p){
   /* Remove Hook */
   ASSERT(p->ninja_hook->last_bullet)
-  ninja_hook_disconnect(p->ninja_hook->last_bullet,other_p,NB_PLAYERS,0l);
+  ninja_hook_disconnect(p->ninja_hook->last_bullet,other_p,NB_PLAYERS,0l);//FIXME use nb player from game struct instead of NB_PLAYERS
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;
 }

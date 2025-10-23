@@ -250,6 +250,21 @@ camera_t* screen_add_custom_camera(screen_t* s,int cx,int cy,int cw,int ch,int c
   
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+void screen_remove_camera(screen_t* s,camera_t* c){
+  ASSERT(s);
+  ASSERT(c);
+  ASSERT(screen_is_init);
+  if(s->screen_cam_list){
+    camera_list_t * cur_cam_slot = s->screen_cam_list;
+    if( cur_cam_slot->cam == c ){
+      s->screen_cam_list = cur_cam_slot->next;
+      camera_release(cur_cam_slot->cam);
+      secure_free(cur_cam_slot);
+    }
+  }
+     
+}/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */  
+
 void screen_display(screen_t* s){
   ASSERT(s);
   ASSERT(screen_is_init);
