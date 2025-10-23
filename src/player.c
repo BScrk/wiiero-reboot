@@ -291,7 +291,7 @@ void player_reset_weapons(player_t* p,int xtra_on){
 
 player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
                      , bullet_list_t* bl, obj_list_t* dl,SDL_Surface* statics
-                     , int xtra_weap){
+                     , int xtra_weap, team_id tid){
   player_t* p = 0L;
   Uint8 cr=0x0;
   Uint8 cg=0x0;
@@ -305,6 +305,7 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   p = secure_malloc(sizeof(player_t));
   p->r = r;
   p->id = id;
+  p->tid = tid;
   p->ninja_hook = weapon_init(WEAPON_NINJA);
   while(cr!=transparent_r_value || cg!=transparent_g_value || cb!=transparent_b_value ){
     p->worms.pos_x = (id == PLAYER_1) ? rand() % (MAP_WIDTH / 2) /* first map part */
@@ -597,9 +598,8 @@ void player_show_stats(player_t* p,game_mode_t gm){
       break;
     case GAME_OF_TAG_TEAM_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
-        team_id tid = player_get_team_id(p->id);
-        int32_t team_time = wiiero_get_teams_time()[tid];
-        snprintf(tmp_string,127, "     TEAM %d %s: %02dm%02ds", tid + 1,  wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
+        int32_t team_time = wiiero_get_teams_time()[p->tid];
+        snprintf(tmp_string,127, "     TEAM %d %s: %02dm%02ds", p->tid + 1,  wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
         font_print_strict_pos( camera, tmp_string
                               , 1*step
                               , 3*camera->h/10+50, FONT_SMALL);
@@ -613,9 +613,8 @@ void player_show_stats(player_t* p,game_mode_t gm){
       break;
     case GAME_CAPTURE_FLAG_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
-        team_id tid = player_get_team_id(p->id);//FIXME if 2 players only, must return P2, not P3 ! -> COREDUMP
-        int32_t team_flags = wiiero_get_teams_flags()[tid];
-        snprintf( tmp_string,127,"     TEAM %d %s: %d",tid +1, wiiero_label[WIIERO_LANG_FLAGS]
+        int32_t team_flags = wiiero_get_teams_flags()[p->tid];
+        snprintf( tmp_string,127,"     TEAM %d %s: %d",p->tid +1, wiiero_label[WIIERO_LANG_FLAGS]
                 , team_flags);
         font_print_strict_pos(camera, tmp_string, 1*step
                               , 3*camera->h/10+50, FONT_SMALL);
@@ -946,8 +945,7 @@ void player_shot(player_t* p,player_id origin,Uint8 damage,int acc_x,int acc_y,v
       game_score[p->id].nb_lifes   -= 1;
       game_score[p->id].nb_death   += 1;
       if(p->worms_status & STATUS_HAVE_FLAG){
-        team_id tid = player_get_team_id(p->id);
-        drop_player_flag(p->bullet_list_link,p->r,tid, p->worms.pos_x , p->worms.pos_y);
+        drop_player_flag(p->bullet_list_link,p->r,p->tid, p->worms.pos_x , p->worms.pos_y);
       }
 
       p->worms_status &= ~STATUS_HAVE_FLAG;

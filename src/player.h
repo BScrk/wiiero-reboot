@@ -133,6 +133,7 @@ typedef enum{
 
 typedef struct player_s{
   player_id      id;
+  team_id        tid;
   Uint32         worms_status;
   Uint16         worms_action;
   Uint8          worms_health;
@@ -169,7 +170,7 @@ typedef struct{
 
 player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
                      , bullet_list_t* bl, obj_list_t* dl,SDL_Surface* statics
-                     , int xtra_weap);
+                     , int xtra_weap, team_id tid);
 void player_reset( player_t* p, SDL_Surface* ground, SDL_Surface* statics);
 void player_reset_weapons(player_t* p,int xtra_on);
 void player_focus(player_t* p);

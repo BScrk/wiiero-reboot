@@ -183,8 +183,8 @@ void wiiero_update_player_nb(game_t *g){
       g->wiiero_map = map_init(g->wiiero_ressources, g->wiiero_opt_nb_rocks, g->wiiero_opt_screen_resolution);
 
       font_console_print_debug("init game...\n", FONT_SMALL);
-      g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
-      g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
+      g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_1);
+      g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_2);
       map_drow_cave(g->wiiero_map, g->worms[PLAYER_1]->worms.pos_x, g->worms[PLAYER_1]->worms.pos_y, 20);
       map_drow_cave(g->wiiero_map, g->worms[PLAYER_2]->worms.pos_x, g->worms[PLAYER_2]->worms.pos_y, 20);
     }break;
@@ -210,11 +210,10 @@ void wiiero_update_player_nb(game_t *g){
       g->wiiero_map = map_init(g->wiiero_ressources, g->wiiero_opt_nb_rocks, g->wiiero_opt_screen_resolution);
 
       font_console_print_debug("init game...\n", FONT_SMALL);
-      g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
-      g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
-      g->worms[PLAYER_3] = player_init(PLAYER_3, g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
-      g->worms[PLAYER_4] = player_init(PLAYER_4, g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap);
-
+      g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_1);
+      g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_1);
+      g->worms[PLAYER_3] = player_init(PLAYER_3, g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_2);
+      g->worms[PLAYER_4] = player_init(PLAYER_4, g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_2);
       map_drow_cave(g->wiiero_map, g->worms[PLAYER_1]->worms.pos_x, g->worms[PLAYER_1]->worms.pos_y, 20);
       map_drow_cave(g->wiiero_map, g->worms[PLAYER_2]->worms.pos_x, g->worms[PLAYER_2]->worms.pos_y, 20);
       map_drow_cave(g->wiiero_map, g->worms[PLAYER_3]->worms.pos_x, g->worms[PLAYER_3]->worms.pos_y, 20);
@@ -321,7 +320,12 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
     break;
   case GAME_OF_TAG_TEAM_MODE:{
         // Compute time for the team
-        team_id tid = player_get_team_id(player);
+        team_id tid;
+        if(g->wiiero_nb_players == 2){
+          tid = (player == PLAYER_1) ? TEAM_1 : TEAM_2; 
+        }else{
+          tid = player_get_team_id(player);
+        }
         int32_t* team_time = wiiero_get_teams_time();
         return (team_time[tid] < g->wiiero_opt_got_time / 5);
     }
@@ -329,12 +333,23 @@ static __inline__ int wiiero_player_warning(player_id player, game_t *g)
   case GAME_CAPTURE_FLAG_MODE:
     {
       // CTF Team mode: Warning if enemy team has your flag
-      team_id player_team = player_get_team_id(player);
+      team_id player_team;
+      if(g->wiiero_nb_players == 2){
+        player_team = (player == PLAYER_1) ? TEAM_1 : TEAM_2; 
+      }else{
+        player_team = player_get_team_id(player);
+      }
       team_id enemy_team = (player_team == TEAM_1) ? TEAM_2 : TEAM_1;
       
       // Check if any enemy player has our flag
       for (player_id p = PLAYER_1; p < g->wiiero_nb_players; p++) {
-        if (player_get_team_id(p) == enemy_team && (g->worms[p]->worms_status & STATUS_HAVE_FLAG)) {
+        team_id tid;
+        if(g->wiiero_nb_players == 2){
+          tid = (player == PLAYER_1) ? TEAM_1 : TEAM_2; 
+        }else{
+          tid = player_get_team_id(player);
+        }
+        if (tid == enemy_team && (g->worms[p]->worms_status & STATUS_HAVE_FLAG)) {
           return 1;  // Warning: enemy has our flag
         }
       }
@@ -449,7 +464,7 @@ static __inline__ void wiiero_restart_game(game_t *g)
 int32_t* wiiero_get_teams_time(){
   static int32_t team_time[NB_PLAYERS/2] = {0};//FIXME nb player ?
   memset(team_time, 0, sizeof(team_time));
-  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {
+  for (player_id p = PLAYER_1; p < NB_PLAYERS; p++) {//FIXME manage tems for 2 players
     team_id tid = player_get_team_id(p);
     team_time[tid] += game_score[p].tag_time;
   }
@@ -644,7 +659,12 @@ int32_t* wiiero_get_teams_flags(game_t * g){
   static int32_t team_flags[NB_PLAYERS/2] = {0};
   memset(team_flags, 0, sizeof(team_flags));
   for (player_id p = PLAYER_1; p < g->wiiero_nb_players; p++) {
-    team_id tid = player_get_team_id(p);
+    team_id tid;
+    if(g->wiiero_nb_players == 2 ){
+      tid = (p == PLAYER_1) ? TEAM_1 : TEAM_2; 
+    }else{
+      tid = player_get_team_id(p);
+    }
     team_flags[tid] += game_score[p].nb_flags;
   }
   return team_flags;
@@ -653,9 +673,9 @@ int32_t* wiiero_get_teams_flags(game_t * g){
 static __inline__ void wiiero_cflag_game_mode(game_t *g)
 {
   // CTF Team mode: Count flags captured by each team
-  DEBUG_FUNC
+  
   int32_t* team_flags = wiiero_get_teams_flags(g);
-  DEBUG_FUNC
+  
   // Check win conditions
   if ((team_flags[TEAM_1] >= g->wiiero_opt_nb_flags) &&  (team_flags[TEAM_2] >= g->wiiero_opt_nb_flags)){
     winner_id = GAME_DRAW;  // Draw
@@ -667,7 +687,7 @@ static __inline__ void wiiero_cflag_game_mode(game_t *g)
     winner_id = (player_id)TEAM_2;  // TEAM_2 wins
     g->wiiero_game_status = GAME_SET_ROUND_STATS;
   }
-  DEBUG_FUNC
+  
 }
 /******************************************************************************/
 
@@ -925,7 +945,7 @@ char *option_format_string_cb(char *label, void *data)
 
 char *option_format_gamemode_cb(char *label, void *data)
 {
-  DEBUG_FUNC
+  
   static char string[128];
   switch (*((game_mode_t *)data))
   {
@@ -942,7 +962,7 @@ char *option_format_gamemode_cb(char *label, void *data)
     snprintf(string, 127, "%s %s", label, wiiero_label[WIIERO_LANG_CTF]);
     break;
   }
-  DEBUG_FUNC
+  
   return string;
 } /*--------------------------------------------------------------------------*/
 
@@ -1442,7 +1462,12 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
         y+=10;
         break;
       case GAME_OF_TAG_TEAM_MODE: {
-          team_id teamid = player_get_team_id(id);
+          team_id teamid;
+          if(g->wiiero_nb_players == 2){
+            teamid = (id == PLAYER_1) ? TEAM_1 : TEAM_2; 
+          }else{
+            teamid = player_get_team_id(id);
+          }
           int32_t team_time = wiiero_get_teams_time()[teamid];
           snprintf(msg, 511, "TEAM %s: %02dm%02ds", wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
           font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
@@ -1455,7 +1480,12 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
         y+=10;
         break;
       case GAME_CAPTURE_FLAG_MODE: {
-          team_id teamid = player_get_team_id(id);
+          team_id teamid;
+          if(g->wiiero_nb_players == 2){
+            teamid = (id == PLAYER_1) ? TEAM_1 : TEAM_2; 
+          }else{
+            teamid = player_get_team_id(id);
+          }
           int32_t team_flags = wiiero_get_teams_flags(g)[teamid];
           snprintf(msg, 511, "%s: %d", wiiero_label[WIIERO_LANG_FLAGS], game_score[id].nb_flags);
           font_print_strict_pos(g->wiiero_cameras[FULL_SCREEN_CAM], msg,x , y, FONT_STANDARD);
@@ -1469,7 +1499,7 @@ static __inline__ void wiiero_set_round_stats(game_t *g)
   }
   /* SHOW WINNER */
   id = winner_id;
-  DEBUG_FUNC
+  
   if (id < GAME_DRAW){//FIXME use g->wiiero_nb_players ?
     if(g->wiiero_opt_game_mode == GAME_OF_TAG_TEAM_MODE || g->wiiero_opt_game_mode == GAME_CAPTURE_FLAG_MODE){
       snprintf(msg, 511, "TEAM %d %s.", (id / 2) + 1, wiiero_label[WIIERO_LANG_WIN]);

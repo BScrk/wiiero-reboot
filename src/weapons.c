@@ -2991,7 +2991,7 @@ void house_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
   
   // Check if any TEAM_1 player (P1 or P3) has the flag
   for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
-    if (player_get_team_id(pi) == TEAM_1 
+    if (p[pi]->tid == TEAM_1 
         && (p[pi]->worms_status & STATUS_SHOT)
         && (p[pi]->worms_status & STATUS_HAVE_FLAG)) {
       p[pi]->worms_status &= ~STATUS_HAVE_FLAG;
@@ -3019,7 +3019,7 @@ void house_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
   
   // Check if any TEAM_2 player (P2 or P4) has the flag
   for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
-    if (player_get_team_id(pi) == TEAM_2
+    if (p[pi]->tid == TEAM_2
         && (p[pi]->worms_status & STATUS_SHOT)
         && (p[pi]->worms_status & STATUS_HAVE_FLAG)) {
       p[pi]->worms_status &= ~STATUS_HAVE_FLAG;
@@ -3066,7 +3066,7 @@ void flag_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int 
   
   // Check if any TEAM_2 player (P2 or P4) touches the flag
   for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
-    if (player_get_team_id(pi) == TEAM_2 
+    if (p[pi]->tid == TEAM_2 
         && (p[pi]->worms_status & STATUS_SHOT)
         && !(p[pi]->worms_status & STATUS_HAVE_FLAG)) {
       p[pi]->worms_status |= STATUS_HAVE_FLAG;
@@ -3093,7 +3093,7 @@ void flag_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int 
   
   // Check if any TEAM_1 player (P1 or P3) touches the flag
   for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
-    if (player_get_team_id(pi) == TEAM_1
+    if (p[pi]->tid == TEAM_1
         && (p[pi]->worms_status & STATUS_SHOT)
         && !(p[pi]->worms_status & STATUS_HAVE_FLAG)) {
       p[pi]->worms_status |= STATUS_HAVE_FLAG;
