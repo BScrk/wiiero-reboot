@@ -37,6 +37,7 @@
 #include "sound_engine.h"
 #include "lang.h"
 
+
 extern int debug_flag;
 
 enum{
@@ -539,6 +540,7 @@ void player_show_gunfire_on_cam(player_t* p,camera_t* camera,int looking_height)
 
 void player_show_stats(player_t* p,game_mode_t gm){
   ASSERT(p)
+  
   camera_t* camera = p->worms_stats_camera;
   int step = camera->w/21;
   char tmp_string[128];
@@ -553,7 +555,6 @@ void player_show_stats(player_t* p,game_mode_t gm){
   camera_drow_hline(camera
             , 1*step, camera->h/10 - 2 
             , 20*step, 3, 0x20, 0xff, 0x20);
-    
   if(p->worms_health<100){
     camera_drow_hline(camera
               , 1*step + ((p->worms_health*20*step)/100), camera->h/10 - 2  
@@ -576,6 +577,7 @@ void player_show_stats(player_t* p,game_mode_t gm){
             / weapon_get_nb_recharge_steps(p->weapon_slots[p->selected_weapon])
           , 3, 0x98, 0x00, 0x98);
   }
+  
   snprintf(tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FRAGS]
           , game_score[p->id].nb_frags);
   font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+3,FONT_SMALL);
@@ -585,6 +587,7 @@ void player_show_stats(player_t* p,game_mode_t gm){
   snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_DEATH]
           , game_score[p->id].nb_death);
   font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+21,FONT_SMALL);
+  
   switch(gm){
     case GAME_DEATHMATCH_MODE:
       snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
@@ -610,7 +613,7 @@ void player_show_stats(player_t* p,game_mode_t gm){
       break;
     case GAME_CAPTURE_FLAG_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
-        team_id tid = player_get_team_id(p->id);
+        team_id tid = player_get_team_id(p->id);//FIXME if 2 players only, must return P2, not P3 ! -> COREDUMP
         int32_t team_flags = wiiero_get_teams_flags()[tid];
         snprintf( tmp_string,127,"     TEAM %d %s: %d",tid +1, wiiero_label[WIIERO_LANG_FLAGS]
                 , team_flags);
@@ -618,6 +621,7 @@ void player_show_stats(player_t* p,game_mode_t gm){
                               , 3*camera->h/10+50, FONT_SMALL);
       }
   }
+  
 }
 
 void player_look_up(player_t* p){
@@ -997,7 +1001,7 @@ void player_change_rope_len(player_t* p,int len_modif){
 void player_remove_hook(player_t* p,player_t** other_p){
   /* Remove Hook */
   ASSERT(p->ninja_hook->last_bullet)
-  ninja_hook_disconnect(p->ninja_hook->last_bullet,other_p,NB_PLAYERS,0l);//FIXME use nb player from game struct instead of NB_PLAYERS
+  ninja_hook_disconnect(p->ninja_hook->last_bullet,other_p,0l,0l);
   p->ninja_hook->last_bullet->obj.remove_flag = 1;
   p->ninja_hook->last_bullet=0l;
 }

@@ -126,6 +126,7 @@ typedef enum{
 
 typedef struct{
   int            wiiero_frame_delay;
+  Uint8          wiiero_nb_wanted_players;
   /* options */
   Uint32         wiiero_magic_number;
   game_mode_t    wiiero_opt_game_mode;

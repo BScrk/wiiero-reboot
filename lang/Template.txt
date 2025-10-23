@@ -28,6 +28,7 @@
   Match already started. use [return ...]
   No match started. use [play wiiero]
   Restart the game for apply the new resolution.
+  Restart the game for apply the player number.
   press any key...
   Pause
   Suicide...
