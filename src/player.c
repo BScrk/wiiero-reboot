@@ -55,8 +55,8 @@ enum{
 
 extern int bullet_time_effect_delay;
 extern player_score_t game_score[NB_PLAYERS];
-extern int32_t* wiiero_get_teams_time();
-extern int32_t* wiiero_get_teams_flags();
+extern int32_t* wiiero_get_teams_time(Uint8 nb_players);
+extern int32_t* wiiero_get_teams_flags(Uint8 nb_players);
 
 
 extern Uint8 transparent_r_value;
@@ -539,7 +539,7 @@ void player_show_gunfire_on_cam(player_t* p,camera_t* camera,int looking_height)
 
 
 
-void player_show_stats(player_t* p,game_mode_t gm){
+void player_show_stats(player_t* p,game_mode_t gm, Uint8 nb_players){
   ASSERT(p)
   
   camera_t* camera = p->worms_stats_camera;
@@ -598,7 +598,7 @@ void player_show_stats(player_t* p,game_mode_t gm){
       break;
     case GAME_OF_TAG_TEAM_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
-        int32_t team_time = wiiero_get_teams_time()[p->tid];
+        int32_t team_time = wiiero_get_teams_time(nb_players)[p->tid];
         snprintf(tmp_string,127, "     TEAM %d %s: %02dm%02ds", p->tid + 1,  wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
         font_print_strict_pos( camera, tmp_string
                               , 1*step
@@ -613,7 +613,7 @@ void player_show_stats(player_t* p,game_mode_t gm){
       break;
     case GAME_CAPTURE_FLAG_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
-        int32_t team_flags = wiiero_get_teams_flags()[p->tid];
+        int32_t team_flags = wiiero_get_teams_flags(nb_players)[p->tid];
         snprintf( tmp_string,127,"     TEAM %d %s: %d",p->tid +1, wiiero_label[WIIERO_LANG_FLAGS]
                 , team_flags);
         font_print_strict_pos(camera, tmp_string, 1*step

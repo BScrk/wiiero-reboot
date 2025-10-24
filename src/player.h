@@ -202,7 +202,7 @@ void player_is_aiming(player_id pid , player_t** targets);
 
 void player_change(player_t* p,int indice);
 void player_fire(player_t* p);
-void player_show_stats(player_t* p,game_mode_t gm);
+void player_show_stats(player_t* p,game_mode_t gm, Uint8 nb_players);
 
 void player_shot(player_t* p,player_id origin,Uint8 damage,int acc_x,int acc_y,void* userdata);
 void player_regen(player_t* p,Uint8 health);
