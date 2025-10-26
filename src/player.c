@@ -386,6 +386,265 @@ void player_is_aiming(player_id pid , player_t** targets){
   }
 }
 
+void get_edge_point_thales_int(
+    int cx, int cy,        // centre du rectangle (caméra)
+    int width, int height, // dimensions du rectangle
+    int dx, int dy,        // point destination
+    int *px, int *py       // sortie : point sur le bord
+)
+{
+    // Vecteur direction centre -> destination
+    int vx = dx - cx;
+    int vy = dy - cy;
+
+    // Si le point est au centre, on ne peut pas déterminer de direction
+    if (vx == 0 && vy == 0) {
+        *px = cx;
+        *py = cy;
+        return;
+    }
+
+    // Demi-dimensions du rectangle
+    int half_w = width  / 2;
+    int half_h = height / 2;
+
+    /*
+     * On veut trouver un facteur k tel que :
+     *    cx + vx * k / denom = bord_x
+     *    cy + vy * k / denom = bord_y
+     *
+     * Pour éviter les flottants, on va raisonner en numérateurs :
+     *    kx_num / kx_den = rapport pour atteindre bord vertical
+     *    ky_num / ky_den = rapport pour atteindre bord horizontal
+     *
+     * On choisit le plus petit rapport.
+     */
+
+    // Initialisation
+    long kx_num = 0, kx_den = 1;
+    long ky_num = 0, ky_den = 1;
+    int use_x = 0; // 1 = bord vertical atteint, 0 = horizontal
+
+    // Si vx ≠ 0 : calcul du rapport pour atteindre la limite horizontale
+    if (vx != 0) {
+        // kx = half_w / |vx|  → kx_num = half_w, kx_den = |vx|
+        kx_num = half_w;
+        kx_den = abs(vx);
+    }
+
+    // Si vy ≠ 0 : calcul du rapport pour atteindre la limite verticale
+    if (vy != 0) {
+        // ky = half_h / |vy|  → ky_num = half_h, ky_den = |vy|
+        ky_num = half_h;
+        ky_den = abs(vy);
+    }
+
+    // Comparaison des rapports kx_num/kx_den et ky_num/ky_den sans division
+    // On compare les produits croisés : a/b < c/d ↔ a*d < c*b
+    if (vy == 0) {
+        use_x = 1; // direction purement horizontale
+    } else if (vx == 0) {
+        use_x = 0; // direction purement verticale
+    } else if ((long)kx_num * ky_den < (long)ky_num * kx_den) {
+        use_x = 1; // touche d'abord un bord vertical
+    } else {
+        use_x = 0; // touche d'abord un bord horizontal
+    }
+
+    // Calcul du point selon le bord atteint
+    if (use_x) {
+        // Bord vertical atteint
+        // px = cx ± half_w selon le signe de vx
+        *px = (vx > 0) ? (cx + half_w) : (cx - half_w);
+
+        // On applique Thalès pour y :
+        // vy / vx = (py - cy) / (px - cx)
+        // → py = cy + vy * (px - cx) / vx
+        *py = cy + (long)vy * (*px - cx) / vx;
+    } else {
+        // Bord horizontal atteint
+        *py = (vy > 0) ? (cy + half_h) : (cy - half_h);
+        // vx / vy = (px - cx) / (py - cy)
+        *px = cx + (long)vx * (*py - cy) / vy;
+    }
+}
+
+
+static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
+/*
+    int cx, int cy,        // centre du rectangle (caméra)
+    int width, int height, // dimensions du rectangle
+    int dx, int dy,        // point destination
+    int *px, int *py       // sortie : point sur le bord
+)*/
+  int cx = p->worms.pos_x;// - c->map_x;// + (c->w / 2);
+  int cy = p->worms.pos_y;// - c->map_y;// ; (c->h / 2);
+
+  // Vecteur direction centre -> destination
+  int vx = o->worms.pos_x - cx;
+  int vy = o->worms.pos_y - cy;
+
+  // Si le point est au centre, on ne peut pas déterminer de direction
+  /*if (vx == 0 && vy == 0) {
+   *px = cx;
+   *py = cy;
+    return;
+  }*/
+
+  // Demi-dimensions du rectangle
+  int half_w = c->w / 2;
+  int half_h = c->h / 2;
+
+  /*
+    * On veut trouver un facteur k tel que :
+    *    cx + vx * k / denom = bord_x
+    *    cy + vy * k / denom = bord_y
+    *
+    * Pour éviter les flottants, on va raisonner en numérateurs :
+    *    kx_num / kx_den = rapport pour atteindre bord vertical
+    *    ky_num / ky_den = rapport pour atteindre bord horizontal
+    *
+    * On choisit le plus petit rapport.
+    */
+
+  // Initialisation
+  long kx_num = 0, kx_den = 1;
+  long ky_num = 0, ky_den = 1;
+  int use_x = 0; // 1 = bord vertical atteint, 0 = horizontal
+
+  // Si vx ≠ 0 : calcul du rapport pour atteindre la limite horizontale
+  if (vx != 0) {
+    // kx = half_w / |vx|  → kx_num = half_w, kx_den = |vx|
+    kx_num = half_w;
+    kx_den = abs(vx);
+  }
+
+  // Si vy ≠ 0 : calcul du rapport pour atteindre la limite verticale
+  if (vy != 0) {
+    // ky = half_h / |vy|  → ky_num = half_h, ky_den = |vy|
+    ky_num = half_h;
+    ky_den = abs(vy);
+  }
+
+  // Comparaison des rapports kx_num/kx_den et ky_num/ky_den sans division
+  // On compare les produits croisés : a/b < c/d ↔ a*d < c*b
+  if (vy == 0) {
+      use_x = 1; // direction purement horizontale
+  } else if (vx == 0) {
+      use_x = 0; // direction purement verticale
+  } else if ((long)kx_num * ky_den < (long)ky_num * kx_den) {
+      use_x = 1; // touche d'abord un bord vertical
+  } else {
+      use_x = 0; // touche d'abord un bord horizontal
+  }
+
+  int x_offset = 0, y_offset = 0;
+  if(p->worms.pos_x > (c->map_x + (c->w / 2))){
+    x_offset = c->map_x + c->w/2 - p->worms.pos_x;
+  }else if(p->worms.pos_x < ((c->w / 2))){
+    x_offset = c->w / 2 - p->worms.pos_x  ;
+  }
+  if(p->worms.pos_y > (c->map_y + (c->h / 2))){
+    y_offset = c->map_y + c->h/2 - p->worms.pos_y;
+  }else if(p->worms.pos_y < ((c->h / 2))){
+    y_offset = c->h / 2 - p->worms.pos_y;
+  }
+
+  // Calcul du point selon le bord atteint
+  if (use_x) {
+    // Bord vertical atteint
+    // px = cx ± half_w selon le signe de vx
+    p->other_worm_dir_x[o->id] = (vx > 0) ? (cx + half_w) : (cx - half_w);
+    // On applique Thalès pour y :
+    // vy / vx = (py - cy) / (px - cx)
+    // → py = cy + vy * (px - cx) / vx
+    if(vx==0) vx=1; //safety
+    p->other_worm_dir_y[o->id] = cy + (long)vy * (p->other_worm_dir_x[o->id] - cx) / vx;
+  } else {
+    // Bord horizontal atteint
+    p->other_worm_dir_y[o->id] = (vy > 0) ? (cy + half_h) : (cy - half_h);
+    // vx / vy = (px - cx) / (py - cy)
+    if(vy==0) vy=1; //safety
+    p->other_worm_dir_x[o->id] = cx + (long)vx * (p->other_worm_dir_y[o->id] - cy) / vy;
+  }
+
+  //p->other_worm_dir_x[o->id] += x_offset;
+  //p->other_worm_dir_y[o->id] += y_offset;
+
+  if(p->id == PLAYER_2)
+  fprintf(stdout
+    ,"WORM %d DIR %d,%d CAMX=%d CAMY=%d POSX=%d POSY=%d OFFSETX=%d Y=%d\n"
+    ,p->id
+    ,p->other_worm_dir_x[o->id]
+    ,p->other_worm_dir_y[o->id]
+    ,c->map_x
+    ,c->map_y
+    ,p->worms.pos_x
+    ,p->worms.pos_y
+    ,x_offset
+    ,y_offset
+  );
+}
+
+void player_get_all_direction(camera_t * c, player_id pid , player_t** targets, Uint8 player_nb){
+  for(int i=0;i<player_nb;i++){//FIXME use nb player from game struct instead of test targets[i]
+    if(i!=pid){
+      if(targets[i] != 0L)
+        player_get_direction(c,  targets[pid] , targets[i]);
+    }
+  }
+}
+
+void player_show_dir_on_cam(player_t* p,camera_t* c){
+  /* OTHER WORMS */
+  for(Uint8 i = PLAYER_1; i < PLAYER_3; i++){//FIXME manage worms number ! !
+    if(i == p->id){
+      continue;
+    }else{
+      Uint8 r,g,b;
+      if(i == PLAYER_1){
+        r=0;g=0;b=255;
+      }else{
+        r=0;g=255;b=0;
+      }
+      int x,y;
+      x = p->other_worm_dir_x[i] - c->map_x;
+      y = p->other_worm_dir_y[i] - c->map_y;
+
+      camera_put_pix_color(c,x-2,y-2,r,g,b);
+      camera_put_pix_color(c,x-2,y-1,r,g,b);
+      camera_put_pix_color(c,x-2,y  ,r,g,b);
+      camera_put_pix_color(c,x-2,y+1,r,g,b);
+      camera_put_pix_color(c,x-2,y+2,r,g,b);
+
+      camera_put_pix_color(c,x-1,y-2,r,g,b);
+      camera_put_pix_color(c,x-1,y-1,r,g,b);
+      camera_put_pix_color(c,x-1,y  ,r,g,b);
+      camera_put_pix_color(c,x-1,y+1,r,g,b);
+      camera_put_pix_color(c,x-1,y+2,r,g,b);
+
+      camera_put_pix_color(c,x  ,y  ,r,g,b);
+      camera_put_pix_color(c,x  ,y-2,r,g,b);
+      camera_put_pix_color(c,x  ,y-1,r,g,b);
+      camera_put_pix_color(c,x  ,y+1,r,g,b);
+      camera_put_pix_color(c,x  ,y+2,r,g,b);
+
+      camera_put_pix_color(c,x+1,y-2,r,g,b);
+      camera_put_pix_color(c,x+1,y-1,r,g,b);
+      camera_put_pix_color(c,x+1,y  ,r,g,b);
+      camera_put_pix_color(c,x+1,y+1,r,g,b);
+      camera_put_pix_color(c,x+1,y+2,r,g,b);
+
+      camera_put_pix_color(c,x+2,y-2,r,g,b);
+      camera_put_pix_color(c,x+2,y-1,r,g,b);
+      camera_put_pix_color(c,x+2,y  ,r,g,b);
+      camera_put_pix_color(c,x+2,y+1,r,g,b);
+      camera_put_pix_color(c,x+2,y+2,r,g,b);
+
+    }
+  }
+}
+
 void player_show(player_t* p,int warding_flag){
   ASSERT(p);
   player_show_on_cam(p,p->worms_camera,warding_flag);
@@ -463,7 +722,6 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
 
     }
   }
-
 
   if(p->worms_status & STATUS_FIREING)
     player_show_gunfire_on_cam(p,camera,looking_height);
@@ -1009,26 +1267,24 @@ void player_debug_actions(player_t* p){
   ASSERT(p);
   /* debug player worms_action (show action masks names) */
   printf("Player %d Actions : ",p->id+1);
-  if(p->worms_action & ACTION_UP)          printf(" ACTION_UP ");
-  if(p->worms_action & ACTION_DOWN)        printf(" ACTION_DOWN ");
-  if(p->worms_action & ACTION_LEFT)        printf(" ACTION_LEFT ");
-  if(p->worms_action & ACTION_RIGHT)       printf(" ACTION_RIGHT ");
-  if(p->worms_action & ACTION_JUMP)        printf(" ACTION_JUMP ");
-  if(p->worms_action & ACTION_CHANGE)      printf(" ACTION_CHANGE ");
-  if(p->worms_action & ACTION_FIRE)        printf(" ACTION_FIRE ");
-  if(p->worms_action & ACTION_HOOK)        printf(" ACTION_HOOK ");
-  if(p->worms_action & ACTION_CROP)        printf(" ACTION_CROP ");
-  if(p->worms_action & ACTION_L_ACT)       printf(" ACTION_L_ACT ");
-  if(p->worms_action & ACTION_R_ACT)       printf(" ACTION_R_ACT ");
-  if(p->worms_action & ACTION_PAUSE)       printf(" ACTION_PAUSE ");
-  if(p->worms_action & ACTION_MENU)        printf(" ACTION_MENU ");
-  if(p->worms_action & ACTION_OK)          printf(" ACTION_OK ");
-  if(p->worms_action & ACTION_CANCEL)      printf(" ACTION_CANCEL ");
+  if(p->worms_action & ACTION_UP)            printf(" ACTION_UP ");
+  if(p->worms_action & ACTION_DOWN)          printf(" ACTION_DOWN ");
+  if(p->worms_action & ACTION_LEFT)          printf(" ACTION_LEFT ");
+  if(p->worms_action & ACTION_RIGHT)         printf(" ACTION_RIGHT ");
+  if(p->worms_action & ACTION_JUMP)          printf(" ACTION_JUMP ");
+  if(p->worms_action & ACTION_CHANGE)        printf(" ACTION_CHANGE ");
+  if(p->worms_action & ACTION_FIRE)          printf(" ACTION_FIRE ");
+  if(p->worms_action & ACTION_HOOK)          printf(" ACTION_HOOK ");
+  if(p->worms_action & ACTION_CROP)          printf(" ACTION_CROP ");
+  if(p->worms_action & ACTION_L_ACT)         printf(" ACTION_L_ACT ");
+  if(p->worms_action & ACTION_R_ACT)         printf(" ACTION_R_ACT ");
+  if(p->worms_action & ACTION_PAUSE)         printf(" ACTION_PAUSE ");
+  if(p->worms_action & ACTION_MENU)          printf(" ACTION_MENU ");
+  if(p->worms_action & ACTION_OK)            printf(" ACTION_OK ");
+  if(p->worms_action & ACTION_CANCEL)        printf(" ACTION_CANCEL ");
   if(p->worms_action & ACTION_FROM_KEYBOARD) printf(" ACTION_FROM_KEYBOARD ");
   printf("\n");
 }
-
-
 
 team_id player_get_team_id(player_id pid){
   return (pid == PLAYER_1 || pid == PLAYER_3) ? TEAM_1 : TEAM_2;

@@ -293,6 +293,11 @@ void wiiero_update_world(game_t *g)
     player_is_aiming(i, g->worms);
   }
 
+  DBG(" - UPDATE PLAYERS DIRECTION\n");
+  for(Uint8 i = PLAYER_1; i < g->wiiero_nb_players; i++){
+    player_get_all_direction(g->worms[i]->worms_camera,i, g->worms, g->wiiero_nb_players);
+  }
+
   if (g->wiiero_opt_gift_nb)
     if ((rand() % (2000 / g->wiiero_opt_gift_nb)) == 0)
     {
@@ -388,6 +393,11 @@ void wiiero_blit_world(game_t *g)
       player_show_on_cam(g->worms[pid], g->wiiero_cameras[cid], wiiero_player_warning(pid, g));
     }
   }
+  
+  for(player_id pid = PLAYER_1; pid < g->wiiero_nb_players; pid++){
+    player_show_dir_on_cam(g->worms[pid], g->worms[pid]->worms_camera);
+  }
+
   if (g->wiiero_game_status == GAME_PLAYING){
     DBG(" - BLIT BULLETS\n");
     blit_bullets(g->wiiero_bullets, g->wiiero_cameras,g->wiiero_nb_players);
