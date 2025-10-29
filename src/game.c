@@ -395,7 +395,7 @@ void wiiero_blit_world(game_t *g)
   }
   
   for(player_id pid = PLAYER_1; pid < g->wiiero_nb_players; pid++){
-    player_show_dir_on_cam(g->worms[pid], g->worms[pid]->worms_camera);
+    player_show_dir_on_cam(g->worms[pid], g->worms[pid]->worms_camera, g->wiiero_nb_players);
   }
 
   if (g->wiiero_game_status == GAME_PLAYING){

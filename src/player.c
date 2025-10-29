@@ -319,7 +319,9 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
                    :                    (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2);  /* second map part */
     get_pix_color(statics,p->worms.pos_x,p->worms.pos_y,&cr,&cg,&cb);
   }
-  
+  p->cr = cr;
+  p->cg = cg;
+  p->cb = cb;
   p->worms.acc_x = DEFAULT_PLAYER_XACC;
   p->worms.acc_y = DEFAULT_PLAYER_YACC;
   p->worms.resist = DEFAULT_PLAYER_RESIST;
@@ -386,190 +388,65 @@ void player_is_aiming(player_id pid , player_t** targets){
   }
 }
 
-void get_edge_point_thales_int(
-    int cx, int cy,        // centre du rectangle (caméra)
-    int width, int height, // dimensions du rectangle
-    int dx, int dy,        // point destination
-    int *px, int *py       // sortie : point sur le bord
-)
-{
-    // Vecteur direction centre -> destination
-    int vx = dx - cx;
-    int vy = dy - cy;
-
-    // Si le point est au centre, on ne peut pas déterminer de direction
-    if (vx == 0 && vy == 0) {
-        *px = cx;
-        *py = cy;
-        return;
-    }
-
-    // Demi-dimensions du rectangle
-    int half_w = width  / 2;
-    int half_h = height / 2;
-
-    /*
-     * On veut trouver un facteur k tel que :
-     *    cx + vx * k / denom = bord_x
-     *    cy + vy * k / denom = bord_y
-     *
-     * Pour éviter les flottants, on va raisonner en numérateurs :
-     *    kx_num / kx_den = rapport pour atteindre bord vertical
-     *    ky_num / ky_den = rapport pour atteindre bord horizontal
-     *
-     * On choisit le plus petit rapport.
-     */
-
-    // Initialisation
-    long kx_num = 0, kx_den = 1;
-    long ky_num = 0, ky_den = 1;
-    int use_x = 0; // 1 = bord vertical atteint, 0 = horizontal
-
-    // Si vx ≠ 0 : calcul du rapport pour atteindre la limite horizontale
-    if (vx != 0) {
-        // kx = half_w / |vx|  → kx_num = half_w, kx_den = |vx|
-        kx_num = half_w;
-        kx_den = abs(vx);
-    }
-
-    // Si vy ≠ 0 : calcul du rapport pour atteindre la limite verticale
-    if (vy != 0) {
-        // ky = half_h / |vy|  → ky_num = half_h, ky_den = |vy|
-        ky_num = half_h;
-        ky_den = abs(vy);
-    }
-
-    // Comparaison des rapports kx_num/kx_den et ky_num/ky_den sans division
-    // On compare les produits croisés : a/b < c/d ↔ a*d < c*b
-    if (vy == 0) {
-        use_x = 1; // direction purement horizontale
-    } else if (vx == 0) {
-        use_x = 0; // direction purement verticale
-    } else if ((long)kx_num * ky_den < (long)ky_num * kx_den) {
-        use_x = 1; // touche d'abord un bord vertical
-    } else {
-        use_x = 0; // touche d'abord un bord horizontal
-    }
-
-    // Calcul du point selon le bord atteint
-    if (use_x) {
-        // Bord vertical atteint
-        // px = cx ± half_w selon le signe de vx
-        *px = (vx > 0) ? (cx + half_w) : (cx - half_w);
-
-        // On applique Thalès pour y :
-        // vy / vx = (py - cy) / (px - cx)
-        // → py = cy + vy * (px - cx) / vx
-        *py = cy + (long)vy * (*px - cx) / vx;
-    } else {
-        // Bord horizontal atteint
-        *py = (vy > 0) ? (cy + half_h) : (cy - half_h);
-        // vx / vy = (px - cx) / (py - cy)
-        *px = cx + (long)vx * (*py - cy) / vy;
-    }
-}
-
-
-static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
 /*
-    int cx, int cy,        // centre du rectangle (caméra)
-    int width, int height, // dimensions du rectangle
-    int dx, int dy,        // point destination
-    int *px, int *py       // sortie : point sur le bord
-)*/
-  int cx = p->worms.pos_x;// - c->map_x;// + (c->w / 2);
-  int cy = p->worms.pos_y;// - c->map_y;// ; (c->h / 2);
+J'ai 2 structures permettant d'acceder à la position en 2 dimensions des joueurs telles que
+  o->worms.pos_x // position x du joueur "other"
+  p->worms.pos_x // position x du joueur actif
+De meme pour les positions en y (pos_y)  
+J'ai la position (coin haut gauche) et taille d'une caméra c telles que
+  c->w // largeur
+  c->h // hauteur
+  c->pos_x // x 
+  c->pos_y // y
+La caméra ne peut sortir de la map dont la taille est MAP_WIDTH par MAP_HEIGHT
+La caméra est centrée sur le joueur quand c'est possible
+Je souhaiterai connaitre la position du point situé au bord de la caméra donnant la direction du joueur o 
+*/
+// Calcule le point sur le bord de la caméra indiquant la direction du personnage 2
+// La position (cam_x, cam_y) correspond au coin haut gauche de la caméra
+static __inline__ void player_get_direction2(camera_t* c, player_t* p, player_t * o){
+  int vx = o->worms.pos_x - p->worms.pos_x;
+  int vy = o->worms.pos_y - p->worms.pos_y;
 
-  // Vecteur direction centre -> destination
-  int vx = o->worms.pos_x - cx;
-  int vy = o->worms.pos_y - cy;
+  // 6. On veut savoir quel bord est atteint en premier
+  int abs_vx = vx < 0 ? -vx : vx;
+  int abs_vy = vy < 0 ? -vy : vy;
 
-  // Si le point est au centre, on ne peut pas déterminer de direction
-  /*if (vx == 0 && vy == 0) {
-   *px = cx;
-   *py = cy;
-    return;
-  }*/
+  int use_x;
+  // On compare les rapports relatifs sans division (Thalès)
+  // -> rel_p1_x / abs_vx vs rel_p1_y / abs_vy
+  // mais on doit ajuster selon la direction du vecteur
+  int dist_x = (vx > 0) ? (c->w - p->worms.pos_x) : p->worms.pos_x;
+  int dist_y = (vy > 0) ? (c->h - p->worms.pos_y) : p->worms.pos_y;
 
-  // Demi-dimensions du rectangle
-  int half_w = c->w / 2;
-  int half_h = c->h / 2;
+    if (abs_vx == 0) use_x = 0;
+    else if (abs_vy == 0) use_x = 1;
+    else use_x = ((long)dist_x * abs_vy <= (long)dist_y * abs_vx);
 
-  /*
-    * On veut trouver un facteur k tel que :
-    *    cx + vx * k / denom = bord_x
-    *    cy + vy * k / denom = bord_y
-    *
-    * Pour éviter les flottants, on va raisonner en numérateurs :
-    *    kx_num / kx_den = rapport pour atteindre bord vertical
-    *    ky_num / ky_den = rapport pour atteindre bord horizontal
-    *
-    * On choisit le plus petit rapport.
-    */
+    int px, py;
 
-  // Initialisation
-  long kx_num = 0, kx_den = 1;
-  long ky_num = 0, ky_den = 1;
-  int use_x = 0; // 1 = bord vertical atteint, 0 = horizontal
+    if (use_x) {
+        // On touche un bord vertical
+        if (vx > 0)
+            px = c->w;
+        else
+            px = 0;
+        if(vx == 0)vx = 1;
+        // Thalès : vy/vx = (py - rel_p1_y) / (px - rel_p1_x)
+        py = p->worms.pos_y + (long)(px - p->worms.pos_x) * vy / vx;
+    } else {
+        // On touche un bord horizontal
+        if (vy > 0)
+            py = c->h;
+        else
+            py = 0;
+        if(vy == 0)vy = 1;
+        // vx/vy = (px - rel_p1_x) / (py - rel_p1_y)
+        px = p->worms.pos_x + (long)(py - p->worms.pos_y) * vx / vy;
+    }
 
-  // Si vx ≠ 0 : calcul du rapport pour atteindre la limite horizontale
-  if (vx != 0) {
-    // kx = half_w / |vx|  → kx_num = half_w, kx_den = |vx|
-    kx_num = half_w;
-    kx_den = abs(vx);
-  }
-
-  // Si vy ≠ 0 : calcul du rapport pour atteindre la limite verticale
-  if (vy != 0) {
-    // ky = half_h / |vy|  → ky_num = half_h, ky_den = |vy|
-    ky_num = half_h;
-    ky_den = abs(vy);
-  }
-
-  // Comparaison des rapports kx_num/kx_den et ky_num/ky_den sans division
-  // On compare les produits croisés : a/b < c/d ↔ a*d < c*b
-  if (vy == 0) {
-      use_x = 1; // direction purement horizontale
-  } else if (vx == 0) {
-      use_x = 0; // direction purement verticale
-  } else if ((long)kx_num * ky_den < (long)ky_num * kx_den) {
-      use_x = 1; // touche d'abord un bord vertical
-  } else {
-      use_x = 0; // touche d'abord un bord horizontal
-  }
-
-  int x_offset = 0, y_offset = 0;
-  if(p->worms.pos_x > (c->map_x + (c->w / 2))){
-    x_offset = c->map_x + c->w/2 - p->worms.pos_x;
-  }else if(p->worms.pos_x < ((c->w / 2))){
-    x_offset = c->w / 2 - p->worms.pos_x  ;
-  }
-  if(p->worms.pos_y > (c->map_y + (c->h / 2))){
-    y_offset = c->map_y + c->h/2 - p->worms.pos_y;
-  }else if(p->worms.pos_y < ((c->h / 2))){
-    y_offset = c->h / 2 - p->worms.pos_y;
-  }
-
-  // Calcul du point selon le bord atteint
-  if (use_x) {
-    // Bord vertical atteint
-    // px = cx ± half_w selon le signe de vx
-    p->other_worm_dir_x[o->id] = (vx > 0) ? (cx + half_w) : (cx - half_w);
-    // On applique Thalès pour y :
-    // vy / vx = (py - cy) / (px - cx)
-    // → py = cy + vy * (px - cx) / vx
-    if(vx==0) vx=1; //safety
-    p->other_worm_dir_y[o->id] = cy + (long)vy * (p->other_worm_dir_x[o->id] - cx) / vx;
-  } else {
-    // Bord horizontal atteint
-    p->other_worm_dir_y[o->id] = (vy > 0) ? (cy + half_h) : (cy - half_h);
-    // vx / vy = (px - cx) / (py - cy)
-    if(vy==0) vy=1; //safety
-    p->other_worm_dir_x[o->id] = cx + (long)vx * (p->other_worm_dir_y[o->id] - cy) / vy;
-  }
-
-  //p->other_worm_dir_x[o->id] += x_offset;
-  //p->other_worm_dir_y[o->id] += y_offset;
+    px += c->map_x;
+    py += c->map_y;
 
   if(p->id == PLAYER_2)
   fprintf(stdout
@@ -581,9 +458,89 @@ static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t *
     ,c->map_y
     ,p->worms.pos_x
     ,p->worms.pos_y
-    ,x_offset
-    ,y_offset
-  );
+    ,-1
+    ,-1
+  );    
+
+    p->other_worm_dir_x[o->id] = px;
+    p->other_worm_dir_y[o->id] = py;
+}
+
+
+#include <limits.h>
+static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
+
+// Calculer le vecteur direction de p vers o
+int dx = o->worms.pos_x - p->worms.pos_x;
+int dy = o->worms.pos_y - p->worms.pos_y;
+
+// Calculer le centre de la caméra
+int cam_center_x = c->map_x + c->w / 2;
+int cam_center_y = c->map_y + c->h / 2;
+
+// Trouver l'intersection avec les bords de la caméra
+int border_x, border_y;
+
+// Distances aux bords
+int dist_to_left = cam_center_x - c->map_x;
+int dist_to_right = c->map_x + c->w - cam_center_x;
+int dist_to_top = cam_center_y - c->map_y;
+int dist_to_bottom = c->map_y + c->h - cam_center_y;
+
+// Calculer les ratios t pour chaque bord (en évitant la division par zéro)
+// On utilise des multiplications croisées pour éviter les divisions
+long long t_x_num, t_x_den, t_y_num, t_y_den;
+
+if (dx > 0) {
+    t_x_num = dist_to_right;
+    t_x_den = dx;
+} else if (dx < 0) {
+    t_x_num = dist_to_left;
+    t_x_den = -dx;
+} else {
+    t_x_num = LLONG_MAX;
+    t_x_den = 1;
+}
+
+if (dy > 0) {
+    t_y_num = dist_to_bottom;
+    t_y_den = dy;
+} else if (dy < 0) {
+    t_y_num = dist_to_top;
+    t_y_den = -dy;
+} else {
+    t_y_num = LLONG_MAX;
+    t_y_den = 1;
+}
+
+// Comparer t_x et t_y par multiplication croisée (t_x < t_y ?)
+if (t_x_num * t_y_den < t_y_num * t_x_den) {
+    // Utiliser t_x (bord gauche ou droit)
+    if (dx > 0) {
+        border_x = c->map_x + c->w;
+        border_y = cam_center_y + (dy * dist_to_right) / dx;
+    } else if (dx < 0){
+        border_x = c->map_x;
+        border_y = cam_center_y - (dy * dist_to_left) / (-dx);
+    }else{
+      border_x = p->other_worm_dir_x[o->id];
+      border_y = p->other_worm_dir_y[o->id];
+    }
+} else {
+    // Utiliser t_y (bord haut ou bas)
+    if (dy > 0) {
+        border_y = c->map_y + c->h;
+        border_x = cam_center_x + (dx * dist_to_bottom) / dy;
+    } else if (dy < 0){
+        border_y = c->map_y;
+        border_x = cam_center_x - (dx * dist_to_top) / (-dy);
+    }else{
+      border_x = p->other_worm_dir_x[o->id];
+      border_y = p->other_worm_dir_y[o->id];       
+    }
+}
+    p->other_worm_dir_x[o->id] = border_x;
+    p->other_worm_dir_y[o->id] = border_y;
 }
 
 void player_get_all_direction(camera_t * c, player_id pid , player_t** targets, Uint8 player_nb){
@@ -595,9 +552,9 @@ void player_get_all_direction(camera_t * c, player_id pid , player_t** targets, 
   }
 }
 
-void player_show_dir_on_cam(player_t* p,camera_t* c){
+void player_show_dir_on_cam(player_t* p,camera_t* c, Uint8 nb_players){
   /* OTHER WORMS */
-  for(Uint8 i = PLAYER_1; i < PLAYER_3; i++){//FIXME manage worms number ! !
+  for(Uint8 i = PLAYER_1; i < nb_players; i++){
     if(i == p->id){
       continue;
     }else{

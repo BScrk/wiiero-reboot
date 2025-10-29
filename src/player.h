@@ -157,6 +157,9 @@ typedef struct player_s{
   ressources_t*  r;
   Uint16         worms_rope_len;
   struct player_s * tricked_worm;
+  Uint8          cr;
+  Uint8          cg;
+  Uint8          cb;
 }player_t;
 
 typedef struct{
@@ -194,7 +197,7 @@ void player_remove_hook(player_t* p,player_t** other_players);
 //void player_event_update(player_t* p,map_t* m,player_t** other_pls);
 void player_update( player_t* p,SDL_Surface* ground, SDL_Surface* statics);
 
-void player_show_dir_on_cam(player_t* p,camera_t* c);
+void player_show_dir_on_cam(player_t* p,camera_t* c, Uint8 nb_players);
 void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag);
 void player_look_up(player_t* p);
 void player_look_down(player_t* p);
