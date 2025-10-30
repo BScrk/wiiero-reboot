@@ -344,7 +344,6 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
       break;
   }
 
-  fprintf(stdout,"%d -> R %d G %d B %d\r\n", id, cr, cg,cb);
   p->worms.acc_x = DEFAULT_PLAYER_XACC;
   p->worms.acc_y = DEFAULT_PLAYER_YACC;
   p->worms.resist = DEFAULT_PLAYER_RESIST;
@@ -412,78 +411,96 @@ void player_is_aiming(player_id pid , player_t** targets){
 }
 
 static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
+  // Calculer le vecteur direction de p vers o
+  int dx = o->worms.pos_x - p->worms.pos_x;
+  int dy = o->worms.pos_y - p->worms.pos_y;
 
-// Calculer le vecteur direction de p vers o
-int dx = o->worms.pos_x - p->worms.pos_x;
-int dy = o->worms.pos_y - p->worms.pos_y;
+  // Calculer le centre de la caméra
+  //int cam_center_x = c->map_x + c->w / 2;
+  //int cam_center_y = c->map_y + c->h / 2;
 
-// Calculer le centre de la caméra
-int cam_center_x = c->map_x + c->w / 2;
-int cam_center_y = c->map_y + c->h / 2;
+  // Trouver l'intersection avec les bords de la caméra
+  int border_x, border_y;
 
-// Trouver l'intersection avec les bords de la caméra
-int border_x, border_y;
+  // Distances aux bords
+  /*int dist_to_left = cam_center_x - c->map_x;
+  int dist_to_right = c->map_x + c->w - cam_center_x;
+  int dist_to_top = cam_center_y - c->map_y;
+  int dist_to_bottom = c->map_y + c->h - cam_center_y;*/
+  /*int dist_to_left = cam_center_x - p->worms.pos_x;
+  int dist_to_right = p->worms.pos_x + c->w - cam_center_x;
+  int dist_to_top = cam_center_y - p->worms.pos_y;
+  int dist_to_bottom = p->worms.pos_y + c->h - cam_center_y;*/
+  int dist_to_left   = p->worms.pos_x > c->map_x          ? p->worms.pos_x - c->map_x          : c->map_x - p->worms.pos_x;
+  int dist_to_right  = p->worms.pos_x > (c->map_x + c->w) ? p->worms.pos_x - (c->map_x + c->w) : (c->map_x + c->w) - p->worms.pos_x;
+  int dist_to_top    = p->worms.pos_y > c->map_y          ? p->worms.pos_y - c->map_y          : c->map_y - p->worms.pos_y;
+  int dist_to_bottom = p->worms.pos_y > (c->map_y + c->h) ? p->worms.pos_y - (c->map_y + c->h) : (c->map_y + c->h) - p->worms.pos_y;
 
-// Distances aux bords
-int dist_to_left = cam_center_x - c->map_x;
-int dist_to_right = c->map_x + c->w - cam_center_x;
-int dist_to_top = cam_center_y - c->map_y;
-int dist_to_bottom = c->map_y + c->h - cam_center_y;
+  printf("dLeft=%d dRight=%d dTop=%d dBottom=%d\r\n",
+    dist_to_left,
+    dist_to_right, 
+    dist_to_top,
+    dist_to_bottom
+  );
+  // Calculer les ratios t pour chaque bord (en évitant la division par zéro)
+  // On utilise des multiplications croisées pour éviter les divisions
+  long long t_x_num, t_x_den, t_y_num, t_y_den;
 
-// Calculer les ratios t pour chaque bord (en évitant la division par zéro)
-// On utilise des multiplications croisées pour éviter les divisions
-long long t_x_num, t_x_den, t_y_num, t_y_den;
-
-if (dx > 0) {
-  t_x_num = dist_to_right;
-  t_x_den = dx;
-} else if (dx < 0) {
-  t_x_num = dist_to_left;
-  t_x_den = -dx;
-} else {
-  t_x_num = LLONG_MAX;
-  t_x_den = 1;
-}
-
-if (dy > 0) {
-  t_y_num = dist_to_bottom;
-  t_y_den = dy;
-} else if (dy < 0) {
-  t_y_num = dist_to_top;
-  t_y_den = -dy;
-} else {
-  t_y_num = LLONG_MAX;
-  t_y_den = 1;
-}
-
-// Comparer t_x et t_y par multiplication croisée (t_x < t_y ?)
-if (t_x_num * t_y_den < t_y_num * t_x_den) {
-  // Utiliser t_x (bord gauche ou droit)
   if (dx > 0) {
+    t_x_num = dist_to_right;
+    t_x_den = dx;
+  } else if (dx < 0) {
+    t_x_num = dist_to_left;
+    t_x_den = -dx;
+  } else {
+    t_x_num = LLONG_MAX;
+    t_x_den = 1;
+  }
+
+  if (dy > 0) {
+    t_y_num = dist_to_bottom;
+    t_y_den = dy;
+  } else if (dy < 0) {
+    t_y_num = dist_to_top;
+    t_y_den = -dy;
+  } else {
+    t_y_num = LLONG_MAX;
+    t_y_den = 1;
+  }
+
+  // Comparer t_x et t_y par multiplication croisée (t_x < t_y ?)
+  if (t_x_num * t_y_den < t_y_num * t_x_den) {
+    // Utiliser t_x (bord gauche ou droit)
+    if (dx > 0) {
+      printf("RIGHT-> dx=%d dy=%d\r\n", dx, dy);
       border_x = c->map_x + c->w;
       //border_y = cam_center_y + (dy * dist_to_right) / dx;
       border_y = p->worms.pos_y + (dy * dist_to_right) / dx;
-    } else if (dx < 0){
+    } else if (dx < 0) {
+      printf("<-LEFT dx=%d dy=%d\r\n", dx, dy);
       border_x = c->map_x;
       //border_y = cam_center_y - (dy * dist_to_left) / (-dx);
-      border_y = p->worms.pos_y - (dy * dist_to_left) / (-dx);
+      border_y = p->worms.pos_y + (dy * dist_to_left) / (-dx);
     }else{
-      border_x = p->other_worm_dir_x[o->id];
-      border_y = p->other_worm_dir_y[o->id];
+      border_y = 0;
+      border_x = 0;
     }
   } else {
     // Utiliser t_y (bord haut ou bas)
     if (dy > 0) {
+      printf("BOTTOM dx=%d dy=%d\r\n", dx, dy);
       border_y = c->map_y + c->h;
       //border_x = cam_center_x + (dx * dist_to_bottom) / dy;
       border_x = p->worms.pos_x + (dx * dist_to_bottom) / dy;
-    } else if (dy < 0){
+    } else if (dy < 0) {
       border_y = c->map_y;
+      printf("TOP dx=%d dy=%d\r\n", dx, dy);
       //border_x = cam_center_x - (dx * dist_to_top) / (-dy);
-      border_x = p->worms.pos_x - (dx * dist_to_top) / (-dy);
+      //border_x = p->worms.pos_x - (dx * dist_to_top) / (-dy);
+      border_x =  p->worms.pos_x + (dx * dist_to_top) / (-dy);
     }else{
-      border_x = p->other_worm_dir_x[o->id];
-      border_y = p->other_worm_dir_y[o->id];       
+      border_y = 0;
+      border_x = 0;
     }
   }
   p->other_worm_dir_x[o->id] = border_x;
