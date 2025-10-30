@@ -164,61 +164,43 @@ void wiiero_init(game_t *g)
   font_progress_print(wiiero_label[WIIERO_LANG_GAME_LOAD], FONT_SMALL);
 } /*--------------------------------------------------------------------------*/
 void wiiero_update_player_nb(game_t *g){
-  switch(g->wiiero_nb_players){
-    case 2:{
-      g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                   , 0                       , SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 4 - 1, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 2 + 1, 0                       , SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 4 - 1, SCREEN_BPP);
+    int scr_pos[NB_PLAYERS][2]={
+      {0                   , 0                   },
+      {SCREEN_WIDTH / 2 + 1, 0                   },
+      {0                   , SCREEN_HEIGHT / 2 +1},
+      {SCREEN_WIDTH / 2 + 1, SCREEN_HEIGHT / 2 +1},
+    };
+    int stat_sz [NB_PLAYERS][2]={
+      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
+      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
+      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
+      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
+    };   
+    for(Uint8 i = 0 ,j = PLAYER_1_STATS_ZONE_CAM ,k = PLAYER_1_GAME_ZONE_CAM;
+       i < g->wiiero_nb_players ;
+       i++, j++, k++){
+      g->wiiero_cameras[j] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], stat_sz[i][0]        , stat_sz[i][1]        , SCREEN_BPP);
+      g->wiiero_cameras[k] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2 - 1 , SCREEN_HEIGHT / (g->wiiero_nb_players / 2) - 1, SCREEN_BPP);
+    }
+    g->wiiero_cameras[GLOBAL_MINI_MAP_CAM] = screen_add_custom_camera(g->wiiero_screen, (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_BPP);
 
-      g->wiiero_cameras[GLOBAL_MINI_MAP_CAM] = screen_add_custom_camera(g->wiiero_screen, (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_BPP);
+    HARD_DBG("%dx%d\n", (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32);
 
-      HARD_DBG("%dx%d\n", (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32);
+    font_console_print_debug("init ressources...\n", FONT_SMALL);
+    g->wiiero_ressources = load_ressource();
+    
+    font_console_print_debug("init map...\n", FONT_SMALL);
+    g->wiiero_map = map_init(g->wiiero_ressources, g->wiiero_opt_nb_rocks, g->wiiero_opt_screen_resolution);
 
-      g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                        , 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 40, SCREEN_HEIGHT / 4, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 40, SCREEN_HEIGHT / 4, SCREEN_BPP);
-
-      font_console_print_debug("init ressources...\n", FONT_SMALL);
-      g->wiiero_ressources = load_ressource();
-      
-      font_console_print_debug("init map...\n", FONT_SMALL);
-      g->wiiero_map = map_init(g->wiiero_ressources, g->wiiero_opt_nb_rocks, g->wiiero_opt_screen_resolution);
-
-      font_console_print_debug("init game...\n", FONT_SMALL);
-      g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_1);
-      g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_2);
-      map_drow_cave(g->wiiero_map, g->worms[PLAYER_1]->worms.pos_x, g->worms[PLAYER_1]->worms.pos_y, 20);
-      map_drow_cave(g->wiiero_map, g->worms[PLAYER_2]->worms.pos_x, g->worms[PLAYER_2]->worms.pos_y, 20);
-    }break;
-    default:{
-      g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                   , 0                       , SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 2 + 1, 0                       , SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                   , 3 * SCREEN_HEIGHT / 8 +1, SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 2 + 1, 3 * SCREEN_HEIGHT / 8 +1, SCREEN_WIDTH / 2 - 1, 3 * SCREEN_HEIGHT / 8 - 1, SCREEN_BPP);
-
-      g->wiiero_cameras[GLOBAL_MINI_MAP_CAM] = screen_add_custom_camera(g->wiiero_screen, (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_BPP);
-
-      HARD_DBG("%dx%d\n", (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32);
-
-      g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, 0                        , 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 20, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 60, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);
-      g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM] = screen_add_custom_camera(g->wiiero_screen, SCREEN_WIDTH / 100.0 * 80, 3 * SCREEN_HEIGHT / 4, SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4, SCREEN_BPP);      
-
-      font_console_print_debug("init ressources...\n", FONT_SMALL);
-      g->wiiero_ressources = load_ressource();
-      
-      font_console_print_debug("init map...\n", FONT_SMALL);
-      g->wiiero_map = map_init(g->wiiero_ressources, g->wiiero_opt_nb_rocks, g->wiiero_opt_screen_resolution);
-
-      font_console_print_debug("init game...\n", FONT_SMALL);
-      g->worms[PLAYER_1] = player_init(PLAYER_1, g->wiiero_cameras[PLAYER_1_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_1_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_1);
-      g->worms[PLAYER_2] = player_init(PLAYER_2, g->wiiero_cameras[PLAYER_2_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_2_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_1);
-      g->worms[PLAYER_3] = player_init(PLAYER_3, g->wiiero_cameras[PLAYER_3_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_3_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_2);
-      g->worms[PLAYER_4] = player_init(PLAYER_4, g->wiiero_cameras[PLAYER_4_GAME_ZONE_CAM], g->wiiero_cameras[PLAYER_4_STATS_ZONE_CAM], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap, TEAM_2);
-      map_drow_cave(g->wiiero_map, g->worms[PLAYER_1]->worms.pos_x, g->worms[PLAYER_1]->worms.pos_y, 20);
-      map_drow_cave(g->wiiero_map, g->worms[PLAYER_2]->worms.pos_x, g->worms[PLAYER_2]->worms.pos_y, 20);
-      map_drow_cave(g->wiiero_map, g->worms[PLAYER_3]->worms.pos_x, g->worms[PLAYER_3]->worms.pos_y, 20);
-      map_drow_cave(g->wiiero_map, g->worms[PLAYER_4]->worms.pos_x, g->worms[PLAYER_4]->worms.pos_y, 20);
-    }break;
+    font_console_print_debug("init game...\n", FONT_SMALL);  
+  for(Uint8 i = 0 , j = PLAYER_1_STATS_ZONE_CAM, k = PLAYER_1_GAME_ZONE_CAM;
+     i < g->wiiero_nb_players ;
+     i++, j++, k++){
+    g->worms[i] = player_init(i, g->wiiero_cameras[k], g->wiiero_cameras[j], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap
+      , (g->wiiero_nb_players == 2) ? ( i == 0 ? TEAM_1 : TEAM_2 ): (i <= 2 ? TEAM_1 : TEAM_2) );
+  }
+  for(Uint8 i = 0 ; i < g->wiiero_nb_players ; i++){
+    map_drow_cave(g->wiiero_map, g->worms[PLAYER_4]->worms.pos_x, g->worms[PLAYER_4]->worms.pos_y, 20);
   }
 } /*--------------------------------------------------------------------------*/
 void wiiero_load(game_t *g)
@@ -427,8 +409,10 @@ void wiiero_blit_world(game_t *g)
                     );
     }
   }
+  /*
   for(p = PLAYER_1; p < g->wiiero_nb_players; p++)
     player_show_stats(g->worms[p], g->wiiero_opt_game_mode,g->wiiero_nb_players);
+  */
 
 } /*--------------------------------------------------------------------------*/
 
@@ -1213,25 +1197,25 @@ static __inline__ void wiiero_option(game_t *g)
   int i = 0;
   static int selected_option_entry = OPTION_MODE;
   option_enty_t wiiero_option[OPTION_MAX] = {
-      {OPTION_MODE, wiiero_label[WIIERO_LANG_OPT_MENU_GMODE], &(g->wiiero_opt_game_mode), option_format_gamemode_cb, option_laction_gmode_cb, option_raction_gmode_cb, option_change_gmode_cb},
-      {OPTION_LIVES, wiiero_label[WIIERO_LANG_OPT_MENU_LIVES], &(g->wiiero_opt_nb_lifes), option_format_bigvalue_cb, option_laction_bigvalue_cb, option_raction_bigvalue_cb, 0L},
-      {OPTION_FLAGS, wiiero_label[WIIERO_LANG_OPT_MENU_FLAGS], &(g->wiiero_opt_nb_flags), option_format_bigvalue_cb, option_laction_bigvalue_cb, option_raction_bigvalue_cb, 0L},
-      {OPTION_TIME, wiiero_label[WIIERO_LANG_OPT_MENU_COUNT], &(g->wiiero_opt_got_time), option_format_time_cb, option_laction_time_cb, option_raction_time_cb, 0L},
-      {OPTION_RELOAD, wiiero_label[WIIERO_LANG_OPT_MENU_RLTIM], &(g->wiiero_opt_loading_time), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, 0L},
-      {OPTION_NB_BONUS, wiiero_label[WIIERO_LANG_OPT_MENU_BONUS], &(g->wiiero_opt_gift_nb), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, 0L},
-      {OPTION_BONUS_NM, wiiero_label[WIIERO_LANG_OPT_MENU_BNAME], &(g->wiiero_opt_bonus_name), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
-      {OPTION_RESOLUTION, wiiero_label[WIIERO_LANG_OPT_MENU_RESOL], &(g->wiiero_opt_screen_resolution), option_format_resol_cb, option_laction_res_cb, option_raction_res_cb, option_change_res_cb},
-      {OPTION_LEV_REG, wiiero_label[WIIERO_LANG_OPT_MENU_REGEN], &(g->wiiero_opt_map_regen), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
-      {OPTION_LEV_ROCKS, wiiero_label[WIIERO_LANG_OPT_MENU_ROCKS], &(g->wiiero_opt_nb_rocks), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, option_regen_new_map},
-      {OPTION_LEV_AMBI, wiiero_label[WIIERO_LANG_OPT_MENU_AMBIE], &selected_amb, option_format_ambi_value_cb, option_laction_ambi_value_cb, option_raction_ambi_value_cb, option_regen_new_map},
-      {OPTION_SHADOWS, wiiero_label[WIIERO_LANG_OPT_MENU_SHADO], &(g->wiiero_opt_shadow), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
-      {OPTION_PLAYER_NB, wiiero_label[WIIERO_LANG_OPT_MENU_PL_NB], &(g->wiiero_nb_wanted_players), option_format_value_cb, option_laction_nb_player_cb, option_raction_nb_player_cb, option_change_nb_player},
-      {OPTION_P1_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P1NAM], game_nicknames[PLAYER_1], option_format_string_cb, 0L, 0L, option_change_p1_name_cb},
-      {OPTION_P2_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P2NAM], game_nicknames[PLAYER_2], option_format_string_cb, 0L, 0L, option_change_p2_name_cb},
-      {OPTION_P3_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P3NAM], game_nicknames[PLAYER_3], option_format_string_cb, 0L, 0L, option_change_p3_name_cb},
-      {OPTION_P4_NAME, wiiero_label[WIIERO_LANG_OPT_MENU_P4NAM], game_nicknames[PLAYER_4], option_format_string_cb, 0L, 0L, option_change_p4_name_cb},
-      {OPTION_BIS_MENU, wiiero_label[WIIERO_LANG_OPT_MENU_NEXT], 0L, 0L, 0L, 0L, option_menu_bis_cb},
-      {OPTION_RETURN, wiiero_label[WIIERO_LANG_OPT_MENU_RETUR], 0L, 0L, 0L, 0L, option_return_cb}};
+      {OPTION_MODE       , wiiero_label[WIIERO_LANG_OPT_MENU_GMODE], &(g->wiiero_opt_game_mode), option_format_gamemode_cb, option_laction_gmode_cb, option_raction_gmode_cb, option_change_gmode_cb},
+      {OPTION_LIVES      , wiiero_label[WIIERO_LANG_OPT_MENU_LIVES], &(g->wiiero_opt_nb_lifes), option_format_bigvalue_cb, option_laction_bigvalue_cb, option_raction_bigvalue_cb, 0L},
+      {OPTION_FLAGS      , wiiero_label[WIIERO_LANG_OPT_MENU_FLAGS], &(g->wiiero_opt_nb_flags), option_format_bigvalue_cb, option_laction_bigvalue_cb, option_raction_bigvalue_cb, 0L},
+      {OPTION_TIME       , wiiero_label[WIIERO_LANG_OPT_MENU_COUNT], &(g->wiiero_opt_got_time), option_format_time_cb, option_laction_time_cb, option_raction_time_cb, 0L},
+      {OPTION_RELOAD     , wiiero_label[WIIERO_LANG_OPT_MENU_RLTIM], &(g->wiiero_opt_loading_time), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, 0L},
+      {OPTION_NB_BONUS   , wiiero_label[WIIERO_LANG_OPT_MENU_BONUS], &(g->wiiero_opt_gift_nb), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, 0L},
+      {OPTION_BONUS_NM   , wiiero_label[WIIERO_LANG_OPT_MENU_BNAME], &(g->wiiero_opt_bonus_name), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
+      {OPTION_RESOLUTION , wiiero_label[WIIERO_LANG_OPT_MENU_RESOL], &(g->wiiero_opt_screen_resolution), option_format_resol_cb, option_laction_res_cb, option_raction_res_cb, option_change_res_cb},
+      {OPTION_LEV_REG    , wiiero_label[WIIERO_LANG_OPT_MENU_REGEN], &(g->wiiero_opt_map_regen), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
+      {OPTION_LEV_ROCKS  , wiiero_label[WIIERO_LANG_OPT_MENU_ROCKS], &(g->wiiero_opt_nb_rocks), option_format_value_cb, option_laction_value_cb, option_raction_value_cb, option_regen_new_map},
+      {OPTION_LEV_AMBI   , wiiero_label[WIIERO_LANG_OPT_MENU_AMBIE], &selected_amb, option_format_ambi_value_cb, option_laction_ambi_value_cb, option_raction_ambi_value_cb, option_regen_new_map},
+      {OPTION_SHADOWS    , wiiero_label[WIIERO_LANG_OPT_MENU_SHADO], &(g->wiiero_opt_shadow), option_format_activ_cb, option_laction_option_cb, option_raction_option_cb, 0L},
+      {OPTION_PLAYER_NB  , wiiero_label[WIIERO_LANG_OPT_MENU_PL_NB], &(g->wiiero_nb_wanted_players), option_format_value_cb, option_laction_nb_player_cb, option_raction_nb_player_cb, option_change_nb_player},
+      {OPTION_P1_NAME    , wiiero_label[WIIERO_LANG_OPT_MENU_P1NAM], game_nicknames[PLAYER_1], option_format_string_cb, 0L, 0L, option_change_p1_name_cb},
+      {OPTION_P2_NAME    , wiiero_label[WIIERO_LANG_OPT_MENU_P2NAM], game_nicknames[PLAYER_2], option_format_string_cb, 0L, 0L, option_change_p2_name_cb},
+      {OPTION_P3_NAME    , wiiero_label[WIIERO_LANG_OPT_MENU_P3NAM], game_nicknames[PLAYER_3], option_format_string_cb, 0L, 0L, option_change_p3_name_cb},
+      {OPTION_P4_NAME    , wiiero_label[WIIERO_LANG_OPT_MENU_P4NAM], game_nicknames[PLAYER_4], option_format_string_cb, 0L, 0L, option_change_p4_name_cb},
+      {OPTION_BIS_MENU   , wiiero_label[WIIERO_LANG_OPT_MENU_NEXT] , 0L, 0L, 0L, 0L, option_menu_bis_cb},
+      {OPTION_RETURN     , wiiero_label[WIIERO_LANG_OPT_MENU_RETUR], 0L, 0L, 0L, 0L, option_return_cb}};
   wiiero_menu(g);
 
   for (i = 0; i < OPTION_MAX; i++)
@@ -1411,6 +1395,10 @@ static __inline__ void wiiero_play(game_t *g)
   wiiero_blit_world(g);
   /* game uptade */
   wiiero_update_world(g);
+
+  for(Uint8 p = PLAYER_1; p < g->wiiero_nb_players; p++)
+    player_show_stats(g->worms[p], g->wiiero_opt_game_mode,g->wiiero_nb_players);
+
   switch (g->wiiero_opt_game_mode)
   {
   case GAME_DEATHMATCH_MODE:
@@ -1552,31 +1540,33 @@ static __inline__ void wiiero_round_stats(game_t *g)
 int wiiero_load_config(game_t *g)
 {
   FILE *conf_file = fopen(WIIERO_STD_OPT_FILE, "r");
+  g->wiiero_opt_mini_map = 0U;//Disable minimap for now
   if (!conf_file)
   {
     snprintf(str_errno, 127, "Error: %s.\n", strerror(errno));
     return 0;
   }
-  if(!fread(&(g->wiiero_magic_number), sizeof(Uint32), 1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_magic_number)    , sizeof(Uint32), 1, conf_file)){return 0;}
   if(g->wiiero_magic_number != WIIERO_OPT_FILE_MAGIC_NUMBER){return 0;}
-  if(!fread(&(g->wiiero_opt_game_mode), sizeof(game_mode_t), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_nb_lifes), sizeof(Uint16), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_nb_flags), sizeof(Uint16), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_got_time), sizeof(Uint16), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_gift_nb), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_loading_time), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_bonus_name), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_mini_map), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_map_regen), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_shadow), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_xtra_weap), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_opt_nb_rocks), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&selected_amb, sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(&(g->wiiero_nb_players), sizeof(Uint8), 1, conf_file)){return 0;}
-  if(!fread(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file)){return 0;}
-  if(!fread(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file)){return 0;}
-  if(!fread(game_nicknames[PLAYER_3], sizeof(char), 10, conf_file)){return 0;}
-  if(!fread(game_nicknames[PLAYER_4], sizeof(char), 10, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_game_mode)        , sizeof(game_mode_t),  1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_nb_lifes)         , sizeof(Uint16),       1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_nb_flags)         , sizeof(Uint16),       1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_got_time)         , sizeof(Uint16),       1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_gift_nb)          , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_loading_time)     , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_bonus_name)       , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_mini_map)         , sizeof(Uint8)      ,  1, conf_file)){return 0;}
+  g->wiiero_opt_mini_map = 0U;//Disable minimap for now
+  if(!fread(&(g->wiiero_opt_map_regen)        , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_shadow)           , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_xtra_weap)        , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_opt_nb_rocks)         , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&selected_amb                     , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(&(g->wiiero_nb_players)           , sizeof(Uint8),        1, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_1]          , sizeof(char),        10, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_2]          , sizeof(char),        10, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_3]          , sizeof(char),        10, conf_file)){return 0;}
+  if(!fread(game_nicknames[PLAYER_4]          , sizeof(char),        10, conf_file)){return 0;}
   if(!fread(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file)){return 0;}
   /* Wiiero 1.2 new config file part */
   if(!fread(&mud_particle, sizeof(Uint8), 1, conf_file)){return 0;}
@@ -1604,27 +1594,27 @@ int wiiero_save_config(game_t *g)
   Uint16 langlen = 0;
   if (!conf_file)
     return 0;
-  fwrite(&(g->wiiero_magic_number), sizeof(Uint32), 1, conf_file);
-  fwrite(&(g->wiiero_opt_game_mode), sizeof(game_mode_t), 1, conf_file);
-  fwrite(&(g->wiiero_opt_nb_lifes), sizeof(Uint16), 1, conf_file);
-  fwrite(&(g->wiiero_opt_nb_flags), sizeof(Uint16), 1, conf_file);
-  fwrite(&(g->wiiero_opt_got_time), sizeof(Uint16), 1, conf_file);
-  fwrite(&(g->wiiero_opt_gift_nb), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_loading_time), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_bonus_name), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_mini_map), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_map_regen), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_shadow), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_xtra_weap), sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_opt_nb_rocks), sizeof(Uint8), 1, conf_file);
-  fwrite(&selected_amb, sizeof(Uint8), 1, conf_file);
-  fwrite(&(g->wiiero_nb_players), sizeof(Uint8), 1, conf_file);
-  fwrite(game_nicknames[PLAYER_1], sizeof(char), 10, conf_file);
-  fwrite(game_nicknames[PLAYER_2], sizeof(char), 10, conf_file);
-  fwrite(game_nicknames[PLAYER_3], sizeof(char), 10, conf_file);
-  fwrite(game_nicknames[PLAYER_4], sizeof(char), 10, conf_file);  
+  fwrite(&(g->wiiero_magic_number)         , sizeof(Uint32), 1, conf_file);
+  fwrite(&(g->wiiero_opt_game_mode)        , sizeof(game_mode_t), 1, conf_file);
+  fwrite(&(g->wiiero_opt_nb_lifes)         , sizeof(Uint16), 1, conf_file);
+  fwrite(&(g->wiiero_opt_nb_flags)         , sizeof(Uint16), 1, conf_file);
+  fwrite(&(g->wiiero_opt_got_time)         , sizeof(Uint16), 1, conf_file);
+  fwrite(&(g->wiiero_opt_gift_nb)          , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_loading_time)     , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_bonus_name)       , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_mini_map)         , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_map_regen)        , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_shadow)           , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_xtra_weap)        , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_opt_nb_rocks)         , sizeof(Uint8), 1, conf_file);
+  fwrite(&selected_amb                     , sizeof(Uint8), 1, conf_file);
+  fwrite(&(g->wiiero_nb_players)           , sizeof(Uint8), 1, conf_file);
+  fwrite(game_nicknames[PLAYER_1]          , sizeof(char), 10, conf_file);
+  fwrite(game_nicknames[PLAYER_2]          , sizeof(char), 10, conf_file);
+  fwrite(game_nicknames[PLAYER_3]          , sizeof(char), 10, conf_file);
+  fwrite(game_nicknames[PLAYER_4]          , sizeof(char), 10, conf_file);  
   fwrite(&(g->wiiero_opt_screen_resolution), sizeof(screen_res_t), 1, conf_file);
-  fwrite(&mud_particle, sizeof(Uint8), 1, conf_file);
+  fwrite(&mud_particle                     , sizeof(Uint8), 1, conf_file);
   if (get_nb_loaded_lang_files())
   {
     langlen = strlen(wiiero_lang_files[g->wiiero_lang]);
