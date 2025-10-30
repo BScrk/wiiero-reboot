@@ -36,7 +36,7 @@
 #include "font.h"
 #include "sound_engine.h"
 #include "lang.h"
-
+#include <limits.h>
 
 extern int debug_flag;
 
@@ -319,9 +319,32 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
                    :                    (MAP_HEIGHT / 2) + rand() % (MAP_HEIGHT / 2);  /* second map part */
     get_pix_color(statics,p->worms.pos_x,p->worms.pos_y,&cr,&cg,&cb);
   }
-  p->cr = cr;
-  p->cg = cg;
-  p->cb = cb;
+
+  switch(id){
+    case PLAYER_1:
+      p->cr = 0x7F + SHIFT_COLOR_P1_R;
+      p->cg = 0x7F + SHIFT_COLOR_P1_G;
+      p->cb = 0x7F + SHIFT_COLOR_P1_B;
+      break;
+    case PLAYER_2:
+      p->cr = 0x7F + SHIFT_COLOR_P2_R;
+      p->cg = 0x7F + SHIFT_COLOR_P2_G;
+      p->cb = 0x7F + SHIFT_COLOR_P2_B;
+      break;
+    case PLAYER_3:
+      p->cr = 0x7F + SHIFT_COLOR_P3_R;
+      p->cg = 0x7F + SHIFT_COLOR_P3_G;
+      p->cb = 0x7F + SHIFT_COLOR_P3_B;
+      break;
+    case PLAYER_4:
+    default:
+      p->cr = 0x7F + SHIFT_COLOR_P4_R;
+      p->cg = 0x7F + SHIFT_COLOR_P4_G;
+      p->cb = 0x7F + SHIFT_COLOR_P4_B;
+      break;
+  }
+
+  fprintf(stdout,"%d -> R %d G %d B %d\r\n", id, cr, cg,cb);
   p->worms.acc_x = DEFAULT_PLAYER_XACC;
   p->worms.acc_y = DEFAULT_PLAYER_YACC;
   p->worms.resist = DEFAULT_PLAYER_RESIST;
@@ -388,86 +411,6 @@ void player_is_aiming(player_id pid , player_t** targets){
   }
 }
 
-/*
-J'ai 2 structures permettant d'acceder à la position en 2 dimensions des joueurs telles que
-  o->worms.pos_x // position x du joueur "other"
-  p->worms.pos_x // position x du joueur actif
-De meme pour les positions en y (pos_y)  
-J'ai la position (coin haut gauche) et taille d'une caméra c telles que
-  c->w // largeur
-  c->h // hauteur
-  c->pos_x // x 
-  c->pos_y // y
-La caméra ne peut sortir de la map dont la taille est MAP_WIDTH par MAP_HEIGHT
-La caméra est centrée sur le joueur quand c'est possible
-Je souhaiterai connaitre la position du point situé au bord de la caméra donnant la direction du joueur o 
-*/
-// Calcule le point sur le bord de la caméra indiquant la direction du personnage 2
-// La position (cam_x, cam_y) correspond au coin haut gauche de la caméra
-static __inline__ void player_get_direction2(camera_t* c, player_t* p, player_t * o){
-  int vx = o->worms.pos_x - p->worms.pos_x;
-  int vy = o->worms.pos_y - p->worms.pos_y;
-
-  // 6. On veut savoir quel bord est atteint en premier
-  int abs_vx = vx < 0 ? -vx : vx;
-  int abs_vy = vy < 0 ? -vy : vy;
-
-  int use_x;
-  // On compare les rapports relatifs sans division (Thalès)
-  // -> rel_p1_x / abs_vx vs rel_p1_y / abs_vy
-  // mais on doit ajuster selon la direction du vecteur
-  int dist_x = (vx > 0) ? (c->w - p->worms.pos_x) : p->worms.pos_x;
-  int dist_y = (vy > 0) ? (c->h - p->worms.pos_y) : p->worms.pos_y;
-
-    if (abs_vx == 0) use_x = 0;
-    else if (abs_vy == 0) use_x = 1;
-    else use_x = ((long)dist_x * abs_vy <= (long)dist_y * abs_vx);
-
-    int px, py;
-
-    if (use_x) {
-        // On touche un bord vertical
-        if (vx > 0)
-            px = c->w;
-        else
-            px = 0;
-        if(vx == 0)vx = 1;
-        // Thalès : vy/vx = (py - rel_p1_y) / (px - rel_p1_x)
-        py = p->worms.pos_y + (long)(px - p->worms.pos_x) * vy / vx;
-    } else {
-        // On touche un bord horizontal
-        if (vy > 0)
-            py = c->h;
-        else
-            py = 0;
-        if(vy == 0)vy = 1;
-        // vx/vy = (px - rel_p1_x) / (py - rel_p1_y)
-        px = p->worms.pos_x + (long)(py - p->worms.pos_y) * vx / vy;
-    }
-
-    px += c->map_x;
-    py += c->map_y;
-
-  if(p->id == PLAYER_2)
-  fprintf(stdout
-    ,"WORM %d DIR %d,%d CAMX=%d CAMY=%d POSX=%d POSY=%d OFFSETX=%d Y=%d\n"
-    ,p->id
-    ,p->other_worm_dir_x[o->id]
-    ,p->other_worm_dir_y[o->id]
-    ,c->map_x
-    ,c->map_y
-    ,p->worms.pos_x
-    ,p->worms.pos_y
-    ,-1
-    ,-1
-  );    
-
-    p->other_worm_dir_x[o->id] = px;
-    p->other_worm_dir_y[o->id] = py;
-}
-
-
-#include <limits.h>
 static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
 
 // Calculer le vecteur direction de p vers o
@@ -492,55 +435,59 @@ int dist_to_bottom = c->map_y + c->h - cam_center_y;
 long long t_x_num, t_x_den, t_y_num, t_y_den;
 
 if (dx > 0) {
-    t_x_num = dist_to_right;
-    t_x_den = dx;
+  t_x_num = dist_to_right;
+  t_x_den = dx;
 } else if (dx < 0) {
-    t_x_num = dist_to_left;
-    t_x_den = -dx;
+  t_x_num = dist_to_left;
+  t_x_den = -dx;
 } else {
-    t_x_num = LLONG_MAX;
-    t_x_den = 1;
+  t_x_num = LLONG_MAX;
+  t_x_den = 1;
 }
 
 if (dy > 0) {
-    t_y_num = dist_to_bottom;
-    t_y_den = dy;
+  t_y_num = dist_to_bottom;
+  t_y_den = dy;
 } else if (dy < 0) {
-    t_y_num = dist_to_top;
-    t_y_den = -dy;
+  t_y_num = dist_to_top;
+  t_y_den = -dy;
 } else {
-    t_y_num = LLONG_MAX;
-    t_y_den = 1;
+  t_y_num = LLONG_MAX;
+  t_y_den = 1;
 }
 
 // Comparer t_x et t_y par multiplication croisée (t_x < t_y ?)
 if (t_x_num * t_y_den < t_y_num * t_x_den) {
-    // Utiliser t_x (bord gauche ou droit)
-    if (dx > 0) {
-        border_x = c->map_x + c->w;
-        border_y = cam_center_y + (dy * dist_to_right) / dx;
+  // Utiliser t_x (bord gauche ou droit)
+  if (dx > 0) {
+      border_x = c->map_x + c->w;
+      //border_y = cam_center_y + (dy * dist_to_right) / dx;
+      border_y = p->worms.pos_y + (dy * dist_to_right) / dx;
     } else if (dx < 0){
-        border_x = c->map_x;
-        border_y = cam_center_y - (dy * dist_to_left) / (-dx);
+      border_x = c->map_x;
+      //border_y = cam_center_y - (dy * dist_to_left) / (-dx);
+      border_y = p->worms.pos_y - (dy * dist_to_left) / (-dx);
     }else{
       border_x = p->other_worm_dir_x[o->id];
       border_y = p->other_worm_dir_y[o->id];
     }
-} else {
+  } else {
     // Utiliser t_y (bord haut ou bas)
     if (dy > 0) {
-        border_y = c->map_y + c->h;
-        border_x = cam_center_x + (dx * dist_to_bottom) / dy;
+      border_y = c->map_y + c->h;
+      //border_x = cam_center_x + (dx * dist_to_bottom) / dy;
+      border_x = p->worms.pos_x + (dx * dist_to_bottom) / dy;
     } else if (dy < 0){
-        border_y = c->map_y;
-        border_x = cam_center_x - (dx * dist_to_top) / (-dy);
+      border_y = c->map_y;
+      //border_x = cam_center_x - (dx * dist_to_top) / (-dy);
+      border_x = p->worms.pos_x - (dx * dist_to_top) / (-dy);
     }else{
       border_x = p->other_worm_dir_x[o->id];
       border_y = p->other_worm_dir_y[o->id];       
     }
-}
-    p->other_worm_dir_x[o->id] = border_x;
-    p->other_worm_dir_y[o->id] = border_y;
+  }
+  p->other_worm_dir_x[o->id] = border_x;
+  p->other_worm_dir_y[o->id] = border_y;
 }
 
 void player_get_all_direction(camera_t * c, player_id pid , player_t** targets, Uint8 player_nb){
@@ -552,52 +499,32 @@ void player_get_all_direction(camera_t * c, player_id pid , player_t** targets, 
   }
 }
 
-void player_show_dir_on_cam(player_t* p,camera_t* c, Uint8 nb_players){
+void player_show_dir_on_cam(player_t** p,camera_t* c, Uint8 pid, Uint8 nb_players){
   /* OTHER WORMS */
   for(Uint8 i = PLAYER_1; i < nb_players; i++){
-    if(i == p->id){
+    if(p[i]->id == pid){
       continue;
     }else{
-      Uint8 r,g,b;
-      if(i == PLAYER_1){
-        r=0;g=0;b=255;
-      }else{
-        r=0;g=255;b=0;
-      }
+      Uint8 r = p[i]->cr;
+      Uint8 g = p[i]->cg;
+      Uint8 b = p[i]->cg;
+      const int side_sz = 10;
       int x,y;
-      x = p->other_worm_dir_x[i] - c->map_x;
-      y = p->other_worm_dir_y[i] - c->map_y;
-
-      camera_put_pix_color(c,x-2,y-2,r,g,b);
-      camera_put_pix_color(c,x-2,y-1,r,g,b);
-      camera_put_pix_color(c,x-2,y  ,r,g,b);
-      camera_put_pix_color(c,x-2,y+1,r,g,b);
-      camera_put_pix_color(c,x-2,y+2,r,g,b);
-
-      camera_put_pix_color(c,x-1,y-2,r,g,b);
-      camera_put_pix_color(c,x-1,y-1,r,g,b);
-      camera_put_pix_color(c,x-1,y  ,r,g,b);
-      camera_put_pix_color(c,x-1,y+1,r,g,b);
-      camera_put_pix_color(c,x-1,y+2,r,g,b);
-
-      camera_put_pix_color(c,x  ,y  ,r,g,b);
-      camera_put_pix_color(c,x  ,y-2,r,g,b);
-      camera_put_pix_color(c,x  ,y-1,r,g,b);
-      camera_put_pix_color(c,x  ,y+1,r,g,b);
-      camera_put_pix_color(c,x  ,y+2,r,g,b);
-
-      camera_put_pix_color(c,x+1,y-2,r,g,b);
-      camera_put_pix_color(c,x+1,y-1,r,g,b);
-      camera_put_pix_color(c,x+1,y  ,r,g,b);
-      camera_put_pix_color(c,x+1,y+1,r,g,b);
-      camera_put_pix_color(c,x+1,y+2,r,g,b);
-
-      camera_put_pix_color(c,x+2,y-2,r,g,b);
-      camera_put_pix_color(c,x+2,y-1,r,g,b);
-      camera_put_pix_color(c,x+2,y  ,r,g,b);
-      camera_put_pix_color(c,x+2,y+1,r,g,b);
-      camera_put_pix_color(c,x+2,y+2,r,g,b);
-
+      x = p[pid]->other_worm_dir_x[i] - c->map_x;
+      y = p[pid]->other_worm_dir_y[i] - c->map_y;
+     
+      for(int j = -side_sz ; j <= side_sz ; j++){
+        for(int k = -side_sz ; k <= side_sz ; k++){
+          if(abs(j) == abs(k)) {
+            camera_put_pix_color(c,j+x,k+y,r,g,b);
+            camera_put_pix_color(c,j+x,k+y+1,r,g,b);
+            camera_put_pix_color(c,j+x,k+y-1,r,g,b);
+          }else{
+            
+          }
+          
+        }
+      }
     }
   }
 }

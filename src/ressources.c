@@ -104,10 +104,10 @@ ressources_t* load_ressource(){
   r->health         = image_load(DEFAULT_HEALTH);
   r->bonus          = image_load(DEFAULT_BONUS);
 
-  shift_ressource_colors(r->worms_skins[PLAYER_1],-50,-50, 50); // Blue 
-  shift_ressource_colors(r->worms_skins[PLAYER_2],-50, -0,-50); // Green
-  shift_ressource_colors(r->worms_skins[PLAYER_3], 75, 25,-50); // Orange
-  shift_ressource_colors(r->worms_skins[PLAYER_4], 50,-70, 50); // Purple
+  shift_ressource_colors(r->worms_skins[PLAYER_1],SHIFT_COLOR_P1_R,SHIFT_COLOR_P1_G,SHIFT_COLOR_P1_B); // Blue 
+  shift_ressource_colors(r->worms_skins[PLAYER_2],SHIFT_COLOR_P2_R,SHIFT_COLOR_P2_G,SHIFT_COLOR_P2_B); // Green
+  shift_ressource_colors(r->worms_skins[PLAYER_3],SHIFT_COLOR_P3_R,SHIFT_COLOR_P3_G,SHIFT_COLOR_P3_B); // Orange
+  shift_ressource_colors(r->worms_skins[PLAYER_4],SHIFT_COLOR_P4_R,SHIFT_COLOR_P4_G,SHIFT_COLOR_P4_B); // Purple
 
   shift_ressource_colors(r->worms_flesh[PLAYER_1],-50,-50, 50);
   shift_ressource_colors(r->worms_flesh[PLAYER_2],-50, -0,-50);

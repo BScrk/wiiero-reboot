@@ -43,6 +43,22 @@
 #define DEFAULT_PWFLESH_ANIM_STEPS    4
 #define DEFAULT_PWFLESH              PL_PATH "beef.bmp"
 
+//Blue
+#define SHIFT_COLOR_P1_R -50
+#define SHIFT_COLOR_P1_G -50
+#define SHIFT_COLOR_P1_B 50
+//Green
+#define SHIFT_COLOR_P2_R -50
+#define SHIFT_COLOR_P2_G 0
+#define SHIFT_COLOR_P2_B -50
+//Orange
+#define SHIFT_COLOR_P3_R 75
+#define SHIFT_COLOR_P3_G 25
+#define SHIFT_COLOR_P3_B -50
+//Purple
+#define SHIFT_COLOR_P4_R 50
+#define SHIFT_COLOR_P4_G -70
+#define SHIFT_COLOR_P4_B 50
 
 /* MAP */
 #define MAP_PATH                     SPRITEDIR"/maps/"
