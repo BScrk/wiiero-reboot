@@ -170,17 +170,13 @@ void wiiero_update_player_nb(game_t *g){
       {0                   , SCREEN_HEIGHT / 2 +1},
       {SCREEN_WIDTH / 2 + 1, SCREEN_HEIGHT / 2 +1},
     };
-    int stat_sz [NB_PLAYERS][2]={
-      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
-      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
-      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
-      {SCREEN_WIDTH / 100.0 * 20, SCREEN_HEIGHT / 4},
-    };   
-    for(Uint8 i = 0 ,j = PLAYER_1_STATS_ZONE_CAM ,k = PLAYER_1_GAME_ZONE_CAM;
+    for(Uint8 i = 0 ,c_stat = PLAYER_1_STATS_ZONE_CAM ,c_game = PLAYER_1_GAME_ZONE_CAM;
        i < g->wiiero_nb_players ;
-       i++, j++, k++){
-      g->wiiero_cameras[j] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], stat_sz[i][0]        , stat_sz[i][1]        , SCREEN_BPP);
-      g->wiiero_cameras[k] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2 - 1 , SCREEN_HEIGHT / (g->wiiero_nb_players / 2) - 1, SCREEN_BPP);
+       i++, c_stat++, c_game++){
+      g->wiiero_cameras[c_stat] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2, SCREEN_HEIGHT / 20, SCREEN_BPP);
+      camera_switch_off(g->wiiero_cameras[c_stat]);
+      camera_set_alpha(g->wiiero_cameras[c_stat],100);
+      g->wiiero_cameras[c_game] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2 - 1 , SCREEN_HEIGHT / (g->wiiero_nb_players / 2) - 1, SCREEN_BPP);
     }
     g->wiiero_cameras[GLOBAL_MINI_MAP_CAM] = screen_add_custom_camera(g->wiiero_screen, (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_BPP);
 
@@ -193,10 +189,10 @@ void wiiero_update_player_nb(game_t *g){
     g->wiiero_map = map_init(g->wiiero_ressources, g->wiiero_opt_nb_rocks, g->wiiero_opt_screen_resolution);
 
     font_console_print_debug("init game...\n", FONT_SMALL);  
-  for(Uint8 i = 0 , j = PLAYER_1_STATS_ZONE_CAM, k = PLAYER_1_GAME_ZONE_CAM;
-     i < g->wiiero_nb_players ;
-     i++, j++, k++){
-    g->worms[i] = player_init(i, g->wiiero_cameras[k], g->wiiero_cameras[j], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap
+    for(Uint8 i = 0 ,c_stat = PLAYER_1_STATS_ZONE_CAM ,c_game = PLAYER_1_GAME_ZONE_CAM;
+       i < g->wiiero_nb_players ;
+       i++, c_stat++, c_game++){
+    g->worms[i] = player_init(i, g->wiiero_cameras[c_game], g->wiiero_cameras[c_stat], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap
       , (g->wiiero_nb_players == 2) ? ( i == 0 ? TEAM_1 : TEAM_2 ): (i <= 2 ? TEAM_1 : TEAM_2) );
   }
   for(Uint8 i = 0 ; i < g->wiiero_nb_players ; i++){
@@ -409,11 +405,10 @@ void wiiero_blit_world(game_t *g)
                     );
     }
   }
-  /*
-  for(p = PLAYER_1; p < g->wiiero_nb_players; p++)
+  
+  for(p = PLAYER_1; p < g->wiiero_nb_players; p++){
     player_show_stats(g->worms[p], g->wiiero_opt_game_mode,g->wiiero_nb_players);
-  */
-
+  }
 } /*--------------------------------------------------------------------------*/
 
 /************************
@@ -1379,10 +1374,12 @@ static __inline__ void wiiero_set_play(game_t *g)
   {
     CAMERA_OFF(g->wiiero_cameras[GLOBAL_MINI_MAP_CAM]);
   }
+
   weapon_set_options(g->wiiero_opt_bonus_name, g->wiiero_opt_loading_time);
-  g->worms[PLAYER_1]->worms_status |= STATUS_STATS_UPDATE;
-  g->worms[PLAYER_2]->worms_status |= STATUS_STATS_UPDATE;
-  //FIXME P3 P4 ?
+  for(Uint8 i = PLAYER_1 ; i < g->wiiero_nb_players ; i++){
+    camera_switch_on(g->worms[i]->worms_stats_camera);
+    g->worms[i]->worms_status |= STATUS_STATS_UPDATE;
+  }
 } /*---------------------------------------------------------------------------*/
 /* Play */
 static __inline__ void wiiero_play(game_t *g)
@@ -1390,14 +1387,14 @@ static __inline__ void wiiero_play(game_t *g)
   /* CAM FOCUS */
   for(Uint8 i = PLAYER_1 ; i < g->wiiero_nb_players ; i++){
     player_focus(g->worms[i]);
+    if(!camera_is_on(g->worms[i]->worms_stats_camera))
+      camera_switch_on(g->worms[i]->worms_stats_camera);
   }
   /* BLIT */
   wiiero_blit_world(g);
+
   /* game uptade */
   wiiero_update_world(g);
-
-  for(Uint8 p = PLAYER_1; p < g->wiiero_nb_players; p++)
-    player_show_stats(g->worms[p], g->wiiero_opt_game_mode,g->wiiero_nb_players);
 
   switch (g->wiiero_opt_game_mode)
   {
@@ -1421,6 +1418,9 @@ static __inline__ void wiiero_play(game_t *g)
       g->wiiero_game_status = GAME_SET_PAUSE;
     }else if( g->worms[i]->worms_action & ACTION_MENU){
       g->wiiero_game_status = GAME_SET_MENU;
+      for(player_id j = 0; j < g->wiiero_nb_players; j++){
+        camera_switch_off(g->worms[j]->worms_stats_camera);
+      }
     }
   }
 } /*---------------------------------------------------------------------------*/

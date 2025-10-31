@@ -709,37 +709,52 @@ void player_show_stats(player_t* p,game_mode_t gm, Uint8 nb_players){
   ASSERT(p)
   
   camera_t* camera = p->worms_stats_camera;
-  int step = camera->w/21;
+  int nb_step = 22;
+  int step = camera->w/nb_step;
   char tmp_string[128];
+  int bar_padding_h = camera->h/16;
+  int txt_padding_h = 9;
+  const int line_y_pos[5] = {
+    3*bar_padding_h+6+0*txt_padding_h,
+    3*bar_padding_h+6+1*txt_padding_h,
+    3*bar_padding_h+6+2*txt_padding_h,
+    3*bar_padding_h+6+3*txt_padding_h,
+    3*bar_padding_h+6+4*txt_padding_h
+  };
+  const int col_x_pos[2] = {
+    1        *step,
+    nb_step/2*step
+  };
   
   if((!(p->worms_status & STATUS_STATS_UPDATE))
     && ((SDL_GetTicks() - p->last_stats_update) < PLAYER_STATS_UPDATE_IDLE))
     return;
   
-  camera_clean(camera);  
+  camera_clean(camera);
+
   p->last_stats_update = SDL_GetTicks();
   p->worms_status &= ~STATUS_STATS_UPDATE;
   camera_drow_hline(camera
-            , 1*step, camera->h/10 - 2 
+            , 1*step, bar_padding_h - 2 
             , 20*step, 3, 0x20, 0xff, 0x20);
   if(p->worms_health<100){
     camera_drow_hline(camera
-              , 1*step + ((p->worms_health*20*step)/100), camera->h/10 - 2  
+              , 1*step + ((p->worms_health*20*step)/100), bar_padding_h  
               , (20*step*(100-p->worms_health))/100 , 3, 0xff, 0x20, 0x20); 
-    camera_drow_hline( camera, 20*step, camera->h/10 - 2  
+    camera_drow_hline( camera, 20*step, bar_padding_h
                     , 1*step, 3, 0xff, 0x20, 0x20);
   }
   if(p->weapon_slots[p->selected_weapon]->ammo){
-  camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2  
+  camera_drow_hline( camera, 1*step, 2*bar_padding_h
                     , 20*step, 3, 0xCC, 0xCC, 0xCC);
-  camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2  
+  camera_drow_hline( camera, 1*step, 3*bar_padding_h
                     , (20*step*(p->weapon_slots[p->selected_weapon]->ammo))
                       / weapon_get_max_ammo(p->weapon_slots[p->selected_weapon])
                     , 3, 0x20, 0x20, 0xFF);
   }else{
-    camera_drow_hline( camera, 1*step, 2*camera->h/10 - 2 
+    camera_drow_hline( camera, 1*step, 2*bar_padding_h
                       , 20*step, 3, 0xCC, 0xCC, 0xCC);
-    camera_drow_hline(camera, 1*step, 2*camera->h/10 - 2  
+    camera_drow_hline(camera, 1*step, 3*bar_padding_h 
           , (20*step*(p->weapon_slots[p->selected_weapon]->recharge_step))
             / weapon_get_nb_recharge_steps(p->weapon_slots[p->selected_weapon])
           , 3, 0x98, 0x00, 0x98);
@@ -747,47 +762,40 @@ void player_show_stats(player_t* p,game_mode_t gm, Uint8 nb_players){
   
   snprintf(tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_FRAGS]
           , game_score[p->id].nb_frags);
-  font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+3,FONT_SMALL);
+  font_print_strict_pos(camera,tmp_string,col_x_pos[0],line_y_pos[0],FONT_SMALL);
   snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_SUICID]
           , game_score[p->id].nb_suicides);
-  font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+12,FONT_SMALL);
+  font_print_strict_pos(camera,tmp_string,col_x_pos[0],line_y_pos[1],FONT_SMALL);
   snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_DEATH]
           , game_score[p->id].nb_death);
-  font_print_strict_pos(camera,tmp_string,1*step,3*camera->h/10+21,FONT_SMALL);
+  font_print_strict_pos(camera,tmp_string,col_x_pos[1],line_y_pos[0],FONT_SMALL);
   
   switch(gm){
     case GAME_DEATHMATCH_MODE:
       snprintf( tmp_string,127," %s: %d",wiiero_label[WIIERO_LANG_LIFES]
               , game_score[p->id].nb_lifes);
-      font_print_strict_pos( camera, tmp_string, 1*step
-                            , 3*camera->h/10+30, FONT_SMALL);
+      font_print_strict_pos(camera, tmp_string, col_x_pos[1],line_y_pos[1], FONT_SMALL);
       break;
     case GAME_OF_TAG_TEAM_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
         int32_t team_time = wiiero_get_teams_time(nb_players)[p->tid];
         snprintf(tmp_string,127, "     TEAM %d %s: %02dm%02ds", p->tid + 1,  wiiero_label[WIIERO_LANG_TIME], team_time / 60, team_time % 60);
-        font_print_strict_pos( camera, tmp_string
-                              , 1*step
-                              , 3*camera->h/10+50, FONT_SMALL);
+        font_print_strict_pos( camera, tmp_string,col_x_pos[1],line_y_pos[1], FONT_SMALL);
       }
       break;
     case GAME_OF_TAG_MODE:
       snprintf(tmp_string,127," %s: %02dm%02ds",wiiero_label[WIIERO_LANG_TIME]
               , game_score[p->id].tag_time/60,game_score[p->id].tag_time%60);
-      font_print_strict_pos( camera, tmp_string, 1*step
-                            , 3*camera->h/10+30, FONT_SMALL);
+      font_print_strict_pos( camera, tmp_string,col_x_pos[1],line_y_pos[1], FONT_SMALL);
       break;
     case GAME_CAPTURE_FLAG_MODE:
       if(p->id == PLAYER_1 || p->id == PLAYER_2){ // show only 1 time per team
         int32_t team_flags = wiiero_get_teams_flags(nb_players)[p->tid];
         snprintf( tmp_string,127,"     TEAM %d %s: %d",p->tid +1, wiiero_label[WIIERO_LANG_FLAGS]
                 , team_flags);
-        font_print_strict_pos(camera, tmp_string, 1*step
-                              , 3*camera->h/10+50, FONT_SMALL);
+        font_print_strict_pos(camera, tmp_string, col_x_pos[1],line_y_pos[1], FONT_SMALL);
       }
   }
-  camera_set_alpha(camera,80);
-  
 }
 
 void player_look_up(player_t* p){
