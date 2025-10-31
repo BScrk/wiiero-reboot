@@ -131,6 +131,14 @@ typedef enum{
     GAME_CAPTURE_FLAG_MODE,
 }game_mode_t;
 
+typedef struct pixel_shape_s{
+  Uint8 center_x;
+  Uint8 center_y;
+  Uint8 nb_pix;
+  Uint8 * pix_x;
+  Uint8 * pix_y;
+}pixel_shape_t;
+
 typedef struct player_s{
   player_id      id;
   team_id        tid;

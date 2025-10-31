@@ -53,6 +53,13 @@ enum{
     COLL_WIDTH
 };
 
+/*
+pixel_shape_t reticle = {
+    .nb_pix = 5
+    .pix_x  = (int8[]) { 0, -1, 0, 1, 0},
+    .pix_y  = (int8[]) {-1,  0, 0, 0, 1}
+};
+*/
 extern int bullet_time_effect_delay;
 extern player_score_t game_score[NB_PLAYERS];
 extern int32_t* wiiero_get_teams_time(Uint8 nb_players);
@@ -442,70 +449,81 @@ void player_is_aiming(player_id pid , player_t** targets){
   }
 }
 
+static __inline__ Uint8 player_is_obj_on_player_cam(camera_t* c, obj_t * o){
+  return ( (o->pos_x > c->map_x)
+        && (o->pos_x < ( c->map_x + c->w ) )
+        && (o->pos_y > c->map_y)
+        && (o->pos_y < ( c->map_y + c->h ) ) );
+}
+
 static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
-  // Calculer le vecteur direction de p vers o
-  int dx = o->worms.pos_x - p->worms.pos_x;
-  int dy = o->worms.pos_y - p->worms.pos_y;
-
-  // Trouver l'intersection avec les bords de la caméra
   int border_x, border_y;
+  if(player_is_obj_on_player_cam(c,&(o->worms))){
+    border_x = -1;
+    border_y = -1;
+  }else{
+    // Calculer le vecteur direction de p vers o
+    int dx = o->worms.pos_x - p->worms.pos_x;
+    int dy = o->worms.pos_y - p->worms.pos_y;
 
-  // Distances aux bords
-  int dist_to_left   = p->worms.pos_x > c->map_x          ? p->worms.pos_x - c->map_x          : c->map_x - p->worms.pos_x;
-  int dist_to_right  = p->worms.pos_x > (c->map_x + c->w) ? p->worms.pos_x - (c->map_x + c->w) : (c->map_x + c->w) - p->worms.pos_x;
-  int dist_to_top    = p->worms.pos_y > c->map_y          ? p->worms.pos_y - c->map_y          : c->map_y - p->worms.pos_y;
-  int dist_to_bottom = p->worms.pos_y > (c->map_y + c->h) ? p->worms.pos_y - (c->map_y + c->h) : (c->map_y + c->h) - p->worms.pos_y;
+    // Trouver l'intersection avec les bords de la caméra
+    // Distances aux bords
+    int dist_to_left   = p->worms.pos_x > c->map_x          ? p->worms.pos_x - c->map_x          : c->map_x - p->worms.pos_x;
+    int dist_to_right  = p->worms.pos_x > (c->map_x + c->w) ? p->worms.pos_x - (c->map_x + c->w) : (c->map_x + c->w) - p->worms.pos_x;
+    int dist_to_top    = p->worms.pos_y > c->map_y          ? p->worms.pos_y - c->map_y          : c->map_y - p->worms.pos_y;
+    int dist_to_bottom = p->worms.pos_y > (c->map_y + c->h) ? p->worms.pos_y - (c->map_y + c->h) : (c->map_y + c->h) - p->worms.pos_y;
 
-  // Calculer les ratios t pour chaque bord (en évitant la division par zéro)
-  // On utilise des multiplications croisées pour éviter les divisions
-  long long t_x_num, t_x_den, t_y_num, t_y_den;
+    // Calculer les ratios t pour chaque bord (en évitant la division par zéro)
+    // On utilise des multiplications croisées pour éviter les divisions
+    long long t_x_num, t_x_den, t_y_num, t_y_den;
 
-  if (dx > 0) {
-    t_x_num = dist_to_right;
-    t_x_den = dx;
-  } else if (dx < 0) {
-    t_x_num = dist_to_left;
-    t_x_den = -dx;
-  } else {
-    t_x_num = LLONG_MAX;
-    t_x_den = 1;
-  }
-
-  if (dy > 0) {
-    t_y_num = dist_to_bottom;
-    t_y_den = dy;
-  } else if (dy < 0) {
-    t_y_num = dist_to_top;
-    t_y_den = -dy;
-  } else {
-    t_y_num = LLONG_MAX;
-    t_y_den = 1;
-  }
-
-  // Comparer t_x et t_y par multiplication croisée (t_x < t_y ?)
-  if (t_x_num * t_y_den < t_y_num * t_x_den) {
-    // Utiliser t_x (bord gauche ou droit)
     if (dx > 0) {
-      border_x = c->map_x + c->w;
-      border_y = p->worms.pos_y + (dy * dist_to_right) / dx;
+      t_x_num = dist_to_right;
+      t_x_den = dx;
     } else if (dx < 0) {
-      border_x = c->map_x;
-      border_y = p->worms.pos_y + (dy * dist_to_left) / (-dx);
-    }else{
-      border_y = 0;
-      border_x = 0;
+      t_x_num = dist_to_left;
+      t_x_den = -dx;
+    } else {
+      t_x_num = LLONG_MAX;
+      t_x_den = 1;
     }
-  } else {
-    // Utiliser t_y (bord haut ou bas)
+
     if (dy > 0) {
-      border_y = c->map_y + c->h;
-      border_x = p->worms.pos_x + (dx * dist_to_bottom) / dy;
+      t_y_num = dist_to_bottom;
+      t_y_den = dy;
     } else if (dy < 0) {
-      border_y = c->map_y;
-      border_x =  p->worms.pos_x + (dx * dist_to_top) / (-dy);
-    }else{
-      border_y = 0;
-      border_x = 0;
+      t_y_num = dist_to_top;
+      t_y_den = -dy;
+    } else {
+      t_y_num = LLONG_MAX;
+      t_y_den = 1;
+    }
+
+    // Comparer t_x et t_y par multiplication croisée (t_x < t_y ?)
+    if (t_x_num * t_y_den < t_y_num * t_x_den) {
+      // Utiliser t_x (bord gauche ou droit)
+      if (dx > 0) {
+        border_x = c->map_x + c->w;
+        border_y = p->worms.pos_y + (dy * dist_to_right) / dx;
+      } else if (dx < 0) {
+        border_x = c->map_x;
+        border_y = p->worms.pos_y + (dy * dist_to_left) / (-dx);
+      }else{
+        border_y = 0;
+        border_x = 0;
+      }
+    } else {
+      // Utiliser t_y (bord haut ou bas)
+      if (dy > 0) {
+        border_y = c->map_y + c->h;
+        border_x = p->worms.pos_x + (dx * dist_to_bottom) / dy;
+      } else if (dy < 0) {
+        border_y = c->map_y;
+        border_x =  p->worms.pos_x + (dx * dist_to_top) / (-dy);
+      }else{
+        border_y = 0;
+        border_x = 0;
+      }
     }
   }
   p->other_worm_dir_x[o->id] = border_x;
@@ -525,6 +543,8 @@ void player_show_dir_on_cam(player_t** p,camera_t* c, Uint8 pid, Uint8 nb_player
   /* OTHER WORMS */
   for(Uint8 i = PLAYER_1; i < nb_players; i++){
     if(p[i]->id == pid){
+      continue;
+    }else if(p[pid]->other_worm_dir_x[i] < 0) {
       continue;
     }else{
       Uint8 r = p[i]->cr;
