@@ -534,7 +534,7 @@ static __inline__ Uint8 player_is_obj_on_player_cam(camera_t* c, obj_t * o){
 static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
   int border_x, border_y;
   uint8_t dir = DIR_UP;
-  if(0/*player_is_obj_on_player_cam(c,&(o->worms))*/){
+  if(player_is_obj_on_player_cam(c,&(o->worms))){
     border_x = -1;
     border_y = -1;
   }else{
