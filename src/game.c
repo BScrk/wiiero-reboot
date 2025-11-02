@@ -176,7 +176,7 @@ void wiiero_update_player_nb(game_t *g){
       g->wiiero_cameras[c_stat] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2, SCREEN_HEIGHT / 20, SCREEN_BPP);
       camera_switch_off(g->wiiero_cameras[c_stat]);
       camera_set_alpha(g->wiiero_cameras[c_stat],100);
-      g->wiiero_cameras[c_game] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2 - 1 , SCREEN_HEIGHT / (g->wiiero_nb_players / 2) - 1, SCREEN_BPP);
+      g->wiiero_cameras[c_game] = screen_add_custom_camera(g->wiiero_screen,scr_pos[i][0] ,scr_pos[i][1], SCREEN_WIDTH / 2 - 1 , (SCREEN_HEIGHT / (g->wiiero_nb_players / 2)) - 1, SCREEN_BPP);
     }
     g->wiiero_cameras[GLOBAL_MINI_MAP_CAM] = screen_add_custom_camera(g->wiiero_screen, (2 * SCREEN_WIDTH) / 5, (25 * SCREEN_HEIGHT) / 32, SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_BPP);
 
@@ -192,11 +192,11 @@ void wiiero_update_player_nb(game_t *g){
     for(Uint8 i = 0 ,c_stat = PLAYER_1_STATS_ZONE_CAM ,c_game = PLAYER_1_GAME_ZONE_CAM;
        i < g->wiiero_nb_players ;
        i++, c_stat++, c_game++){
-    g->worms[i] = player_init(i, g->wiiero_cameras[c_game], g->wiiero_cameras[c_stat], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap
+      g->worms[i] = player_init(i, g->wiiero_cameras[c_game], g->wiiero_cameras[c_stat], g->wiiero_ressources, g->wiiero_bullets, g->wiiero_dynamic_objects, g->wiiero_map->layers[STATICS_MAP_LAYER], g->wiiero_opt_xtra_weap
       , (g->wiiero_nb_players == 2) ? ( i == 0 ? TEAM_1 : TEAM_2 ): (i <= 2 ? TEAM_1 : TEAM_2) );
-  }
+    }
   for(Uint8 i = 0 ; i < g->wiiero_nb_players ; i++){
-    map_drow_cave(g->wiiero_map, g->worms[PLAYER_4]->worms.pos_x, g->worms[PLAYER_4]->worms.pos_y, 20);
+    map_drow_cave(g->wiiero_map, g->worms[i]->worms.pos_x, g->worms[i]->worms.pos_y, 20);
   }
 } /*--------------------------------------------------------------------------*/
 void wiiero_load(game_t *g)

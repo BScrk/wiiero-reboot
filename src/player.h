@@ -37,6 +37,7 @@
 #include "weapons.h"
 #include <SDL2/SDL.h>
 #include "nb_players.h"
+#include "colors.h"
 
 #define CROP_SIZE 5
 
@@ -97,6 +98,13 @@ enum{
 };
 
 enum{
+  DIR_UP,
+  DIR_DOWN,
+  DIR_LEFT,
+  DIR_RIGHT
+};
+
+enum{
   STATUS_ALIVE          = 0x00000001,
   STATUS_TAGGED         = 0x00000002,
   STATUS_HAVE_FLAG      = 0x00000004,
@@ -131,12 +139,21 @@ typedef enum{
     GAME_CAPTURE_FLAG_MODE,
 }game_mode_t;
 
+enum {
+  PIXEL_SHAPE_NO_MODE      = 0x00,
+  PIXEL_SHAPE_MIRROR_H     = 0x01,
+  PIXEL_SHAPE_MIRROR_V     = 0x02,
+  PIXEL_SHAPE_ROTATE_90CW  = 0x04,//clockwise
+  PIXEL_SHAPE_ROTATE_90CCW = 0x08,//counterclockwise
+};
+
 typedef struct pixel_shape_s{
-  Uint8 center_x;
-  Uint8 center_y;
-  Uint8 nb_pix;
-  Uint8 * pix_x;
-  Uint8 * pix_y;
+  uint8_t nb_pix;
+  int8_t * x;
+  int8_t * y;
+  uint8_t * r;
+  uint8_t * g;
+  uint8_t * b;
 }pixel_shape_t;
 
 typedef struct player_s{
@@ -151,6 +168,7 @@ typedef struct player_s{
   int            last_stats_update;
   int            other_worm_dir_x[NB_PLAYERS];
   int            other_worm_dir_y[NB_PLAYERS];
+  uint8_t        other_worm_dir[NB_PLAYERS];
   int            reticle_x;
   int            reticle_y;
   Uint8          reticle_pitch;

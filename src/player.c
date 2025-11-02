@@ -53,13 +53,84 @@ enum{
     COLL_WIDTH
 };
 
-/*
-pixel_shape_t reticle = {
-    .nb_pix = 5
-    .pix_x  = (int8[]) { 0, -1, 0, 1, 0},
-    .pix_y  = (int8[]) {-1,  0, 0, 0, 1}
+pixel_shape_t reticle1 = {
+    .nb_pix = 5,
+    .x  = (int8_t[])  {  0, -1,  0,  1,  0},
+    .y  = (int8_t[])  { -1,  0,  0,  0,  1},
+    .r  = (uint8_t[]) {  0,  0,  0,  0,  0},
+    .g  = (uint8_t[]) {255,255,255,255,255},
+    .b  = (uint8_t[]) {  0,  0, 50,  0,  0}
 };
-*/
+
+pixel_shape_t reticle2 = {
+    .nb_pix = 5,
+    .x  = (int8_t[])  {  0, -1,  0,  1,  0},
+    .y  = (int8_t[])  { -1,  0,  0,  0,  1},
+    .r  = (uint8_t[]) {255,255,255,255,255},
+    .g  = (uint8_t[]) {  0,  0, 50,  0,  0},
+    .b  = (uint8_t[]) {  0,  0, 50,  0,  0}
+};
+
+pixel_shape_t flag_right = {
+    .nb_pix = 9,
+    .x  = (int8_t[])  { -8, -7, -6, -7, -6, -6, -6, -6, -6},
+    .y  = (int8_t[])  { -9, -9, -9, -8, -8, -8, -7, -6, -5},
+    .r  = 0l,
+    .g  = 0l,
+    .b  = 0l    
+};
+
+pixel_shape_t flag_left = {
+    .nb_pix = 9,
+    .x  = (int8_t[])  {  7,  6,  5,  6,  5,  5,  5,  5,  5},
+    .y  = (int8_t[])  { -9, -9, -9, -8, -8, -8, -7, -6, -5},
+    .r  = 0l,
+    .g  = 0l,
+    .b  = 0l
+};
+
+pixel_shape_t warning_right = {
+    .nb_pix = 4,
+    .x  = (int8_t[])  { -6, -6, -6, -6},
+    .y  = (int8_t[])  { -9,  8,  7,  5},
+    .r  = 0l,
+    .g  = 0l,
+    .b  = 0l 
+};
+
+pixel_shape_t warning_left = {
+    .nb_pix = 4,    
+    .x  = (int8_t[])  {  5,  5,  5,  5},
+    .y  = (int8_t[])  { -9,  8,  7,  5},
+    .r  = 0l,
+    .g  = 0l,
+    .b  = 0l 
+};
+
+pixel_shape_t shape_dir = {
+  //DEFAULT LEFT
+  .nb_pix = 63,
+  .x  = (int8_t[])  {                          1,  1,  1,
+                                           2,  2,  2,  2,  2,
+                                       3,  3,  3,  3,  3,  3,  3,
+                                   4,  4,  4,  4,  4,  4,  4,  4,  4 ,
+                               5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,
+                           6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,
+                       7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7
+                    },
+  .y  = (int8_t[])  {                         -1,  0,  1,
+                                          -2, -1,  0,  1,  2,
+                                      -3, -2, -1,  0,  1,  2,  3,
+                                  -4, -3, -2, -1,  0,  1,  2,  3,  4,
+                              -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5,
+                          -6, -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5,  6,
+                      -7, -6 ,-5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5,  6,  7
+                    },
+  .r  = 0l,
+  .g  = 0l,
+  .b  = 0l 
+};
+
 extern int bullet_time_effect_delay;
 extern player_score_t game_score[NB_PLAYERS];
 extern int32_t* wiiero_get_teams_time(Uint8 nb_players);
@@ -69,6 +140,35 @@ extern int32_t* wiiero_get_teams_flags(Uint8 nb_players);
 extern Uint8 transparent_r_value;
 extern Uint8 transparent_g_value;
 extern Uint8 transparent_b_value;
+
+void player_put_shape(camera_t * camera, Uint16 x, Uint16 y, pixel_shape_t * ps, color_t * c, uint8_t mode){
+  int8_t x_px, y_px;
+  for(Uint8 i = 0; i < ps->nb_pix ; i++){
+    if(      mode & PIXEL_SHAPE_MIRROR_H){
+      x_px = ps->x[i];
+      y_px = -ps->y[i];
+    }else if(mode & PIXEL_SHAPE_MIRROR_V){
+      x_px = -ps->x[i];
+      y_px = ps->y[i];
+    }else if(mode & PIXEL_SHAPE_ROTATE_90CW){
+      x_px = ps->y[i];
+      y_px = -ps->x[i];
+    }else if(mode & PIXEL_SHAPE_ROTATE_90CCW){
+      x_px = -ps->y[i];
+      y_px = ps->x[i];     
+    }else{
+      x_px = ps->x[i];
+      y_px = ps->y[i];
+    }
+    camera_put_pix_color(camera
+                        ,x + x_px
+                        ,y + y_px 
+                        ,c ? c->r : ps->r[i]
+                        ,c ? c->g : ps->g[i]
+                        ,c ? c->b : ps->b[i]);
+  }
+}
+      
 
 static int coll_matrix[COLL_WIDTH][COLL_HEIGHT];
 void player_show_gunfire_on_cam(player_t* p,camera_t* camera,int); 
@@ -328,53 +428,28 @@ player_t* player_init( player_id id , camera_t* c,camera_t* sc,ressources_t* r
   }
   {
     Uint8 r,g,b;
-    Uint8 m = 1,d = 1;
     switch(id){
       case PLAYER_1:
-        r = 0x7F + (SHIFT_COLOR_P1_R * m)/d;
-        g = 0x7F + (SHIFT_COLOR_P1_G * m)/d;
-        b = 0x7F + (SHIFT_COLOR_P1_B * m)/d;
+        r = CLAMP_MAX(0x7F,SHIFT_COLOR_P1_R,0xFF);
+        g = CLAMP_MAX(0x7F,SHIFT_COLOR_P1_G,0xFF);
+        b = CLAMP_MAX(0x7F,SHIFT_COLOR_P1_B,0xFF);
         break;
       case PLAYER_2:
-        r = 0x7F + (SHIFT_COLOR_P2_R * m)/d;
-        g = 0x7F + (SHIFT_COLOR_P2_G * m)/d;
-        b = 0x7F + (SHIFT_COLOR_P2_B * m)/d;
+        r = CLAMP_MAX(0x7F,SHIFT_COLOR_P2_R,0xFF);
+        g = CLAMP_MAX(0x7F,SHIFT_COLOR_P2_G,0xFF);
+        b = CLAMP_MAX(0x7F,SHIFT_COLOR_P2_B,0xFF);
         break;
       case PLAYER_3:
-        r = 0x7F + (SHIFT_COLOR_P3_R * m)/d;
-        g = 0x7F + (SHIFT_COLOR_P3_G * m)/d;
-        b = 0x7F + (SHIFT_COLOR_P3_B * m)/d;
+        r = CLAMP_MAX(0x7F,SHIFT_COLOR_P3_R,0xFF);
+        g = CLAMP_MAX(0x7F,SHIFT_COLOR_P3_G,0xFF);
+        b = CLAMP_MAX(0x7F,SHIFT_COLOR_P3_B,0xFF);
         break;
       case PLAYER_4:
       default:
-        r = 0x7F + (SHIFT_COLOR_P4_R * m)/d;
-        g = 0x7F + (SHIFT_COLOR_P4_G * m)/d;
-        b = 0x7F + (SHIFT_COLOR_P4_B * m)/d;
+        r = CLAMP_MAX(0x7F,SHIFT_COLOR_P4_R,0xFF);
+        g = CLAMP_MAX(0x7F,SHIFT_COLOR_P4_G,0xFF);
+        b = CLAMP_MAX(0x7F,SHIFT_COLOR_P4_B,0xFF);
         break;
-    }
-    {
-      Uint8 cmax = 250,cmed = 50;
-      if(r > g){
-        if(r > b){
-          r =cmax;
-          g-=cmed;
-          b-=cmed;
-        }else{
-          r-=cmed;
-          g-=cmed;
-          b =cmax;
-        }
-      }else{
-        if(g > b){
-          r-=cmed;
-          g =cmax;
-          b-=cmed;
-        }else{
-          r-=cmed;
-          g-=cmed;
-          b =cmax;
-        }
-      }
     }
 
     p->cr = r;
@@ -458,7 +533,8 @@ static __inline__ Uint8 player_is_obj_on_player_cam(camera_t* c, obj_t * o){
 
 static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t * o){
   int border_x, border_y;
-  if(player_is_obj_on_player_cam(c,&(o->worms))){
+  uint8_t dir = DIR_UP;
+  if(0/*player_is_obj_on_player_cam(c,&(o->worms))*/){
     border_x = -1;
     border_y = -1;
   }else{
@@ -503,9 +579,11 @@ static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t *
     if (t_x_num * t_y_den < t_y_num * t_x_den) {
       // Utiliser t_x (bord gauche ou droit)
       if (dx > 0) {
+        dir = DIR_RIGHT;
         border_x = c->map_x + c->w;
         border_y = p->worms.pos_y + (dy * dist_to_right) / dx;
       } else if (dx < 0) {
+        dir = DIR_LEFT;
         border_x = c->map_x;
         border_y = p->worms.pos_y + (dy * dist_to_left) / (-dx);
       }else{
@@ -515,9 +593,11 @@ static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t *
     } else {
       // Utiliser t_y (bord haut ou bas)
       if (dy > 0) {
+        dir = DIR_DOWN;
         border_y = c->map_y + c->h;
         border_x = p->worms.pos_x + (dx * dist_to_bottom) / dy;
       } else if (dy < 0) {
+        dir = DIR_UP;
         border_y = c->map_y;
         border_x =  p->worms.pos_x + (dx * dist_to_top) / (-dy);
       }else{
@@ -528,6 +608,7 @@ static __inline__ void player_get_direction(camera_t* c, player_t* p, player_t *
   }
   p->other_worm_dir_x[o->id] = border_x;
   p->other_worm_dir_y[o->id] = border_y;
+  p->other_worm_dir[o->id] = dir;
 }
 
 void player_get_all_direction(camera_t * c, player_id pid , player_t** targets, Uint8 player_nb){
@@ -547,28 +628,28 @@ void player_show_dir_on_cam(player_t** p,camera_t* c, Uint8 pid, Uint8 nb_player
     }else if(p[pid]->other_worm_dir_x[i] < 0) {
       continue;
     }else{
-      Uint8 r = p[i]->cr;
-      Uint8 g = p[i]->cg;
-      Uint8 b = p[i]->cg;
-      const int side_sz = 4;
       int x,y;
+      color_t color;
+      color.r = p[i]->cr;
+      color.g = p[i]->cg;
+      color.b = p[i]->cg;
       x = p[pid]->other_worm_dir_x[i] - c->map_x;
       y = p[pid]->other_worm_dir_y[i] - c->map_y;
-     
-      for(int j = -side_sz ; j <= side_sz ; j++){
-        for(int k = -side_sz ; k <= side_sz ; k++){
-          if(abs(j) == abs(k)) {
-            camera_put_pix_color(c,j+x,k+y,r,g,b);
-            camera_put_pix_color(c,j+x,k+y+1,r,g,b);
-            camera_put_pix_color(c,j+x,k+y-1,r,g,b);
-            camera_put_pix_color(c,j+x,k+y+2,r,g,b);
-            camera_put_pix_color(c,j+x,k+y-2,r,g,b);
-          }else{
-            
-          }
-          
-        }
+      switch(p[pid]->other_worm_dir[i]){
+        case DIR_LEFT:
+          player_put_shape(c,x,y,&shape_dir,&color,PIXEL_SHAPE_NO_MODE);
+          break;
+        case DIR_RIGHT:
+          player_put_shape(c,x,y,&shape_dir,&color,PIXEL_SHAPE_MIRROR_V);
+          break;
+        case DIR_UP:
+          player_put_shape(c,x,y,&shape_dir,&color,PIXEL_SHAPE_ROTATE_90CCW);
+          break;
+        case DIR_DOWN:
+          player_put_shape(c,x,y,&shape_dir,&color,PIXEL_SHAPE_ROTATE_90CW);
+          break;
       }
+      
     }
   }
 }
@@ -636,18 +717,19 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
     x = p->reticle_x - camera->map_x;
     y = p->reticle_y - camera->map_y;
     if(p->worms_status & STATUS_AIMING){
-      camera_put_pix_color(camera,x,y-1,0,255,0);
+      player_put_shape(camera, x,y,&reticle1,0l,0);
+      /*camera_put_pix_color(camera,x,y-1,0,255,0);
       camera_put_pix_color(camera,x-1,y,0,255,0);
       camera_put_pix_color(camera,x,y,50,255,50);
       camera_put_pix_color(camera,x+1,y,0,255,0);
-      camera_put_pix_color(camera,x,y+1,0,255,0);
+      camera_put_pix_color(camera,x,y+1,0,255,0);*/
     }else{
-      camera_put_pix_color(camera,x,y-1,255,0,0);
+      player_put_shape(camera,x,y,&reticle2,0l,0);
+      /*camera_put_pix_color(camera,x,y-1,255,0,0);
       camera_put_pix_color(camera,x-1,y,255,0,0);
       camera_put_pix_color(camera,x,y,255,50,50);
       camera_put_pix_color(camera,x+1,y,255,0,0);
-      camera_put_pix_color(camera,x,y+1,255,0,0);
-
+      camera_put_pix_color(camera,x,y+1,255,0,0);*/
     }
   }
 
@@ -663,7 +745,13 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
   if(p->worms_status & STATUS_HAVE_FLAG){
     int x = p->worms.pos_x - camera->map_x;
     int y = p->worms.pos_y - camera->map_y;
-    camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 8: -7),y-9,255,0,0);
+    color_t c = {
+      .r = 255,
+      .g = 0,
+      .b = 0
+    };
+    player_put_shape(camera, x, y , (p->worms.side == RIGHT_SIDE) ? &flag_right:&flag_left, &c,0);
+    /*camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 8: -7),y-9,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 7: -6),y-9,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-9,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 7: -6),y-8,255,0,0);
@@ -671,17 +759,23 @@ void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag){
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-8,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-7,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-6,255,0,0);
-    camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-5,255,0,0);
+    camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-5,255,0,0);*/
 
   }
 
   if(warding_flag){
     int x = p->worms.pos_x - camera->map_x;
     int y = p->worms.pos_y - camera->map_y;
-    camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-9,255,0,0);
+    color_t c = {
+      .r = 255,
+      .g = 0,
+      .b = 0
+    };    
+    player_put_shape(camera, x, y , ( p->worms.side == RIGHT_SIDE) ? &warning_right : &warning_left, &c,0);
+    /*camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-9,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-8,255,0,0);
     camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-7,255,0,0);
-    camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-5,255,0,0);
+    camera_put_pix_color(camera,x-(( p->worms.side == RIGHT_SIDE) ? 6: -5),y-5,255,0,0);*/
   }
 }
 

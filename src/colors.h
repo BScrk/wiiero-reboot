@@ -48,6 +48,12 @@
 
 #define CPALETT 6
 
+typedef struct color_s {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+} color_t;
+
 extern void compute_trcolor(const SDL_Surface *surface);
 extern void get_grounds_colors( const int ambience_id,const int ground_id
                               , const int pallet_id,Uint8* r,Uint8* g,Uint8* b);

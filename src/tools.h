@@ -62,6 +62,11 @@ static void* secure_malloc(size_t size);
 static void secure_free(void* p);
 extern long get_process_used_memory( void ) ;
 
+#define CLAMP_MAX(value, add, max) \
+    (((max) - (value) < (add)) ? (max) : ((value) + (add)))
+
+#define CLAMP_MIN(value, sub, min) \
+    (((value) - (min) < (sub)) ? (min) : ((value) - (sub)))  
 
 /* * * * * * * * * * * * * * INLINE CODE * * * * * * * * * * * * * * * * * * * */
 
