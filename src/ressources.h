@@ -210,10 +210,10 @@ typedef struct{
   SDL_Surface * pinball;
   
   /* Others */
-  SDL_Surface * houses[ NB_PLAYERS ];
+  SDL_Surface * houses[ NB_TEAMS ];
   SDL_Surface * hook;
   SDL_Surface * health;
-  SDL_Surface * flags[ NB_PLAYERS ];
+  SDL_Surface * flags[ NB_TEAMS ];
   SDL_Surface * bonus;
   
 }ressources_t;

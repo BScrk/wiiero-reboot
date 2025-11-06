@@ -143,10 +143,12 @@ void release_ressource(ressources_t* r){
   for(int i=0;i<NB_PLAYERS;i++){
     SDL_FreeSurface( r->worms_skins[i] );
     SDL_FreeSurface( r->worms_flesh[i] );
+  }
+
+  for(int i=0;i<NB_TEAMS;i++){  
     SDL_FreeSurface( r->houses[i] );
     SDL_FreeSurface( r->flags[i] );
   }
-
   SDL_FreeSurface( r->worms_iron );
   SDL_FreeSurface( r->breakable  );
   SDL_FreeSurface( r->lrocks );

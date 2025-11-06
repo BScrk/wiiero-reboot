@@ -201,8 +201,8 @@ void create_gift(bullet_list_t* l,ressources_t* r,int x,int y,int xtra_weap);
 void ninja_hook_disconnect(void* bullet,void *p_arr,uint8_t p_arr_sz, void* userdata);
 void clean_bullets_list(bullet_list_t* l);
 
-void set_player_house(bullet_list_t* l,ressources_t* r,int playerid,void* layer);
-void set_player_flag(bullet_list_t* l,ressources_t* r,int playerid,void* layer);
+void set_player_house(bullet_list_t* l,ressources_t* r,int playerid,void* layer, int * x, int * y);
+void set_player_flag(bullet_list_t* l,ressources_t* r,int playerid,void* layer, int * x, int * y);
 void drop_player_flag(bullet_list_t* l,ressources_t* r,int playerid,int x,int y);
 
 #endif

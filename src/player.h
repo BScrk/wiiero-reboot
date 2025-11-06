@@ -166,9 +166,23 @@ typedef struct player_s{
   /*Uint8          worms_shockwave;*/
   Uint8          gunfire_anim_pos;
   int            last_stats_update;
+
   int            other_worm_dir_x[NB_PLAYERS];
   int            other_worm_dir_y[NB_PLAYERS];
   uint8_t        other_worm_dir[NB_PLAYERS];
+
+  int            my_house_x;
+  int            my_house_y;
+  int            my_house_dir_x;
+  int            my_house_dir_y;
+  uint8_t        my_house_dir;
+
+  int            their_flag_x;
+  int            their_flag_y;
+  int            their_flag_dir_x;
+  int            their_flag_dir_y;
+  uint8_t        their_flag_dir;
+
   int            reticle_x;
   int            reticle_y;
   Uint8          reticle_pitch;
@@ -222,6 +236,9 @@ void player_remove_hook(player_t* p,player_t** other_players);
 	
 //void player_event_update(player_t* p,map_t* m,player_t** other_pls);
 void player_update( player_t* p,SDL_Surface* ground, SDL_Surface* statics);
+
+void player_get_direction_xy_house(camera_t* c, player_t* p, int x, int y);
+void player_get_direction_xy_flag(camera_t* c, player_t* p, int x, int y);
 
 void player_show_dir_on_cam(player_t** p,camera_t* c, Uint8 pid, Uint8 nb_players);
 void player_show_on_cam(player_t* p,camera_t* camera,int warding_flag);

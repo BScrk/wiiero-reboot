@@ -954,26 +954,24 @@ void create_gift(bullet_list_t* l,ressources_t* r,int x,int y,int xtra_weap){
   }
 }
 
-void set_player_house(bullet_list_t* l,ressources_t* r,int teamid,void* layer){
+void set_player_house(bullet_list_t* l,ressources_t* r,int teamid,void* layer, int * x, int * y){
   ASSERT(layer)
   ASSERT(layer)
   ASSERT(r)
-  int x=0, y=0;
-  get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
+  get_empty_layer_position(x,y,(SDL_Surface*)layer);
   weapon_add_bullet_to_list(l,init_with_skin(((teamid == TEAM_1) ? WEAPON_T1_HOUSE: WEAPON_T2_HOUSE)
-                                            ,x, y, 0, 0
+                                            ,*x, *y, 0, 0
                                             ,r->houses[teamid]
                                             ,0l));
 }
 
-void set_player_flag(bullet_list_t* l,ressources_t* r,int teamid,void* layer){
+void set_player_flag(bullet_list_t* l,ressources_t* r,int teamid,void* layer, int * x , int * y){
   ASSERT(l)
   ASSERT(layer)
   ASSERT(r)
-  int x=0, y=0;
-  get_empty_layer_position(&x,&y,(SDL_Surface*)layer);
+  get_empty_layer_position(x,y,(SDL_Surface*)layer);
   weapon_add_bullet_to_list(l,init_with_skin(((teamid == TEAM_1) ? WEAPON_T1_FLAG: WEAPON_T2_FLAG)
-                                            ,x, y, 0, 0
+                                            ,*x, *y, 0, 0
                                             ,r->flags[teamid]
                                             ,0l));
 }
@@ -2988,7 +2986,7 @@ void house_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  
+  int x,y;
   // Check if any TEAM_1 player (P1 or P3) has the flag
   for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
     if (p[pi]->tid == TEAM_1 
@@ -2996,7 +2994,9 @@ void house_t1_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
         && (p[pi]->worms_status & STATUS_HAVE_FLAG)) {
       p[pi]->worms_status &= ~STATUS_HAVE_FLAG;
       game_score[pi].nb_flags++;
-      set_player_flag(owner->bullet_list_link, owner->r, TEAM_2, (SDL_Surface*)userdata);
+      set_player_flag(owner->bullet_list_link, owner->r, TEAM_2, (SDL_Surface*)userdata, &x, &y);
+      p[pi]->their_flag_x = x;//TODO check consistency teamz !
+      p[pi]->their_flag_y = y;
     }
   }
   
@@ -3016,7 +3016,7 @@ void house_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
   b->obj.acc_y = 0;
   b->obj.pos_x=lastx;
   b->obj.pos_y=lasty;
-  
+  int x,y;
   // Check if any TEAM_2 player (P2 or P4) has the flag
   for (player_id pi = PLAYER_1; pi < p_arr_sz; pi++) {
     if (p[pi]->tid == TEAM_2
@@ -3024,7 +3024,9 @@ void house_t2_on_collision_cb( void* bullet, int lastx, int lasty, int colx, int
         && (p[pi]->worms_status & STATUS_HAVE_FLAG)) {
       p[pi]->worms_status &= ~STATUS_HAVE_FLAG;
       game_score[pi].nb_flags++;
-      set_player_flag(owner->bullet_list_link, owner->r, TEAM_1, (SDL_Surface*)userdata);
+      set_player_flag(owner->bullet_list_link, owner->r, TEAM_1, (SDL_Surface*)userdata, &x, &y);
+      p[pi]->their_flag_x = x;//TODO check consistency teamz !
+      p[pi]->their_flag_y = y;
     }
   }
   

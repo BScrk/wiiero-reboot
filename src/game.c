@@ -285,6 +285,10 @@ void wiiero_update_world(game_t *g)
   DBG(" - UPDATE PLAYERS DIRECTION\n");
   for(Uint8 i = PLAYER_1; i < g->wiiero_nb_players; i++){
     player_get_all_direction(g->worms[i]->worms_camera,i, g->worms, g->wiiero_nb_players);
+    if(g->wiiero_opt_game_mode == GAME_CAPTURE_FLAG_MODE){
+      player_get_direction_xy_flag( g->worms[i]->worms_camera,g->worms[i],g->worms[i]->their_flag_x,g->worms[i]->their_flag_y);
+      player_get_direction_xy_house(g->worms[i]->worms_camera,g->worms[i],g->worms[i]->my_house_x  ,g->worms[i]->my_house_y);
+    }
   }
 
   if (g->wiiero_opt_gift_nb)
@@ -453,8 +457,22 @@ static __inline__ void wiiero_restart_game(game_t *g)
   }
   if (g->wiiero_opt_game_mode == GAME_CAPTURE_FLAG_MODE){
     for(team_id t = TEAM_1; t < NB_TEAMS; t++){
-      set_player_house(g->wiiero_bullets, g->wiiero_ressources, t, g->wiiero_map->layers[STATICS_MAP_LAYER]);
-      set_player_flag(g->wiiero_bullets, g->wiiero_ressources, t, g->wiiero_map->layers[STATICS_MAP_LAYER]);
+      int x,y;
+      set_player_house(g->wiiero_bullets, g->wiiero_ressources, t, g->wiiero_map->layers[STATICS_MAP_LAYER], &x, &y);
+      for(i = PLAYER_1 ; i < g->wiiero_nb_players; i++){
+        if(t == player_get_team_id(i)){
+          g->worms[i]->my_house_x = x;
+          g->worms[i]->my_house_y = y;
+        }
+      }
+      set_player_flag(g->wiiero_bullets, g->wiiero_ressources, t, g->wiiero_map->layers[STATICS_MAP_LAYER], &x, &y);
+      for(i = PLAYER_1 ; i < g->wiiero_nb_players; i++){
+        if(t != player_get_team_id(i)){
+          //TODO verify coherence ! 
+          g->worms[i]->their_flag_x = x;
+          g->worms[i]->their_flag_y = y;
+        }
+      }      
     }
   }
   first = 1;

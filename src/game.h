@@ -73,19 +73,19 @@
 
 
 typedef enum{
-    FULL_SCREEN_CAM = 0,
-    FIRST_PLAYERS_CAMERAS = 1,
-    PLAYER_1_GAME_ZONE_CAM = 1,
-    PLAYER_2_GAME_ZONE_CAM = 2,
-    PLAYER_3_GAME_ZONE_CAM = 3,
-    PLAYER_4_GAME_ZONE_CAM = 4,
-    MAX_PLAYERS_CAMERAS = 5,
-    GLOBAL_MINI_MAP_CAM = 5,
+    FULL_SCREEN_CAM         = 0,
+    FIRST_PLAYERS_CAMERAS   = 1,
+    PLAYER_1_GAME_ZONE_CAM  = 1,
+    PLAYER_2_GAME_ZONE_CAM  = 2,
+    PLAYER_3_GAME_ZONE_CAM  = 3,
+    PLAYER_4_GAME_ZONE_CAM  = 4,
+    MAX_PLAYERS_CAMERAS     = 5,
+    GLOBAL_MINI_MAP_CAM     = 5,
     PLAYER_1_STATS_ZONE_CAM = 6,
     PLAYER_2_STATS_ZONE_CAM = 7,
     PLAYER_3_STATS_ZONE_CAM = 8,
     PLAYER_4_STATS_ZONE_CAM = 9,
-    NB_MAX_CAMS = 10
+    NB_MAX_CAMS            = 10
 }camera_id_t;
 
 static __inline__ camera_id_t get_player_camera_id(int player_id) {

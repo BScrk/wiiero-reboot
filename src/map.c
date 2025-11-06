@@ -133,6 +133,7 @@ void update_minimap( map_t* m,camera_t *cam
     }
   }
   /* Update players position */
+  //FIXME use worms colors, #define colors ?
   update_player_position(p1_x, p1_y, x_step , y_step, cam,  0,  0,255); // Blue
   update_player_position(p2_x, p2_y, x_step , y_step, cam,  0,255,  0); // Green
   update_player_position(p3_x, p3_y, x_step , y_step, cam,240,215, 25); // Orange
@@ -252,8 +253,6 @@ void fill_statics(map_t* m,ressources_t* r, int nb_rocks){
                              , transparent_g_value
                              , transparent_b_value));
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
 void map_drow_cave(map_t* m,int cx, int cy, int cr){
   drow_circle( m->layers[GROUND_MAP_LAYER],cx,cy,cr
              , transparent_r_value,transparent_g_value,transparent_b_value);
@@ -262,7 +261,6 @@ void map_clean_zone(map_t* m,int zx, int zy, int zw,int zh){
   drow_hline( m->layers[GROUND_MAP_LAYER],zx,zy,zw,zh
             , transparent_r_value,transparent_g_value,transparent_b_value);
 }/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 void map_drow_big_cave(map_t* m){
   ASSERT(m);
   int i=0;
