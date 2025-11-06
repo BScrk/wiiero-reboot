@@ -32,7 +32,7 @@
 - [ ] Ajouter des contrôles pour PLAYER_3 et PLAYER_4 dans les autres input modes (Wii, PSP, IOKit)
 - [ ] Tester et optimiser les performances avec 4 joueurs actifs
 - [ ] Pouvoir passer de 2 à 3 ou 4 joueurs dans les options
-- [ ] Modifier l'affichage en fonction du nombre de joueurs
+- [x] Modifier l'affichage en fonction du nombre de joueurs
 - [ ] Bugfix manette se déconnecte -> crash (sous mac)
 - [ ] Bugfix manette se déconnecte -> les manettes changent de vers :D
 - [ ] Déplacement pad/stick gauche + visée stick droit
@@ -40,5 +40,5 @@
 - [ ] Amélioration de l'interface 4 joueurs
 - [ ] Modifier/vérifier les couleurs des vers en mode TAG pour mieux distinguer les équipes
 - [ ] Modifier/vérifier les couleurs des vers, drapeaux, maisons en mode CTF pour mieux distinguer les équipes
-- [ ] Tester d'afficher des fleches pointant sur les vers ennemis (maisons + drapeaux CTF ?) au lieu de la carte
-- [ ] Si carte toujours d'actualité, ajouter drapeaux + maisons en CTF sur la carte
+- [x] Tester d'afficher des fleches pointant sur les vers ennemis (maisons + drapeaux CTF ?) au lieu de la carte
+- [x] Si carte toujours d'actualité, ajouter drapeaux + maisons en CTF sur la carte
